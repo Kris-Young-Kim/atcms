@@ -1,0 +1,29 @@
+---
+alwaysApply: false
+---
+이 프로젝트의 개발 규칙:
+
+1. 언어: [JavaScript/TypeScript/Python 등 선택]
+2. 프레임워크: [React/Vue/Django 등 선택]
+3. 코드 스타일:
+   - 들여쓰기: 2 스페이스
+   - 라인 길이: 최대 100자
+   - 변수명: camelCase (함수, 변수), PascalCase (컴포넌트, 클래스)
+4. 파일 구조:
+   - 컴포넌트는 /components 디렉토리에 저장
+   - 유틸리티는 /utils 디렉토리에 저장
+   - 상수는 /constants 디렉토리에 저장
+5. 테스트:
+   - 모든 주요 함수에 대한 단위 테스트 작성
+   - 테스트 프레임워크: [Jest/Vitest 등]
+6. 커밋 메시지:
+   - 형식: [TYPE] 설명
+   - TYPE: feat, fix, refactor, docs, test, style, chore
+   - 예: "[feat] 사용자 로그인 기능 구현"
+7. 의존성 관리:
+   - 불필요한 외부 라이브러리 추가 금지
+   - 버전 고정 원칙 (package-lock.json 커밋)
+8. 보안:
+   - 민감한 정보는 환경 변수로 관리
+   - 입력값 검증 필수
+   - SQL 인젝션, XSS 방지 필수
