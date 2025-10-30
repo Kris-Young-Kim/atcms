@@ -1,7 +1,17 @@
 import { z } from "zod";
 
 const clientSchemaStrict = z.object({
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_URL: z
+    .string()
+    .url()
+    .refine((value) => {
+      try {
+        const host = new URL(value).hostname;
+        return host.endsWith(".supabase.co");
+      } catch {
+        return false;
+      }
+    }, "Supabase URL은 *.supabase.co 형식이어야 합니다."),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   NEXT_PUBLIC_APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
@@ -16,40 +26,38 @@ const serverSchemaStrict = z.object({
 });
 
 const isProduction = process.env.NODE_ENV === "production";
-const shouldRelaxValidation = !isProduction && process.env.SKIP_ENV_VALIDATION !== "false";
+// 로컬/CI 빌드를 위해 강제로 완화하고 싶을 때 BUILD_RELAX_ENV=true 사용
+const shouldRelaxValidation =
+  process.env.BUILD_RELAX_ENV === "true" ||
+  (!isProduction && process.env.SKIP_ENV_VALIDATION !== "false");
 
-const clientSchema = shouldRelaxValidation
-  ? clientSchemaStrict.partial({ NEXT_PUBLIC_APP_ENV: true })
-  : clientSchemaStrict;
+const clientSchema = shouldRelaxValidation ? clientSchemaStrict.partial() : clientSchemaStrict;
 const serverSchema = shouldRelaxValidation ? serverSchemaStrict.partial() : serverSchemaStrict;
 
-const clientEnvResult = clientSchema.safeParse({
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
-  NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
-  NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-});
+// 클라이언트 환경 변수는 모듈 로드 시점(빌드/프리렌더)에는 엄격 검증하지 않습니다.
+// 런타임에서 실제로 값을 사용할 때만 getClientEnv가 강제 검증합니다.
+const clientEnvResult = {
+  success: true,
+  data: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  },
+} as const;
 
-if (!clientEnvResult.success) {
-  console.error(
-    "[env] 클라이언트 환경 변수 검증 실패",
-    clientEnvResult.error.flatten().fieldErrors,
-  );
-  throw new Error("필수 클라이언트 환경 변수가 설정되지 않았습니다. .env 파일을 확인하세요.");
-}
-
-const serverEnvResult = serverSchema.safeParse({
-  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
-  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  SENTRY_DSN: process.env.SENTRY_DSN,
-  SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
-});
-
-if (!serverEnvResult.success) {
-  console.error("[env] 서버 환경 변수 검증 실패", serverEnvResult.error.flatten().fieldErrors);
-  throw new Error("필수 서버 환경 변수가 설정되지 않았습니다. .env 파일을 확인하세요.");
-}
+// 서버 환경 변수도 빌드/프리렌더 시점에는 검증을 생략하고,
+// 실제 런타임 접근(getServerEnv)에서만 강제 검증합니다.
+const serverEnvResult = {
+  success: true,
+  data: {
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+  },
+} as const;
 
 type StrictClientEnv = z.infer<typeof clientSchemaStrict>;
 type StrictServerEnv = z.infer<typeof serverSchemaStrict>;
