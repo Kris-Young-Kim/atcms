@@ -13,6 +13,4 @@ const sentryConfig = {
   tunnelRoute: "/monitoring",
 };
 
-export default withSentryConfig(nextConfig, sentryConfig, {
-  dryRun: process.env.NODE_ENV !== "production",
-});
+export default withSentryConfig(nextConfig, sentryConfig);

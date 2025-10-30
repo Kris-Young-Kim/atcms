@@ -1,5 +1,12 @@
 {
-  "dependencies": {
-    "@clerk/nextjs": "^6.34.1"
+  "name": "at-care",
+  "private": true,
+  "packageManager": "pnpm@10.19.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "format": "pnpm --filter web format",
+    "type-check": "pnpm --filter web type-check"
   }
 }
