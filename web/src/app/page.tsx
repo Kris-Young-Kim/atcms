@@ -1,63 +1,88 @@
+"use client";
+
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Link from "next/link";
+
 export default function Home() {
+  const router = useRouter();
+  const { isLoaded, isSignedIn } = useUser();
+
+  useEffect(() => {
+    // 로그인 상태이면 대시보드로 리디렉션
+    if (isLoaded && isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-gray-600">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 로그인되지 않은 경우 랜딩 페이지 표시
   return (
-    <main className="min-h-screen bg-slate-50 py-24">
-      <section className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 font-sans">
-        <div className="flex flex-col gap-6">
-          <span className="w-fit rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-700">
-            AT-Care MVP 환경
-          </span>
-          <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-slate-900">
-            보조공학 사례관리 · 대여관리 MVP 개발을 위한 기반이 준비되었습니다.
-          </h1>
-          <p className="max-w-2xl text-lg leading-relaxed text-slate-600">
-            Clerk 인증, Supabase 데이터 계층, 감사 로그 유틸, Prettier/ESLint 규칙을 갖춘 Next.js 16
-            애플리케이션으로 Phase 1 핵심 기능을 빠르게 구현할 수 있습니다.
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <div className="mb-8 flex justify-center">
+            <span className="text-6xl">🏥</span>
+          </div>
+          <h1 className="text-5xl font-bold text-gray-900">AT-Care</h1>
+          <p className="mt-4 text-xl text-gray-600">보조공학 사례관리 시스템</p>
+          <p className="mx-auto mt-6 max-w-2xl text-gray-500">
+            대상자 관리, 상담 기록, 기기 대여를 한 곳에서 관리할 수 있는 통합 플랫폼입니다.
           </p>
+
+          <div className="mt-10 flex justify-center gap-4">
+            <Link
+              href="/sign-in"
+              className="rounded-lg bg-blue-600 px-8 py-3 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/sign-up"
+              className="rounded-lg border border-gray-300 bg-white px-8 py-3 text-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              회원가입
+            </Link>
+          </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="mt-24 grid gap-8 md:grid-cols-3">
           {[
             {
-              title: "인증 · 권한",
-              description: [
-                "ClerkProvider와 환경 변수 검증을 기본 제공해",
-                "조직·역할 기반 RBAC 구현을 준비했습니다.",
-              ].join(" "),
+              icon: "👥",
+              title: "대상자 관리",
+              description: "대상자 정보를 체계적으로 등록하고 관리합니다.",
             },
             {
-              title: "Supabase 연동",
-              description: [
-                "브라우저·서버·서비스 롤 클라이언트 유틸을 분리해",
-                "CMS/ERM API 개발을 단순화했습니다.",
-              ].join(" "),
+              icon: "📝",
+              title: "상담 기록",
+              description: "상담 내용과 평가 결과를 기록하고 추적합니다.",
             },
             {
-              title: "감사 로그",
-              description: [
-                "auditLogger가 Sentry와 연동되어",
-                "모든 핵심 트랜잭션에 대한 추적 로그를 남길 수 있습니다.",
-              ].join(" "),
+              icon: "🔧",
+              title: "기기 관리",
+              description: "보조기기 재고와 대여 현황을 실시간으로 관리합니다.",
             },
-          ].map((item) => (
-            <article
-              key={item.title}
-              className="rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur"
+          ].map((feature) => (
+            <div
+              key={feature.title}
+              className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
             >
-              <h2 className="text-xl font-semibold text-slate-900">{item.title}</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-            </article>
+              <div className="text-4xl">{feature.icon}</div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">{feature.title}</h3>
+              <p className="mt-2 text-sm text-gray-600">{feature.description}</p>
+            </div>
           ))}
         </div>
-
-        <div className="flex flex-col gap-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-6">
-          <h3 className="text-lg font-semibold text-slate-900">다음 단계 가이드</h3>
-          <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
-            <li>`.env`를 `.env.example` 기준으로 작성하고 유효성 검증을 통과시키세요.</li>
-            <li>`pnpm lint`와 `pnpm type-check`로 코딩 표준을 확인하세요.</li>
-            <li>백로그에 정의된 CMS/ERM 스토리부터 UI · API · 테스트 작업을 시작하세요.</li>
-          </ul>
-        </div>
-      </section>
+      </div>
     </main>
   );
 }

@@ -10,9 +10,10 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  if (!publishableKey) {
-    // 빌드/프리렌더 단계에서 키가 없으면 Provider를 생략해 SSR 오류를 방지합니다.
-    return <>{children}</>;
-  }
-  return <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;
+  
+  // 개발 환경에서는 임시 키를 사용하여 항상 Provider를 렌더링
+  // 프로덕션에서는 반드시 실제 키가 있어야 함
+  const effectiveKey = publishableKey || "pk_test_placeholder";
+  
+  return <ClerkProvider publishableKey={effectiveKey}>{children}</ClerkProvider>;
 }
