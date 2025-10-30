@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -10,9 +9,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-const sentryConfig = {
-  silent: true,
-  tunnelRoute: "/monitoring",
-};
+// TODO: Sentry가 Next.js 16을 공식 지원하면 다시 활성화
+// import { withSentryConfig } from "@sentry/nextjs";
+// const sentryConfig = { silent: true, tunnelRoute: "/monitoring" };
+// export default withSentryConfig(nextConfig, sentryConfig);
 
-export default withSentryConfig(nextConfig, sentryConfig);
+export default nextConfig;
