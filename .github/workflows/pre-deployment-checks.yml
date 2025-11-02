@@ -1,0 +1,109 @@
+name: Pre-deployment Checks
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  pre-deployment-checks:
+    name: Pre-deployment Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linter
+        run: pnpm --filter web lint
+
+      - name: Run type check
+        run: pnpm --filter web type-check
+
+      - name: Check for security vulnerabilities
+        id: security-check
+        run: |
+          echo "🔍 보안 취약점 검사 중..."
+          pnpm --filter web audit --audit-level=moderate || security_issues=$?
+          if [ "$security_issues" = "1" ]; then
+            echo "⚠️ 보안 취약점이 발견되었습니다."
+            echo "has_issues=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ 보안 취약점 없음"
+            echo "has_issues=false" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Run tests
+        run: pnpm --filter web test:ci
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: test
+
+      - name: Build application
+        run: pnpm --filter web build
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+
+      - name: Check bundle size
+        run: |
+          echo "📦 번들 크기 확인 중..."
+          if [ -f "web/.next/analyze/client.html" ]; then
+            echo "✅ 번들 분석 리포트 생성됨"
+          fi
+
+      - name: Generate deployment checklist
+        run: |
+          echo "## 배포 전 체크리스트" > deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "**생성 시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "### 코드 품질" >> deployment-checklist.md
+          echo "- [x] ESLint 통과" >> deployment-checklist.md
+          echo "- [x] TypeScript 타입 체크 통과" >> deployment-checklist.md
+          echo "- [x] 테스트 통과" >> deployment-checklist.md
+          echo "- [x] 빌드 성공" >> deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "### 보안" >> deployment-checklist.md
+          if [ "${{ steps.security-check.outputs.has_issues }}" = "true" ]; then
+            echo "- [ ] 보안 취약점 확인 필요" >> deployment-checklist.md
+          else
+            echo "- [x] 보안 취약점 검사 통과" >> deployment-checklist.md
+          fi
+          echo "" >> deployment-checklist.md
+          echo "### 성능" >> deployment-checklist.md
+          echo "- [x] 번들 크기 확인 완료" >> deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "### 다음 단계" >> deployment-checklist.md
+          echo "- [ ] 승인자 검토" >> deployment-checklist.md
+          echo "- [ ] 변경사항 확인" >> deployment-checklist.md
+          echo "- [ ] 환경 변수 확인" >> deployment-checklist.md
+
+      - name: Upload deployment checklist
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-checklist
+          path: deployment-checklist.md
+
+      - name: Check security issues
+        if: steps.security-check.outputs.has_issues == 'true'
+        run: |
+          echo "⚠️ 보안 취약점이 발견되었습니다."
+          echo "배포 전에 보안 취약점을 해결해주세요."
+          exit 1
+

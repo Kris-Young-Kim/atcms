@@ -41,11 +41,56 @@ function reportMetric(metric: {
     console.warn(`[Performance Warning] ${name} is ${rating}: ${value.toFixed(2)}ms`);
   }
 
-  // TODO: 실제 프로덕션에서는 Sentry나 Analytics로 전송
-  // if (process.env.NODE_ENV === 'production') {
-  //   // Sentry에 전송
-  //   // 또는 Analytics API로 전송
-  // }
+  // 프로덕션 환경에서 Sentry로 전송
+  if (process.env.NODE_ENV === "production") {
+    sendToSentry(metric);
+  }
+}
+
+/**
+ * Sentry로 Web Vitals 전송
+ * 
+ * @param metric - Web Vitals 메트릭 데이터
+ */
+async function sendToSentry(metric: {
+  name: string;
+  value: number;
+  id: string;
+  delta: number;
+  rating: "good" | "needs-improvement" | "poor";
+}): Promise<void> {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    // Sentry가 로드되어 있는지 확인
+    const Sentry = await import("@sentry/nextjs").catch(() => null);
+    if (Sentry && Sentry.metrics) {
+      Sentry.metrics.distribution(`web_vitals.${metric.name.toLowerCase()}`, metric.value, {
+        unit: metric.name === "CLS" ? "ratio" : "millisecond",
+        tags: {
+          rating: metric.rating,
+          metric_id: metric.id,
+        },
+      });
+
+      // 성능이 나쁜 경우 추가 정보 기록
+      if (metric.rating === "poor") {
+        Sentry.captureMessage(`Poor ${metric.name} performance`, {
+          level: "warning",
+          tags: {
+            metric: metric.name,
+            value: metric.value,
+            rating: metric.rating,
+          },
+        });
+      }
+    }
+  } catch (error) {
+    // Sentry 전송 실패 시 무시 (성능 측정에 영향 없음)
+    console.debug("Failed to send Web Vitals to Sentry:", error);
+  }
 }
 
 /**

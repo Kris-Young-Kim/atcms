@@ -2,6 +2,7 @@
  * API 성능 측정 유틸리티
  * 
  * API 엔드포인트의 응답 시간을 측정하고 로깅합니다.
+ * 목표: 평균 < 2초, 95%ile < 3초, 99%ile < 5초
  */
 
 /**
@@ -75,11 +76,47 @@ export async function measureApiPerformance<T>(
       console.warn(`[Slow API] ${method} ${endpoint}: ${duration.toFixed(2)}ms`);
     }
 
-    // TODO: 실제 프로덕션에서는 Sentry나 Analytics로 전송
-    // if (process.env.NODE_ENV === 'production') {
-    //   // Sentry에 전송
-    //   // 또는 Analytics API로 전송
-    // }
+    // 프로덕션 환경에서 Sentry로 전송
+    if (process.env.NODE_ENV === "production") {
+      await sendToSentry(metric);
+    }
+  }
+}
+
+/**
+ * Sentry로 API 성능 메트릭 전송
+ * 
+ * @param metric - API 성능 메트릭 데이터
+ */
+async function sendToSentry(metric: ApiPerformanceMetric): Promise<void> {
+  try {
+    const Sentry = await import("@sentry/nextjs").catch(() => null);
+    if (Sentry && Sentry.metrics) {
+      Sentry.metrics.distribution("api.performance", metric.duration, {
+        unit: "millisecond",
+        tags: {
+          endpoint: metric.endpoint,
+          method: metric.method,
+          status: metric.status.toString(),
+        },
+      });
+
+      // 느린 요청 경고 (500ms 초과)
+      if (metric.duration > 500) {
+        Sentry.captureMessage(`Slow API: ${metric.method} ${metric.endpoint}`, {
+          level: "warning",
+          tags: {
+            endpoint: metric.endpoint,
+            method: metric.method,
+            duration: metric.duration,
+            status: metric.status,
+          },
+        });
+      }
+    }
+  } catch (error) {
+    // Sentry 전송 실패 시 무시
+    console.debug("Failed to send API performance to Sentry:", error);
   }
 }
 

@@ -34,6 +34,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Run pre-deployment checklist script
+        run: |
+          chmod +x scripts/pre-deployment-check.sh
+          ./scripts/pre-deployment-check.sh staging || true
+        continue-on-error: true
+
       - name: Run linter
         run: pnpm --filter web lint
 
@@ -69,27 +75,71 @@ jobs:
         run: |
           echo "url=${{ steps.deploy.outputs.url }}" >> $GITHUB_OUTPUT
 
-      - name: Comment deployment URL on PR
+      - name: Get PR number
+        id: pr-number
         if: github.event_name == 'pull_request'
+        run: |
+          echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Get commit PR
+        id: commit-pr
+        if: github.event_name == 'push'
         uses: actions/github-script@v7
         with:
           script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`,
+            });
+            
+            if (pulls.length > 0) {
+              core.setOutput('number', pulls[0].number);
+            }
+        continue-on-error: true
+
+      - name: Comment deployment URL on PR
+        if: steps.pr-number.outputs.number || steps.commit-pr.outputs.number
+        uses: actions/github-script@v7
+        env:
+          DEPLOYMENT_URL: ${{ steps.deployment-url.outputs.url }}
+          PR_NUMBER: ${{ steps.pr-number.outputs.number || steps.commit-pr.outputs.number }}
+        with:
+          script: |
+            const prNumber = parseInt(process.env.PR_NUMBER);
+            const deploymentUrl = process.env.DEPLOYMENT_URL;
+            
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: prNumber,
             });
             
             const botComment = comments.find(comment => 
               comment.user.type === 'Bot' && comment.body.includes('Staging 배포')
             );
             
+            const commitSha = context.sha.substring(0, 7);
+            const commitUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`;
+            
             const body = `## 🚀 Staging 배포 완료
             
-            **배포 URL**: ${{ steps.deployment-url.outputs.url }}
+            **배포 URL**: [${deploymentUrl}](${deploymentUrl})
             **환경**: Preview (Staging)
-            **브랜치**: \`${{ github.ref_name }}\`
-            **커밋**: \`${{ github.sha }}\`
+            **브랜치**: \`${context.ref.replace('refs/heads/', '')}\`
+            **커밋**: [\`${commitSha}\`](${commitUrl})
+            **배포 시간**: ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+            
+            ### 배포 상태
+            ✅ 배포 완료
+            
+            ### 다음 단계
+            - [ ] 배포 URL 확인
+            - [ ] 핵심 기능 테스트
+            - [ ] 에러 로그 확인
+            - [ ] 성능 확인
             
             배포를 확인하고 테스트해주세요.`;
             
@@ -104,25 +154,48 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                issue_number: prNumber,
                 body: body
               });
             }
 
-      - name: Notify deployment status
+      - name: Set deployment status badge
         if: always()
         uses: actions/github-script@v7
         with:
           script: |
+            const status = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            const deploymentUrl = '${{ steps.deployment-url.outputs.url }}';
+            
+            // 배포 상태를 커밋에 코멘트로 추가
+            const emoji = status === 'success' ? '✅' : '❌';
+            const message = `${emoji} Staging 배포 ${status === 'success' ? '성공' : '실패'}`;
+            
+            console.log(`Deployment Status: ${message}`);
+            console.log(`Deployment URL: ${deploymentUrl || 'N/A'}`);
+
+      - name: Notify deployment status
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          DEPLOYMENT_URL: ${{ steps.deployment-url.outputs.url }}
+        with:
+          script: |
             const status = '${{ job.status }}' === 'success' ? '✅ 성공' : '❌ 실패';
+            const deploymentUrl = process.env.DEPLOYMENT_URL;
+            const workflowUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const commitSha = context.sha.substring(0, 7);
+            
             const body = `**Staging 배포 상태**: ${status}
             
-            ${{ steps.deployment-url.outputs.url ? `**배포 URL**: ${{ steps.deployment-url.outputs.url }}` : '' }}
-            **브랜치**: \`${{ github.ref_name }}\`
-            **커밋**: \`${{ github.sha }}\`
+            ${deploymentUrl ? `**배포 URL**: [${deploymentUrl}](${deploymentUrl})` : ''}
+            **브랜치**: \`${context.ref.replace('refs/heads/', '')}\`
+            **커밋**: \`${commitSha}\`
+            **실행 시간**: ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
             
-            [워크플로우 실행 보기](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            [워크플로우 실행 보기](${workflowUrl})`;
             
-            // Slack 알림 등 추가 가능
             console.log(body);
+            // TODO: Slack 알림 통합 (선택사항)
+            // await sendSlackNotification({ status, deploymentUrl, body });
 

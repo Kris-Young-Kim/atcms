@@ -1,0 +1,185 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * 0'  # 매주 일요일 새벽 2시 실행
+  workflow_dispatch:
+
+jobs:
+  lighthouse-ci:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: web
+
+      - name: Build application
+        run: pnpm build
+        working-directory: web
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+
+      - name: Start application
+        run: |
+          pnpm start &
+          echo $! > app.pid
+          sleep 10
+        working-directory: web
+        env:
+          SKIP_ENV_VALIDATION: true
+          PORT: 3000
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@latest
+          lhci autorun --config=web/.lighthouserc.json
+        continue-on-error: true
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
+        working-directory: web
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: web/.lighthouseci/
+          retention-days: 30
+
+  performance-benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: lighthouse-ci
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: web
+
+      - name: Run performance tests
+        run: pnpm test:e2e -- --grep="performance"
+        working-directory: web
+        continue-on-error: true
+        env:
+          E2E_BASE_URL: http://localhost:3000
+
+      - name: Upload performance results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: web/test-results/
+          retention-days: 30
+
+  performance-report:
+    name: Performance Report
+    runs-on: ubuntu-latest
+    needs: [lighthouse-ci, performance-benchmark]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Lighthouse results
+        uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+
+      - name: Download performance results
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-results
+          path: performance-results/
+
+      - name: Generate performance report
+        run: |
+          echo "## 📊 Performance Test Results" >> performance-report.md
+          echo "" >> performance-report.md
+          echo "**실행 시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> performance-report.md
+          echo "" >> performance-report.md
+          echo "### Lighthouse CI Results" >> performance-report.md
+          if [ -d "lighthouse-results" ]; then
+            echo "✅ Lighthouse CI 실행 완료" >> performance-report.md
+          else
+            echo "⚠️ Lighthouse CI 결과 없음" >> performance-report.md
+          fi
+          echo "" >> performance-report.md
+          echo "### Performance Benchmark Results" >> performance-report.md
+          if [ -d "performance-results" ]; then
+            echo "✅ Performance Benchmark 실행 완료" >> performance-report.md
+          else
+            echo "⚠️ Performance Benchmark 결과 없음" >> performance-report.md
+          fi
+          echo "" >> performance-report.md
+          echo "### 다음 단계" >> performance-report.md
+          echo "- [ ] 성능 리포트 검토" >> performance-report.md
+          echo "- [ ] 성능 회귀 확인" >> performance-report.md
+          echo "- [ ] 개선 사항 식별" >> performance-report.md
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: performance-report.md
+          retention-days: 30
+
+      - name: Comment performance report on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('performance-report.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+
