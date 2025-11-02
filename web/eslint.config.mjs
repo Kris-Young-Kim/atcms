@@ -18,8 +18,10 @@ const eslintConfig = defineConfig([
         },
       ],
       // TypeScript any 타입 금지
+      // eslint-config-next가 이미 @typescript-eslint 플러그인을 포함하고 있음
       "@typescript-eslint/no-explicit-any": "error",
       // 미사용 변수 경고 (매개변수는 제외)
+      // eslint-config-next의 기본 규칙을 오버라이드
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
