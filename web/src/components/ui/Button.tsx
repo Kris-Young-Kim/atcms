@@ -48,7 +48,8 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
         "bg-primary-600 text-white shadow-sm hover:bg-primary-700 hover:shadow-md hover:-translate-y-0.5 active:bg-primary-800 active:translate-y-0 active:shadow-sm",
       secondary:
         "bg-white text-neutral-700 border border-neutral-300 shadow-sm hover:bg-neutral-50 hover:border-neutral-400 hover:shadow-md hover:-translate-y-0.5 active:bg-neutral-100 active:translate-y-0 active:shadow-sm",
-      ghost: "bg-transparent text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 active:bg-neutral-100",
+      ghost:
+        "bg-transparent text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 active:bg-neutral-100",
       danger:
         "bg-error-600 text-white shadow-sm hover:bg-error-700 hover:shadow-md hover:-translate-y-0.5 active:bg-error-800 active:translate-y-0 active:shadow-sm",
       success:
@@ -82,7 +83,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
           ref={ref as React.ForwardedRef<HTMLAnchorElement>}
           href={href || "#"}
           className={classes}
-          {...(props as any)}
+          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
         >
           {content}
         </Link>
@@ -122,4 +123,3 @@ function Spinner({ size }: { size: ButtonSize }) {
     />
   );
 }
-

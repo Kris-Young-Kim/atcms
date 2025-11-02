@@ -30,10 +30,7 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
       accessorKey: "name",
       header: "이름",
       cell: ({ row }) => (
-        <Link
-          href={`/clients/${row.original.id}`}
-          className="link font-semibold"
-        >
+        <Link href={`/clients/${row.original.id}`} className="link font-semibold">
           {row.getValue("name")}
         </Link>
       ),

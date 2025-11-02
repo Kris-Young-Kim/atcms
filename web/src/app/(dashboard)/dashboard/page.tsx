@@ -141,10 +141,7 @@ export default function DashboardPage() {
       <div className="card animate-slide-in p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-neutral-900">최근 등록된 대상자</h2>
-          <Link
-            href="/clients"
-            className="link text-sm font-medium"
-          >
+          <Link href="/clients" className="link text-sm font-medium">
             전체 보기 →
           </Link>
         </div>
@@ -152,10 +149,7 @@ export default function DashboardPage() {
         {recentClients.length === 0 ? (
           <div className="py-8 text-center">
             <p className="text-sm text-neutral-500">등록된 대상자가 없습니다.</p>
-            <Link
-              href="/clients/new"
-              className="link mt-4 inline-block text-sm font-medium"
-            >
+            <Link href="/clients/new" className="link mt-4 inline-block text-sm font-medium">
               첫 번째 대상자를 등록해보세요 →
             </Link>
           </div>

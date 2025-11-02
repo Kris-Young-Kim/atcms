@@ -34,7 +34,9 @@ export function Header() {
             <p className="text-sm font-semibold text-neutral-900">
               {user?.firstName || user?.username || "사용자"}
             </p>
-            <p className="text-xs font-medium text-neutral-500">{roleNames[userRole] || userRole}</p>
+            <p className="text-xs font-medium text-neutral-500">
+              {roleNames[userRole] || userRole}
+            </p>
           </div>
           {/* Clerk 사용자 버튼 (프로필, 로그아웃) */}
           <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-1 transition-all hover:border-neutral-300 hover:bg-neutral-100 hover:shadow-sm">

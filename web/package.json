@@ -18,7 +18,7 @@
     "audit": "pnpm audit --audit-level=moderate",
     "audit:fix": "pnpm audit --fix",
     "audit:report": "pnpm audit --json > audit-report.json",
-    "prepare": "husky"
+    "prepare": "node -e \"if (process.env.CI !== 'true' && process.env.VERCEL !== '1') require('husky')\" || true"
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {

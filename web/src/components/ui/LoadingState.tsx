@@ -1,7 +1,5 @@
 "use client";
 
-import { ReactNode } from "react";
-
 interface LoadingStateProps {
   message?: string;
   fullScreen?: boolean;
@@ -32,17 +30,13 @@ export function LoadingState({
       >
         <span className="sr-only">{message}</span>
       </div>
-      {message && (
-        <p className="text-sm font-medium text-neutral-600 animate-pulse">{message}</p>
-      )}
+      {message && <p className="text-sm font-medium text-neutral-600 animate-pulse">{message}</p>}
     </div>
   );
 
   if (fullScreen) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-neutral-50">
-        {spinner}
-      </div>
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50">{spinner}</div>
     );
   }
 
@@ -69,14 +63,8 @@ export function SkeletonText({ lines = 3 }: { lines?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          height="1rem"
-          width={i === lines - 1 ? "60%" : "100%"}
-          className="h-4"
-        />
+        <Skeleton key={i} height="1rem" width={i === lines - 1 ? "60%" : "100%"} className="h-4" />
       ))}
     </div>
   );
 }
-
