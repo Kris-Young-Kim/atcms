@@ -9,6 +9,9 @@ import { useScheduleReminders } from "@/hooks/useScheduleReminders";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import type { Schedule } from "@/lib/validations/schedule";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 캘린더 페이지
  * Phase 10: SCH-US-03
