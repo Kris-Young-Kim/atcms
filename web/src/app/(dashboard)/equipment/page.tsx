@@ -166,25 +166,45 @@ export default function EquipmentPage() {
               />
             </div>
 
-            {/* 상태 필터 */}
+            {/* 상태 필터 (버튼 형태로 개선) */}
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                상태
-              </label>
-              <select
-                id="status"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                aria-label="상태 필터"
-              >
-                <option value="all">전체</option>
-                {Object.entries(EQUIPMENT_STATUS_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 mb-2">상태</label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter("all")}
+                  className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                    statusFilter === "all"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                  aria-label="전체 상태"
+                >
+                  전체
+                </button>
+                {Object.entries(EQUIPMENT_STATUS_LABELS).map(([value, label]) => {
+                  const statusColors: Record<EquipmentStatus, string> = {
+                    normal: "bg-green-100 text-green-700",
+                    maintenance: "bg-yellow-100 text-yellow-700",
+                    retired: "bg-red-100 text-red-700",
+                  };
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setStatusFilter(value)}
+                      className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                        statusFilter === value
+                          ? statusColors[value as EquipmentStatus] + " ring-2 ring-blue-500"
+                          : statusColors[value as EquipmentStatus] + " hover:opacity-80"
+                      }`}
+                      aria-label={`${label} 상태 필터`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 카테고리 필터 */}
