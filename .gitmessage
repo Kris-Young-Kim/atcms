@@ -2,7 +2,16 @@
 
 **프로젝트 코드**: ATCMP-2026  
 **사용 방법**: `.gitmessage` 파일을 프로젝트 루트에 저장하고 다음 명령 실행  
-`git config commit.template .gitmessage`
+```bash
+git config commit.template .gitmessage
+```
+
+또는 전역 설정:
+```bash
+git config --global commit.template .gitmessage
+```
+
+**상세 가이드**: [커밋 메시지 가이드](./docs/commit-message-guide.md) 참고
 
 ---
 
@@ -122,6 +131,6 @@ docs #456: Git Flow 가이드 문서 작성
 
 ## 참고 자료
 
-- [PROJECT_MANAGEMENT_SYSTEM.md](../PROJECT_MANAGEMENT_SYSTEM.md)
-- [git-flow-guide.md](./git-flow-guide.md)
-
+- [커밋 메시지 가이드](./docs/commit-message-guide.md)
+- [PROJECT_MANAGEMENT_SYSTEM.md](./PROJECT_MANAGEMENT_SYSTEM.md)
+- [git-flow-guide.md](./docs/git-flow-guide.md)

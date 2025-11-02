@@ -688,10 +688,10 @@
 
 ### 3.2 Git 규칙
 
-- [ ] Git Flow 브랜치 전략 문서화
-- [ ] 커밋 메시지 형식 가이드 작성 ([TYPE] ATCMP-번호: 설명 또는 [TYPE] #이슈번호: 설명)
-- [ ] Pre-commit hook 설정 (lint-staged)
-- [ ] 커밋 템플릿 파일 생성
+- [x] ✅ Git Flow 브랜치 전략 문서화 ✅ (docs/git-flow-guide.md 보완 완료, README.md 링크 추가)
+- [x] ✅ 커밋 메시지 형식 가이드 작성 ✅ (docs/commit-message-guide.md 작성 완료)
+- [x] ✅ Pre-commit hook 설정 (lint-staged) ✅ (Step 1.4에서 완료)
+- [x] ✅ 커밋 템플릿 파일 생성 ✅ (.gitmessage 개선 완료, 사용 가이드 문서화)
 
 ### 3.3 코드 리뷰 규칙
 
@@ -715,7 +715,7 @@
 - [ ] 프로덕션 배포 승인 프로세스 수립
 - [ ] 배포 후 롤백 계획 수립
 
-**진행률**: 6/18 (33%) - 코딩 표준 구축 완료
+**진행률**: 10/18 (56%) - Git 규칙 문서화 완료
 
 ---
 

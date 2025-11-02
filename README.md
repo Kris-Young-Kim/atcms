@@ -49,6 +49,7 @@ pnpm dev
 - [프로젝트 관리 시스템](./PROJECT_MANAGEMENT_SYSTEM.md)
 - [기여 가이드](./CONTRIBUTING.md)
 - [Git Flow 가이드](./docs/git-flow-guide.md)
+- [커밋 메시지 가이드](./docs/commit-message-guide.md)
 - [이슈 관리 가이드](./docs/issue-management-guide.md)
 - [보안 체크리스트](./docs/security-checklist.md)
 

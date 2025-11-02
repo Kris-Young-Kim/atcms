@@ -358,6 +358,11 @@ git push origin v1.0.0
 ### Q3. hotfix를 develop에 병합하는 것을 깜빡했어요.
 **A**: 가능한 빨리 `develop` 브랜치에 병합하세요. 미래의 기능 개발에 영향을 줄 수 있습니다.
 
+**참고 자료**:
+- [커밋 메시지 가이드](./commit-message-guide.md)
+- [PROJECT_MANAGEMENT_SYSTEM.md](../PROJECT_MANAGEMENT_SYSTEM.md)
+- [CONTRIBUTING.md](../CONTRIBUTING.md)
+
 ---
 
 **마지막 업데이트**: 2025-11-01  
