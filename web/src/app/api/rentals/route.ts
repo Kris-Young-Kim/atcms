@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     const supabase = createSupabaseServerClient();
 
-    // 기기 가용 수량 확인
+    // 기기 정보 조회 (가용 수량 및 상태 확인을 위해)
     const { data: equipment, error: equipmentError } = await supabase
       .from("equipment")
       .select("id, name, available_quantity, status")
@@ -69,7 +69,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Equipment not found" }, { status: 404 });
     }
 
-    // 기기 상태 확인 (정상 상태인지 확인)
+    // 기기 상태 확인: 정상 상태인지 확인 (normal 상태만 대여 가능)
+    // maintenance(유지보수) 또는 retired(폐기) 상태의 기기는 대여 불가
     if (equipment.status !== "normal") {
       return NextResponse.json(
         { error: `해당 기기는 현재 대여 불가능한 상태입니다. (${equipment.status})` },
@@ -77,7 +78,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // 가용 수량 확인
+    // 가용 수량 확인: 요청한 수량이 가용 수량 이하인지 확인
+    // available_quantity는 현재 대여 가능한 수량을 의미하며,
+    // 이 값이 요청한 quantity보다 작으면 대여 불가
     if ((equipment.available_quantity || 0) < validated.quantity) {
       return NextResponse.json(
         {
@@ -87,11 +90,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // 계약서 PDF Stub 생성 (향후 Toss 연계 대비)
-    // 현재는 빈 문자열로 저장, 향후 실제 PDF 생성 로직 추가 예정
+    // 계약서 PDF URL 생성 (Stub 구현)
+    // 현재는 빈 문자열로 저장하지만, 향후 실제 PDF 생성 로직 추가 예정
+    // PDF 생성 후 Supabase Storage에 업로드하고 URL을 반환할 예정
     const contractUrl = ""; // TODO: 실제 PDF 생성 로직 구현
 
     // 대여 기록 저장
+    // status는 자동으로 'active'로 설정되며,
+    // rental_date가 없으면 오늘 날짜로 자동 설정
+    // 데이터베이스 트리거가 자동으로 equipment.available_quantity를 감소시킴
     const { data, error } = await supabase
       .from("rentals")
       .insert({

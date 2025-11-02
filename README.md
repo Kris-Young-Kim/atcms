@@ -53,6 +53,8 @@ pnpm dev
 - [배포 가이드](./DEPLOYMENT.md)
 - [데이터베이스 스키마](./DATABASE_SCHEMA.md)
 - [개발 가이드](./DEVELOPMENT.md)
+- [변경 기록](./CHANGELOG.md)
+- [JSDoc 주석 가이드](./docs/jsdoc-guide.md)
 - [Git Flow 가이드](./docs/git-flow-guide.md)
 - [커밋 메시지 가이드](./docs/commit-message-guide.md)
 - [이슈 관리 가이드](./docs/issue-management-guide.md)

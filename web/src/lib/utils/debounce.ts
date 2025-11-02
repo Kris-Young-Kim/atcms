@@ -1,10 +1,24 @@
 /**
- * 디바운스 유틸리티 함수
- * 입력값이 변경된 후 일정 시간(ms) 동안 추가 변경이 없을 때만 콜백 실행
+ * 함수 실행을 지연시킵니다 (Debounce).
  * 
- * @param callback 실행할 함수
- * @param delay 대기 시간 (밀리초)
- * @returns 디바운스된 함수
+ * 지정된 시간 동안 연속된 호출을 무시하고, 마지막 호출 후에만 함수를 실행합니다.
+ * 검색 입력 등에서 유용합니다.
+ * 
+ * @template T - 원본 함수 타입
+ * @param {T} callback - 실행할 함수
+ * @param {number} delay - 지연 시간 (밀리초)
+ * @returns {(...args: Parameters<T>) => void} 지연된 함수
+ * 
+ * @example
+ * ```typescript
+ * const debouncedSearch = debounce((query: string) => {
+ *   console.log('Search:', query);
+ * }, 300);
+ * 
+ * debouncedSearch('a'); // 무시됨
+ * debouncedSearch('ab'); // 무시됨
+ * debouncedSearch('abc'); // 300ms 후 실행됨
+ * ```
  */
 export function debounce<T extends (...args: unknown[]) => void>(
   callback: T,
