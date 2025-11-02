@@ -5,6 +5,9 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ConsultationTimeline } from "@/components/clients/ConsultationTimeline";
 import { AssessmentTimeline } from "@/components/clients/AssessmentTimeline";

@@ -6,6 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { EquipmentTable } from "@/components/equipment/EquipmentTable";
 import { EquipmentStatusChart } from "@/components/equipment/EquipmentStatusChart";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {

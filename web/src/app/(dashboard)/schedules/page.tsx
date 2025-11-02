@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
+
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
 import { debounce } from "@/lib/utils/debounce";
 import { useScheduleReminders } from "@/hooks/useScheduleReminders";
 import type { Schedule } from "@/lib/validations/schedule";

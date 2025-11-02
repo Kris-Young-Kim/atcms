@@ -5,6 +5,9 @@ import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { CustomizationForm } from "@/components/customization/CustomizationForm";

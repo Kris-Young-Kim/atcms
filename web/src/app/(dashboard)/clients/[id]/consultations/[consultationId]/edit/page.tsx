@@ -6,6 +6,9 @@ import { ConsultationForm } from "@/components/clients/ConsultationForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 import type { Consultation } from "@/lib/validations/consultation";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 상담 기록 수정 페이지
  * Sprint 1: CMS-US-04

@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { ScheduleForm } from "@/components/schedules/ScheduleForm";
 import type { Schedule } from "@/lib/validations/schedule";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 일정 수정 페이지
  * Phase 10: SCH-US-02

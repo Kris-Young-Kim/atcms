@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { CustomizationForm } from "@/components/customization/CustomizationForm";
 import type { CustomizationRequest } from "@/lib/validations/customization";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 맞춤제작 요청 수정 페이지
  * Phase 10: CDM-US-02

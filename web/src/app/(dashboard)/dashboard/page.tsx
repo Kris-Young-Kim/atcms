@@ -7,6 +7,9 @@ import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/Button";
 import { LoadingState } from "@/components/ui/LoadingState";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 대시보드 홈 페이지
  * 통계 카드 및 최근 활동 표시

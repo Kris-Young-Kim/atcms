@@ -4,6 +4,9 @@ import { useParams } from "next/navigation";
 import { MaintenanceNoteForm } from "@/components/equipment/MaintenanceNoteForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 새 유지보수 노트 작성 페이지
  * Sprint 1: ERM-US-03

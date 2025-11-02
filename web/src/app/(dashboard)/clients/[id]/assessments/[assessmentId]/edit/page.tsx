@@ -6,6 +6,9 @@ import { AssessmentForm } from "@/components/clients/AssessmentForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 import type { Assessment } from "@/lib/validations/assessment";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 평가 기록 수정 페이지
  * Sprint 1: CMS-US-05

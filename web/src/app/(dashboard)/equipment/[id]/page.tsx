@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { MaintenanceNotesTimeline } from "@/components/equipment/MaintenanceNotesTimeline";
 import type { Equipment } from "@/lib/validations/equipment";

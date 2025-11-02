@@ -11,6 +11,9 @@ import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import type { Rental } from "@/lib/validations/rental";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 대여 반납 처리 페이지
  * Sprint 1: ERM-US-02

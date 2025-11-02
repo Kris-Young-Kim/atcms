@@ -10,6 +10,9 @@ import { LoadingState } from "@/components/ui/LoadingState";
 import type { Client } from "@/lib/validations/client";
 import { useClientsPageController, type Pagination } from "@/hooks/useClientsPageController";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 export default function ClientsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

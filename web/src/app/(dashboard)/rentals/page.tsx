@@ -10,6 +10,9 @@ import { useToast, ToastContainer } from "@/components/ui/Toast";
 import type { Rental } from "@/lib/validations/rental";
 import { RENTAL_STATUS, RENTAL_STATUS_LABELS, type RentalStatus } from "@/lib/validations/rental";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 대여 목록 페이지
  * Sprint 1: ERM-US-02

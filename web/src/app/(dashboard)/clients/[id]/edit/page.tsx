@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { ClientForm } from "@/components/clients/ClientForm";
 import type { Client } from "@/lib/validations/client";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 대상자 수정 페이지
  * ClientForm 재사용
