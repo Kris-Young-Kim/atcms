@@ -131,7 +131,7 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200" role="table" aria-label="대상자 목록 테이블">
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -139,17 +139,38 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
                   <th
                     key={header.id}
                     className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                    scope="col"
+                    aria-sort={
+                      header.column.getIsSorted() === "asc"
+                        ? "ascending"
+                        : header.column.getIsSorted() === "desc"
+                          ? "descending"
+                          : "none"
+                    }
                   >
                     {header.isPlaceholder ? null : (
                       <div
                         className={
-                          header.column.getCanSort() ? "cursor-pointer select-none" : ""
+                          header.column.getCanSort() ? "cursor-pointer select-none hover:text-gray-700" : ""
                         }
                         onClick={header.column.getToggleSortingHandler()}
+                        role={header.column.getCanSort() ? "button" : undefined}
+                        tabIndex={header.column.getCanSort() ? 0 : undefined}
+                        onKeyDown={(e) => {
+                          if (header.column.getCanSort() && (e.key === "Enter" || e.key === " ")) {
+                            e.preventDefault();
+                            header.column.getToggleSortingHandler()?.(e);
+                          }
+                        }}
+                        aria-label={
+                          header.column.getCanSort()
+                            ? `정렬: ${flexRender(header.column.columnDef.header, header.getContext())}`
+                            : undefined
+                        }
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {header.column.getIsSorted() && (
-                          <span className="ml-1">
+                          <span className="ml-1" aria-hidden="true">
                             {header.column.getIsSorted() === "asc" ? "↑" : "↓"}
                           </span>
                         )}
