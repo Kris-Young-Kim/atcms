@@ -32,7 +32,7 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
       cell: ({ row }) => (
         <Link
           href={`/clients/${row.original.id}`}
-          className="font-semibold text-blue-600 transition-colors hover:text-blue-700 hover:underline"
+          className="link font-semibold"
         >
           {row.getValue("name")}
         </Link>
@@ -139,20 +139,20 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
+    <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table
-          className="min-w-full divide-y divide-gray-200"
+          className="min-w-full divide-y divide-neutral-200"
           role="table"
           aria-label="대상자 목록 테이블"
         >
-          <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+          <thead className="bg-gradient-to-r from-neutral-50 to-neutral-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-700"
+                    className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-700"
                     scope="col"
                     aria-sort={
                       header.column.getIsSorted() === "asc"
@@ -166,7 +166,7 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
                       <div
                         className={
                           header.column.getCanSort()
-                            ? "cursor-pointer select-none hover:text-gray-700"
+                            ? "cursor-pointer select-none transition-colors hover:text-neutral-900"
                             : ""
                         }
                         onClick={header.column.getToggleSortingHandler()}
@@ -197,13 +197,16 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-neutral-100 bg-white">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="transition-colors hover:bg-blue-50/50">
+              <tr
+                key={row.id}
+                className="transition-colors hover:bg-primary-50/50 active:bg-primary-100/50"
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"
+                    className="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-900"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>

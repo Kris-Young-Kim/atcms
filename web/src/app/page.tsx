@@ -24,8 +24,11 @@ export default function Home() {
 
   if (hasClerkKey && !isLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-600">로딩 중...</p>
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-primary-600"></div>
+          <p className="text-sm font-medium text-neutral-600">로딩 중...</p>
+        </div>
       </div>
     );
   }
@@ -51,13 +54,13 @@ export default function Home() {
           <div className="mt-10 flex justify-center gap-4">
             <Link
               href="/sign-in"
-              className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="btn btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 text-base"
             >
               로그인
             </Link>
             <Link
               href="/sign-up"
-              className="rounded-lg border-2 border-gray-300 bg-white px-8 py-3 text-base font-semibold text-gray-700 shadow-md transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="btn btn-secondary inline-flex items-center justify-center gap-2 px-8 py-3 text-base"
             >
               회원가입
             </Link>

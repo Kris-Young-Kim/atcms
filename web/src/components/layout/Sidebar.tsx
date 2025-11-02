@@ -70,14 +70,14 @@ export function Sidebar() {
   });
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white shadow-sm">
+    <aside className="flex h-screen w-64 flex-col border-r border-neutral-200 bg-white shadow-sm">
       {/* 로고 영역 */}
-      <div className="flex h-16 items-center border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 px-6">
+      <div className="flex h-16 items-center border-b border-neutral-200 bg-gradient-to-r from-primary-600 to-indigo-600 px-6">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 transition-transform hover:scale-105"
+          className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
         >
-          <div className="rounded-lg bg-white/20 p-1.5">
+          <div className="rounded-lg bg-white/20 p-1.5 backdrop-blur-sm">
             <span className="text-xl">🏥</span>
           </div>
           <span className="text-xl font-bold text-white">AT-CMP</span>
@@ -93,10 +93,10 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+              className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
                 isActive
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-gradient-to-r from-primary-600 to-indigo-600 text-white shadow-md hover:shadow-lg"
+                  : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 hover:shadow-sm active:bg-neutral-100"
               }`}
             >
               <span
@@ -105,16 +105,18 @@ export function Sidebar() {
                 {item.icon}
               </span>
               <span>{item.name}</span>
-              {isActive && <span className="ml-auto h-2 w-2 rounded-full bg-white"></span>}
+              {isActive && (
+                <span className="ml-auto h-2 w-2 rounded-full bg-white shadow-sm"></span>
+              )}
             </Link>
           );
         })}
       </nav>
 
       {/* 하단 정보 */}
-      <div className="border-t border-gray-200 bg-gray-50 p-4">
-        <p className="text-xs font-medium text-gray-600">AT-CMP v1.0.0</p>
-        <p className="mt-1 text-xs text-gray-500">보조공학 사례관리 플랫폼</p>
+      <div className="border-t border-neutral-200 bg-neutral-50 p-4">
+        <p className="text-xs font-medium text-neutral-600">AT-CMP v1.0.0</p>
+        <p className="mt-1 text-xs text-neutral-500">보조공학 사례관리 플랫폼</p>
       </div>
     </aside>
   );

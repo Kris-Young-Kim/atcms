@@ -1,49 +1,51 @@
 @import "tailwindcss";
 
 /**
- * AT-CMP 디자인 시스템
- * 전문적이고 신뢰감 있는 UI/UX를 위한 디자인 토큰
+ * AT-CMP 디자인 시스템 (Wishket 스타일 기반)
+ * 전문적이고 직관적인 UI/UX를 위한 디자인 토큰
  */
 
 :root {
-  /* 색상 시스템 */
+  /* 색상 시스템 - Wishket 스타일 */
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #1a1f2e;
 
-  /* Primary 색상 (신뢰감 있는 청색 계열) */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
-  --primary-900: #1e3a8a;
+  /* Primary 색상 (신뢰감 있는 청색, Wishket 스타일) */
+  --primary-50: #f0f7ff;
+  --primary-100: #e0efff;
+  --primary-200: #c7e0ff;
+  --primary-300: #a4c7ff;
+  --primary-400: #7ba5ff;
+  --primary-500: #4f7bff;
+  --primary-600: #3b5fff;
+  --primary-700: #2f47ff;
+  --primary-800: #2937e8;
+  --primary-900: #2531b8;
 
   /* Neutral 색상 (전문적인 회색 계열) */
-  --neutral-50: #f8fafc;
-  --neutral-100: #f1f5f9;
-  --neutral-200: #e2e8f0;
-  --neutral-300: #cbd5e1;
-  --neutral-400: #94a3b8;
-  --neutral-500: #64748b;
-  --neutral-600: #475569;
-  --neutral-700: #334155;
-  --neutral-800: #1e293b;
-  --neutral-900: #0f172a;
+  --neutral-50: #f8f9fa;
+  --neutral-100: #f1f3f5;
+  --neutral-200: #e9ecef;
+  --neutral-300: #dee2e6;
+  --neutral-400: #ced4da;
+  --neutral-500: #adb5bd;
+  --neutral-600: #868e96;
+  --neutral-700: #495057;
+  --neutral-800: #343a40;
+  --neutral-900: #1a1f2e;
 
   /* Success 색상 */
-  --success-50: #f0fdf4;
-  --success-100: #dcfce7;
-  --success-500: #22c55e;
-  --success-600: #16a34a;
-  --success-700: #15803d;
+  --success-50: #f0fdf5;
+  --success-100: #dcfce8;
+  --success-200: #bbf7d1;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
 
   /* Error 색상 */
   --error-50: #fef2f2;
   --error-100: #fee2e2;
+  --error-200: #fecaca;
   --error-500: #ef4444;
   --error-600: #dc2626;
   --error-700: #b91c1c;
@@ -51,26 +53,96 @@
   /* Warning 색상 */
   --warning-50: #fffbeb;
   --warning-100: #fef3c7;
+  --warning-200: #fde68a;
   --warning-500: #f59e0b;
   --warning-600: #d97706;
 
-  /* 그림자 시스템 */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  /* 그림자 시스템 (깔끔하고 부드러운 그림자) */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
 
-  /* 전환 효과 */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* 전환 효과 (부드럽고 즉각적인 피드백) */
+  --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 간격 시스템 (8px 기준) */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+
+  /* 타이포그래피 */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+
+  /* 테두리 반경 */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-full: 9999px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-family-base);
+  --font-mono: var(--font-family-mono);
+  
+  /* Primary 색상 */
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  
+  /* Neutral 색상 */
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  
+  /* Success 색상 */
+  --color-success-50: var(--success-50);
+  --color-success-100: var(--success-100);
+  --color-success-200: var(--success-200);
+  --color-success-500: var(--success-500);
+  --color-success-600: var(--success-600);
+  --color-success-700: var(--success-700);
+  
+  /* Error 색상 */
+  --color-error-50: var(--error-50);
+  --color-error-100: var(--error-100);
+  --color-error-200: var(--error-200);
+  --color-error-500: var(--error-500);
+  --color-error-600: var(--error-600);
+  --color-error-700: var(--error-700);
+  
+  /* Warning 색상 */
+  --color-warning-50: var(--warning-50);
+  --color-warning-100: var(--warning-100);
+  --color-warning-200: var(--warning-200);
+  --color-warning-500: var(--warning-500);
+  --color-warning-600: var(--warning-600);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -83,43 +155,39 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family:
-    var(--font-geist-sans),
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-  font-feature-settings:
-    "rlig" 1,
-    "calt" 1;
+  font-family: var(--font-family-base);
+  font-feature-settings: "rlig" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* 스크롤바 스타일링 */
+/* 스크롤바 스타일링 (더 세련된 디자인) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--neutral-100);
+  background: var(--neutral-50);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--neutral-300);
-  border-radius: 4px;
+  border-radius: 10px;
+  border: 2px solid var(--neutral-50);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neutral-400);
 }
 
-/* 포커스 아웃라인 개선 */
+/* 포커스 아웃라인 개선 (접근성 및 명확한 피드백) */
 :focus-visible {
   outline: 2px solid var(--primary-500);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 /* 선택 텍스트 스타일 */
@@ -128,11 +196,11 @@ body {
   color: var(--primary-900);
 }
 
-/* 애니메이션 */
+/* 애니메이션 (부드럽고 자연스러운 움직임) */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-4px);
   }
   to {
     opacity: 1;
@@ -143,7 +211,7 @@ body {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-8px);
   }
   to {
     opacity: 1;
@@ -151,40 +219,271 @@ body {
   }
 }
 
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn var(--transition-smooth) ease-out;
 }
 
 .animate-slide-in {
-  animation: slideIn 0.3s ease-out;
+  animation: slideIn var(--transition-smooth) ease-out;
 }
 
-/* 유틸리티 클래스 */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.animate-scale-in {
+  animation: scaleIn var(--transition-base) ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 유틸리티 클래스 - Wishket 스타일 */
+
+/* 카드 스타일 */
+.card {
+  background: var(--background);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
 }
 
 .card-hover {
   transition: all var(--transition-base);
+  cursor: pointer;
 }
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
+  border-color: var(--neutral-300);
 }
 
-.button-primary {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
-  transition: all var(--transition-base);
+.card-hover:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
-.button-primary:hover {
-  background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+/* 버튼 스타일 - 명확한 상태 피드백 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: var(--primary-600);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-700);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--primary-800);
+  box-shadow: var(--shadow-xs);
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--neutral-700);
+  border-color: var(--neutral-300);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--neutral-50);
+  border-color: var(--neutral-400);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: var(--neutral-100);
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--neutral-700);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--neutral-50);
+  color: var(--neutral-900);
+}
+
+.btn-ghost:active:not(:disabled) {
+  background: var(--neutral-100);
+}
+
+/* 입력 필드 스타일 */
+.input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgb(59 95 255 / 0.1);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--neutral-400);
+}
+
+.input:disabled {
+  background: var(--neutral-50);
+  color: var(--neutral-500);
+  cursor: not-allowed;
+}
+
+/* 링크 스타일 */
+.link {
+  color: var(--primary-600);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
+}
+
+.link:active {
+  color: var(--primary-800);
+}
+
+/* 배지/태그 스타일 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.badge-primary {
+  background: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.badge-success {
+  background: var(--success-100);
+  color: var(--success-700);
+}
+
+.badge-error {
+  background: var(--error-100);
+  color: var(--error-700);
+}
+
+.badge-neutral {
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+/* 로딩 스피너 */
+.spinner {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--neutral-200);
+  border-top-color: var(--primary-600);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 유틸리티 - 그림자 */
+.shadow-elevation-1 {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-elevation-2 {
   box-shadow: var(--shadow-md);
 }
 
-.button-primary:active {
+.shadow-elevation-3 {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-elevation-4 {
+  box-shadow: var(--shadow-xl);
+}
+
+/* 유틸리티 - 호버 효과 */
+.hover-lift {
+  transition: transform var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-scale {
+  transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-scale:active {
   transform: scale(0.98);
 }
