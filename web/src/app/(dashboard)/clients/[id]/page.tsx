@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ConsultationTimeline } from "@/components/clients/ConsultationTimeline";
+import { AssessmentTimeline } from "@/components/clients/AssessmentTimeline";
 import type { Client } from "@/lib/validations/client";
 
 /**
@@ -23,7 +24,7 @@ export default function ClientDetailPage() {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "consultations">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "consultations" | "assessments">("overview");
 
   const clientId = params.id as string;
   const canEdit = hasRole(["admin", "leader", "specialist"]);
@@ -169,6 +170,17 @@ export default function ClientDetailPage() {
             >
               상담 기록
             </button>
+            <button
+              onClick={() => setActiveTab("assessments")}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "assessments"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+              aria-current={activeTab === "assessments" ? "page" : undefined}
+            >
+              평가 기록
+            </button>
           </nav>
         </div>
 
@@ -271,6 +283,13 @@ export default function ClientDetailPage() {
           <ConsultationTimeline
             clientId={clientId}
             onCreateNew={() => router.push(`/clients/${clientId}/consultations/new`)}
+          />
+        )}
+
+        {activeTab === "assessments" && (
+          <AssessmentTimeline
+            clientId={clientId}
+            onCreateNew={() => router.push(`/clients/${clientId}/assessments/new`)}
           />
         )}
       </div>
