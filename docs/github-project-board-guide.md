@@ -19,8 +19,9 @@ GitHub Projects를 사용하여 칸반 보드를 생성하고 자동화 규칙�
 2. 상단 메뉴에서 **Projects** 클릭
 3. **New project** 클릭
 4. **Board** 템플릿 선택
-5. 프로젝트 이름 입력: `AT-CMP Project Board`
-6. **Create** 클릭
+5. 프로젝트 이름 입력: `AT-CMP (ATCMP-2026)`
+6. **Description** 입력: `AT-CMP 프로젝트 관리 보드`
+7. **Create** 클릭
 
 ### 1.2 칼럼 설정
 

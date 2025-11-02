@@ -94,6 +94,11 @@ pnpm dev
 - [스프린트 리뷰 템플릿](./docs/sprint-review-template.md)
 - [기술 회의 템플릿](./docs/technical-meeting-template.md)
 - [회의록 템플릿](./docs/meeting-notes-template.md)
+- [Notion 프로젝트 설정 가이드](./docs/notion-project-setup-guide.md)
+- [GitHub 프로젝트 보드 설정 가이드](./docs/github-project-board-guide.md)
+- [위험 로그 템플릿](./docs/risk-log-template.md)
+- [일일 리포트 템플릿](./docs/daily-report-template.md)
+- [주간 리포트 템플릿](./docs/weekly-report-template.md)
 
 ## 🌿 브랜치 전략
 
