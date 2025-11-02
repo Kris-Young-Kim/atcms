@@ -4,49 +4,53 @@ Sprint 1 개발 시 반드시 준수해야 할 보안 규칙입니다.
 
 ## 1. 데이터베이스 보안
 
-### ✅ RLS (Row Level Security) 정책 필수
+### ✅ 애플리케이션 레벨 접근 제어
 
-모든 테이블에 RLS 정책을 적용해야 합니다.
+**중요**: 이 프로젝트는 Supabase RLS를 사용하지 않습니다. 모든 접근 제어는 애플리케이션 레벨에서 처리합니다.
 
 **체크리스트:**
-- [ ] `clients` 테이블 RLS 활성화
-- [ ] `service_records` 테이블 RLS 활성화
-- [ ] `audit_logs` 테이블 RLS 활성화 (admin만 읽기)
+- [x] Clerk 인증 시스템 구현 ✅
+- [x] ProtectedRoute 컴포넌트 구현 ✅
+- [x] API Route에서 역할 검증 ✅
+- [ ] 모든 API Route에 역할 검증 미들웨어 적용
 - [ ] 역할별 접근 권한 매트릭스 문서화
-- [ ] RLS 정책 테스트 (각 역할로 실제 쿼리 실행)
 
-**예시 RLS 정책:**
-```sql
--- clients 테이블: admin/leader/specialist는 모두 조회/수정, socialWorker는 조회만
-ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+**접근 제어 패턴:**
+```typescript
+// 페이지 레벨 보호
+<ProtectedRoute requiredRole={['admin', 'leader', 'specialist']}>
+  <ClientForm />
+</ProtectedRoute>
 
-CREATE POLICY "Admin full access" ON clients
-  FOR ALL
-  TO authenticated
-  USING (auth.jwt() ->> 'role' = 'admin');
-
-CREATE POLICY "Staff read access" ON clients
-  FOR SELECT
-  TO authenticated
-  USING (auth.jwt() ->> 'role' IN ('leader', 'specialist', 'socialWorker'));
-
-CREATE POLICY "Staff update access" ON clients
-  FOR UPDATE
-  TO authenticated
-  USING (auth.jwt() ->> 'role' IN ('leader', 'specialist'));
+// API Route 레벨 보호
+export async function POST(request: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  
+  const userRole = await getUserRole(userId);
+  if (!['admin', 'leader', 'specialist'].includes(userRole)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+  
+  // 비즈니스 로직 처리
+}
 ```
 
-### ✅ Service Role Key 사용 제한
+### ✅ Service Role Key 사용
 
-`SUPABASE_SERVICE_ROLE_KEY`는 RLS를 우회하므로 극히 제한적으로만 사용해야 합니다.
+`SUPABASE_SERVICE_ROLE_KEY`는 서버 사이드에서만 사용하며, 감사 로그 등 시스템 작업에 제한적으로 사용합니다.
 
 **허용되는 경우:**
+- 감사 로그 기록 (auditLogger)
 - 시스템 자동화 작업 (배치, 스케줄러)
 - 관리자 전용 백오피스 API
 
 **금지되는 경우:**
 - 일반 사용자 API에서 사용
 - 브라우저 클라이언트에 노출
+- 클라이언트 컴포넌트에서 사용
 
 ---
 
@@ -288,7 +292,7 @@ try {
 
 - [ ] 스프린트 종료 시 이 체크리스트 전체 검토
 - [ ] 신규 API는 코드 리뷰 시 보안 항목 필수 확인
-- [ ] RLS 정책 테스트 자동화 (가능한 경우)
+- [ ] 역할 기반 접근 제어 테스트 자동화
 - [ ] 의존성 보안 업데이트 (`pnpm audit`)
 
 ---
@@ -296,7 +300,7 @@ try {
 ## 참고 자료
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [Supabase Security Best Practices](https://supabase.com/docs/guides/auth/row-level-security)
+- [Supabase Security Best Practices](https://supabase.com/docs/guides/database/postgres/security)
 - [Clerk Security](https://clerk.com/docs/security)
 - [Next.js Security](https://nextjs.org/docs/app/building-your-application/configuring/security)
 

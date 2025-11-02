@@ -1,6 +1,8 @@
-# AT-Care 인증 및 역할 관리
+# AT-CMP 인증 및 역할 관리
 
-Clerk 기반 인증 시스템과 Supabase RLS 연동 방법을 설명합니다.
+Clerk 기반 인증 시스템과 애플리케이션 레벨 접근 제어를 설명합니다.
+
+**중요**: 이 프로젝트는 Supabase RLS를 사용하지 않습니다. 모든 접근 제어는 애플리케이션 레벨에서 처리합니다.
 
 ## 역할 정의
 
@@ -79,42 +81,9 @@ Clerk Dashboard → **JWT Templates** → **Supabase** 템플릿 생성:
 
 ---
 
-## Supabase RLS 연동
+## 접근 제어 매트릭스
 
-### 1. JWT Claims 설정
-
-Supabase Dashboard → **Authentication** → **Settings** → **JWT Settings**
-
-Clerk의 JWKS URL을 등록:
-```
-https://clerk.your-app.com/.well-known/jwks.json
-```
-
-### 2. RLS 정책 패턴
-
-모든 RLS 정책은 JWT에서 역할을 읽어 권한을 확인합니다:
-
-```sql
--- Admin 전체 접근 예시
-CREATE POLICY "Admin full access on table_name"
-  ON table_name
-  FOR ALL
-  TO authenticated
-  USING (
-    (current_setting('request.jwt.claims', true)::json->>'role')::text = 'admin'
-  );
-
--- Specialist 읽기 예시
-CREATE POLICY "Specialist read access on table_name"
-  ON table_name
-  FOR SELECT
-  TO authenticated
-  USING (
-    (current_setting('request.jwt.claims', true)::json->>'role')::text IN ('admin', 'leader', 'specialist')
-  );
-```
-
-### 3. 테이블별 RLS 정책
+애플리케이션 레벨에서 적용되는 역할별 접근 권한:
 
 | 테이블           | Admin | Leader | Specialist | SocialWorker | Technician |
 | ---------------- | ----- | ------ | ---------- | ------------ | ---------- |
@@ -126,6 +95,11 @@ CREATE POLICY "Specialist read access on table_name"
 | audit_logs       | R     | -      | -          | -            | -          |
 
 *Specialist는 본인이 작성한 기록만 수정 가능
+
+**접근 제어 구현 위치:**
+- 페이지 레벨: `ProtectedRoute` 컴포넌트 사용
+- API Route 레벨: `auth()` 헬퍼로 역할 검증
+- UI 레벨: 조건부 렌더링으로 버튼/메뉴 표시 제어
 
 ---
 
@@ -289,31 +263,15 @@ export default function NewClientPage() {
 
 - [ ] Clerk Dashboard에 5개 역할 모두 등록
 - [ ] JWT 템플릿에 `role` 필드 포함
-- [ ] Supabase JWT Claims에 Clerk JWKS URL 등록
-- [ ] 모든 테이블에 RLS 정책 적용
-- [ ] API Route에서 역할 검증
+- [ ] 모든 API Route에서 역할 검증 구현
+- [ ] 모든 보호된 페이지에 ProtectedRoute 적용
 - [ ] 클라이언트 UI에서 역할별 조건부 렌더링
-- [ ] Protected Route HOC 구현 및 적용
 - [ ] 각 역할로 실제 로그인해서 권한 테스트
+- [ ] 감사 로그에 권한 위반 시도 기록
 
 ---
 
 ## 문제 해결
-
-### "RLS 정책이 적용되지 않아요"
-
-1. Supabase에서 RLS가 활성화되었는지 확인:
-   ```sql
-   SELECT tablename, rowsecurity FROM pg_tables 
-   WHERE schemaname = 'public';
-   ```
-
-2. JWT에 role 필드가 포함되어 있는지 확인 (Clerk Dashboard → JWT Templates)
-
-3. Supabase에서 JWT를 올바르게 파싱하는지 확인:
-   ```sql
-   SELECT current_setting('request.jwt.claims', true)::json;
-   ```
 
 ### "Clerk에서 역할이 설정되지 않아요"
 
@@ -335,11 +293,11 @@ export default function NewClientPage() {
 ## 참고 자료
 
 - [Clerk Roles Documentation](https://clerk.com/docs/organizations/roles-permissions)
-- [Supabase RLS Guide](https://supabase.com/docs/guides/auth/row-level-security)
 - [Next.js Clerk Integration](https://clerk.com/docs/quickstarts/nextjs)
+- [Next.js Authentication](https://nextjs.org/docs/app/building-your-application/authentication)
 
 ---
 
 _작성일: 2025-10-30_
-_최종 수정: 2025-10-30_
+_최종 수정: 2025-11-01 (RLS 제거, 애플리케이션 레벨 접근 제어로 변경)_
 
