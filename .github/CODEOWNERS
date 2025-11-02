@@ -1,0 +1,286 @@
+# CODEOWNERS
+
+**프로젝트 코드**: ATCMP-2026  
+**작성일**: 2025-11-01  
+**버전**: 1.0
+
+---
+
+## 📋 개요
+
+CODEOWNERS 파일은 파일/디렉토리별로 리뷰어를 자동으로 할당하는 GitHub 기능입니다.  
+이 파일을 통해 PR 생성 시 자동으로 적절한 리뷰어가 할당됩니다.
+
+**GitHub 공식 문서**: [CODEOWNERS 파일 정보](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
+
+---
+
+## 역할별 GitHub 사용자명
+
+**참고**: 실제 GitHub 사용자명으로 업데이트 필요
+
+- `@센터장` - 센터장 (PM)
+- `@팀장` - 팀장 (Dev Lead)
+- `@작업치료사` - 작업치료사 (Specialist)
+- `@보조공학사1` - 보조공학사 1 (Developer 1 - Frontend)
+- `@보조공학사2` - 보조공학사 2 (Developer 2 - Backend)
+- `@사회복지사` - 사회복지사 (SocialWorker)
+
+---
+
+## 파일/디렉토리별 리뷰어 지정
+
+### 프로젝트 루트 (전체)
+
+```
+# 프로젝트 전체 기본 리뷰어
+* @팀장 @센터장
+```
+
+### 문서 (docs/)
+
+```
+# 문서 관련
+/docs/ @팀장 @센터장
+```
+
+### 프론트엔드 (web/)
+
+```
+# 프론트엔드 전체
+/web/ @팀장 @보조공학사1
+
+# 프론트엔드 UI 컴포넌트
+/web/src/components/ @보조공학사1 @팀장
+
+# 프론트엔드 API Routes
+/web/src/app/api/ @보조공학사2 @팀장
+
+# 프론트엔드 설정 파일
+/web/*.config.* @팀장
+/web/package.json @팀장
+```
+
+### 백엔드/Database
+
+```
+# 마이그레이션 및 데이터베이스 스키마
+/supabase/ @보조공학사2 @팀장
+/migrations/ @보조공학사2 @팀장
+
+# API Routes
+/web/src/app/api/ @보조공학사2 @팀장
+```
+
+### 보안 관련
+
+```
+# 보안 설정 및 미들웨어
+/web/src/middleware.ts @팀장 @센터장
+/web/src/lib/auth/ @팀장 @센터장
+/docs/security-checklist.md @팀장 @센터장
+```
+
+### 프로젝트 관리
+
+```
+# 프로젝트 관리 문서
+/PROJECT_MANAGEMENT_SYSTEM.md @센터장 @팀장
+/TODO.md @센터장 @팀장
+/CONTRIBUTING.md @팀장
+```
+
+### CI/CD
+
+```
+# GitHub Actions 워크플로우
+/.github/workflows/ @팀장 @보조공학사2
+```
+
+### 설정 파일
+
+```
+# 의존성 관리
+/package.json @팀장
+/web/package.json @팀장
+/pnpm-workspace.yaml @팀장
+
+# 환경 설정
+/.env* @팀장 @센터장
+/web/.env* @팀장 @센터장
+```
+
+---
+
+## 사용 예시
+
+### 예시 1: 프론트엔드 컴포넌트 변경
+
+**파일**: `web/src/components/clients/ClientForm.tsx`
+
+**자동 할당 리뷰어**: `@보조공학사1`, `@팀장`
+
+### 예시 2: API Route 변경
+
+**파일**: `web/src/app/api/clients/route.ts`
+
+**자동 할당 리뷰어**: `@보조공학사2`, `@팀장`
+
+### 예시 3: 보안 관련 변경
+
+**파일**: `web/src/middleware.ts`
+
+**자동 할당 리뷰어**: `@팀장`, `@센터장`
+
+### 예시 4: 문서 변경
+
+**파일**: `docs/coding-standards.md`
+
+**자동 할당 리뷰어**: `@팀장`, `@센터장`
+
+---
+
+## 백업 리뷰어 설정
+
+파일 경로에 여러 사용자를 지정하면 순서대로 리뷰 요청됩니다:
+
+```
+# 주요 리뷰어: 보조공학사1, 백업 리뷰어: 팀장
+/web/src/components/ @보조공학사1 @팀장
+```
+
+**동작 방식**:
+- 첫 번째 사용자(`@보조공학사1`)가 리뷰를 할 수 없는 경우
+- 두 번째 사용자(`@팀장`)가 자동으로 리뷰 요청받음
+
+---
+
+## 특수 규칙
+
+### 모든 파일에 적용
+
+```
+# 모든 파일에 기본 리뷰어 할당
+* @팀장
+```
+
+### 제외 규칙
+
+```
+# 특정 파일/디렉토리 제외
+# (CODEOWNERS 파일은 제외 규칙을 직접 지원하지 않지만,
+#  더 구체적인 경로 규칙으로 우선순위 지정 가능)
+
+# 예: .gitignore는 모든 리뷰어
+/.gitignore @팀장 @보조공학사1 @보조공학사2
+```
+
+### 우선순위
+
+CODEOWNERS 파일은 **위에서 아래로** 순서대로 매칭됩니다.  
+더 구체적인 경로 규칙을 먼저 작성하고, 일반적인 규칙을 나중에 작성하세요.
+
+**예시**:
+```
+# 구체적인 규칙 (먼저 작성)
+/web/src/app/api/clients/ @보조공학사2 @팀장
+
+# 일반적인 규칙 (나중에 작성)
+/web/src/app/api/ @보조공학사2 @팀장
+```
+
+---
+
+## 설정 방법
+
+### 1. CODEOWNERS 파일 생성
+
+`.github/CODEOWNERS` 파일을 생성하고 위의 규칙을 작성합니다.
+
+### 2. GitHub 저장소 설정
+
+1. GitHub 저장소 → Settings → Branches
+2. Branch protection rules에서 보호할 브랜치 선택 (main, develop)
+3. "Require review from Code Owners" 옵션 활성화
+
+### 3. 리뷰어 자동 할당 활성화
+
+1. GitHub 저장소 → Settings → Pull requests
+2. "Pull request reviews" 섹션에서 자동 할당 설정 확인
+
+---
+
+## 주의사항
+
+### 1. GitHub 사용자명 업데이트
+
+현재 파일에는 역할 이름(`@팀장`, `@보조공학사1` 등)이 사용되었습니다.  
+실제 GitHub 사용자명으로 업데이트해야 합니다.
+
+**예시**:
+```
+# 변경 전
+/web/ @보조공학사1 @팀장
+
+# 변경 후 (실제 GitHub 사용자명 사용)
+/web/ @github-username-dev1 @github-username-lead
+```
+
+### 2. 팀 구성 변경 시 업데이트
+
+팀 구성이 변경되면 CODEOWNERS 파일도 함께 업데이트해야 합니다.
+
+### 3. 빈 리뷰어 목록
+
+리뷰어가 없는 경우 PR이 블로킹될 수 있습니다.  
+항상 최소 1명 이상의 리뷰어를 지정하세요.
+
+---
+
+## 업데이트 방법
+
+### 1. 역할 추가
+
+새로운 역할이 추가되면 해당 섹션에 추가:
+
+```
+# 새로운 역할 추가
+/web/src/new-feature/ @새로운역할 @팀장
+```
+
+### 2. 역할 변경
+
+역할이 변경되면 해당 라인 수정:
+
+```
+# 변경 전
+/web/src/components/ @보조공학사1 @팀장
+
+# 변경 후
+/web/src/components/ @새로운담당자 @팀장
+```
+
+### 3. 규칙 추가
+
+새로운 파일/디렉토리 규칙 추가:
+
+```
+# 새로운 규칙 추가
+/web/src/new-directory/ @담당자 @팀장
+```
+
+---
+
+## 참고 자료
+
+- [GitHub CODEOWNERS 문서](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
+- [조직도](./organization-chart.md)
+- [프로젝트 관리 시스템](../PROJECT_MANAGEMENT_SYSTEM.md)
+
+---
+
+**마지막 업데이트**: 2025-11-01  
+**다음 검토일**: 2026-02-01
+
+**참고**: 실제 GitHub 사용자명으로 업데이트 후 사용하세요.
+
