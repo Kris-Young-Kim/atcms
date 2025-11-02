@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import { EquipmentTable } from "@/components/equipment/EquipmentTable";
+import { EquipmentStatusChart } from "@/components/equipment/EquipmentStatusChart";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { debounce } from "@/lib/utils/debounce";
