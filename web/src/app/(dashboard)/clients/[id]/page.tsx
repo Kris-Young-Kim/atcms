@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { ConsultationTimeline } from "@/components/clients/ConsultationTimeline";
 import type { Client } from "@/lib/validations/client";
 
 /**
  * 대상자 상세 페이지
+ * Sprint 1: CMS-US-02
  */
 
 export default function ClientDetailPage() {
@@ -21,6 +23,7 @@ export default function ClientDetailPage() {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "consultations">("overview");
 
   const clientId = params.id as string;
   const canEdit = hasRole(["admin", "leader", "specialist"]);
@@ -141,90 +144,134 @@ export default function ClientDetailPage() {
           </div>
         </div>
 
-        {/* 기본 정보 */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">기본 정보</h2>
-          <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">이름</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.name}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">생년월일</dt>
-              <dd className="mt-1 text-sm text-gray-900">
-                {client.birth_date ? new Date(client.birth_date).toLocaleDateString("ko-KR") : "-"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">성별</dt>
-              <dd className="mt-1 text-sm text-gray-900">
-                {client.gender === "male" ? "남성" : client.gender === "female" ? "여성" : client.gender || "-"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">의뢰 경로</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.referral_source || "-"}</dd>
-            </div>
-          </dl>
+        {/* 탭 네비게이션 */}
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "overview"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+              aria-current={activeTab === "overview" ? "page" : undefined}
+            >
+              개요
+            </button>
+            <button
+              onClick={() => setActiveTab("consultations")}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "consultations"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+              aria-current={activeTab === "consultations" ? "page" : undefined}
+            >
+              상담 기록
+            </button>
+          </nav>
         </div>
 
-        {/* 장애 정보 */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">장애 정보</h2>
-          <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">장애 유형</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.disability_type || "-"}</dd>
+        {/* 탭 내용 */}
+        {activeTab === "overview" && (
+          <div className="space-y-6">
+            {/* 기본 정보 */}
+            <div className="rounded-lg border border-gray-200 bg-white p-6">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">기본 정보</h2>
+              <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">이름</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.name}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">생년월일</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {client.birth_date ? new Date(client.birth_date).toLocaleDateString("ko-KR") : "-"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">성별</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {client.gender === "male"
+                      ? "남성"
+                      : client.gender === "female"
+                        ? "여성"
+                        : client.gender || "-"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">의뢰 경로</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.referral_source || "-"}</dd>
+                </div>
+              </dl>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">장애 등급</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.disability_grade || "-"}</dd>
-            </div>
-          </dl>
-        </div>
 
-        {/* 연락처 정보 */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">연락처 정보</h2>
-          <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">전화번호</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.contact_phone || "-"}</dd>
+            {/* 장애 정보 */}
+            <div className="rounded-lg border border-gray-200 bg-white p-6">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">장애 정보</h2>
+              <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">장애 유형</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.disability_type || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">장애 등급</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.disability_grade || "-"}</dd>
+                </div>
+              </dl>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">이메일</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.contact_email || "-"}</dd>
-            </div>
-            <div className="md:col-span-2">
-              <dt className="text-sm font-medium text-gray-500">주소</dt>
-              <dd className="mt-1 text-sm text-gray-900">{client.address || "-"}</dd>
-            </div>
-          </dl>
-        </div>
 
-        {/* 보호자 정보 */}
-        {(client.guardian_name || client.guardian_phone) && (
-          <div className="rounded-lg border border-gray-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">보호자 정보</h2>
-            <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500">보호자 이름</dt>
-                <dd className="mt-1 text-sm text-gray-900">{client.guardian_name || "-"}</dd>
+            {/* 연락처 정보 */}
+            <div className="rounded-lg border border-gray-200 bg-white p-6">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">연락처 정보</h2>
+              <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">전화번호</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.contact_phone || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">이메일</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.contact_email || "-"}</dd>
+                </div>
+                <div className="md:col-span-2">
+                  <dt className="text-sm font-medium text-gray-500">주소</dt>
+                  <dd className="mt-1 text-sm text-gray-900">{client.address || "-"}</dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* 보호자 정보 */}
+            {(client.guardian_name || client.guardian_phone) && (
+              <div className="rounded-lg border border-gray-200 bg-white p-6">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900">보호자 정보</h2>
+                <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">보호자 이름</dt>
+                    <dd className="mt-1 text-sm text-gray-900">{client.guardian_name || "-"}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">보호자 연락처</dt>
+                    <dd className="mt-1 text-sm text-gray-900">{client.guardian_phone || "-"}</dd>
+                  </div>
+                </dl>
               </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500">보호자 연락처</dt>
-                <dd className="mt-1 text-sm text-gray-900">{client.guardian_phone || "-"}</dd>
+            )}
+
+            {/* 메모 */}
+            {client.notes && (
+              <div className="rounded-lg border border-gray-200 bg-white p-6">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900">메모</h2>
+                <p className="whitespace-pre-wrap text-sm text-gray-900">{client.notes}</p>
               </div>
-            </dl>
+            )}
           </div>
         )}
 
-        {/* 메모 */}
-        {client.notes && (
-          <div className="rounded-lg border border-gray-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">메모</h2>
-            <p className="whitespace-pre-wrap text-sm text-gray-900">{client.notes}</p>
-          </div>
+        {activeTab === "consultations" && (
+          <ConsultationTimeline
+            clientId={clientId}
+            onCreateNew={() => router.push(`/clients/${clientId}/consultations/new`)}
+          />
         )}
       </div>
     </>
