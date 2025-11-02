@@ -11,9 +11,14 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
   
-  // 개발 환경에서는 임시 키를 사용하여 항상 Provider를 렌더링
-  // 프로덕션에서는 반드시 실제 키가 있어야 함
-  const effectiveKey = publishableKey || "pk_test_placeholder";
+  // Clerk 키가 없으면 Provider 없이 렌더링 (개발 모드)
+  if (!publishableKey || publishableKey === "pk_test_placeholder") {
+    console.warn(
+      "⚠️ Clerk Publishable Key가 설정되지 않았습니다. " +
+      "인증 기능을 사용하려면 .env.local에 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY를 설정하세요."
+    );
+    return <>{children}</>;
+  }
   
-  return <ClerkProvider publishableKey={effectiveKey}>{children}</ClerkProvider>;
+  return <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;
 }

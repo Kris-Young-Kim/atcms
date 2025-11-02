@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
 import { clientSchema, type ClientFormData } from "@/lib/validations/client";
@@ -29,6 +30,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
     handleSubmit,
     formState: { errors },
   } = useForm<ClientFormData>({
+    resolver: zodResolver(clientSchema),
     defaultValues: initialData,
   });
 
@@ -36,11 +38,9 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
     setIsSubmitting(true);
 
     try {
-      // Zod 검증
-      const validated = clientSchema.parse(data);
-
+      // zodResolver가 이미 검증했으므로 추가 검증 불필요
       auditLogger.info(`client_form_submitted_${mode}`, {
-        metadata: { clientName: validated.name, clientId },
+        metadata: { clientName: data.name, clientId },
       });
 
       // API 호출
@@ -52,7 +52,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(validated),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {

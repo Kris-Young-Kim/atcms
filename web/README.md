@@ -48,7 +48,7 @@ pnpm format    # Prettier 2-space / 100자 규칙
 
 - 들여쓰기 2스페이스, 최대 라인 길이 100자 (Prettier + ESLint로 강제)
 - 핵심 기능(등록, 수정, 상태 변경 등)에는 반드시 `auditLogger.info/error` 호출
-- 모든 신규 API는 Zod 검증과 Supabase RLS 규칙을 준수
+- 모든 신규 API는 Zod 검증과 애플리케이션 레벨 접근 제어를 준수
 - 테스트는 Jest/RTL을 사용하며 최소 70% 커버리지를 목표로 합니다.
 
 ## 6. 다음 단계

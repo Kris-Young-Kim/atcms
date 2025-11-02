@@ -2,21 +2,42 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useUser();
+  const [hasClerkKey, setHasClerkKey] = useState(true);
+  
+  // Clerk 키 존재 여부 확인
+  useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+    setHasClerkKey(!!key && key !== "pk_test_placeholder");
+  }, []);
+
+  // Clerk가 설정된 경우에만 useUser 훅 사용
+  let isLoaded = true;
+  let isSignedIn = false;
+  
+  if (hasClerkKey) {
+    try {
+      const user = useUser();
+      isLoaded = user.isLoaded;
+      isSignedIn = user.isSignedIn;
+    } catch (error) {
+      // Clerk Provider가 없는 경우 무시
+      console.log("Clerk not available");
+    }
+  }
 
   useEffect(() => {
     // 로그인 상태이면 대시보드로 리디렉션
-    if (isLoaded && isSignedIn) {
+    if (hasClerkKey && isLoaded && isSignedIn) {
       router.push("/dashboard");
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [hasClerkKey, isLoaded, isSignedIn, router]);
 
-  if (!isLoaded) {
+  if (hasClerkKey && !isLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-gray-600">로딩 중...</p>

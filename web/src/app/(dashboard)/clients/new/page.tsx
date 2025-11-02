@@ -1,4 +1,7 @@
+"use client";
+
 import { ClientForm } from "@/components/clients/ClientForm";
+import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 
 /**
  * 대상자 등록 페이지
@@ -7,7 +10,23 @@ import { ClientForm } from "@/components/clients/ClientForm";
  * 접근 권한: admin, leader, specialist만 가능
  */
 
-export default function NewClientPage() {
+function NewClientPageContent() {
+  const { hasRole } = useUserRole();
+  const canCreate = hasRole(["admin", "leader", "specialist"]);
+
+  if (!canCreate) {
+    return (
+      <div className="mx-auto max-w-4xl">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+          <h2 className="text-lg font-semibold text-red-800">접근 권한이 없습니다</h2>
+          <p className="mt-2 text-sm text-red-600">
+            대상자 등록은 관리자, 팀장, 전문가만 가능합니다.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
@@ -20,6 +39,14 @@ export default function NewClientPage() {
 
       <ClientForm />
     </div>
+  );
+}
+
+export default function NewClientPage() {
+  return (
+    <ProtectedRoute requiredRole={["admin", "leader", "specialist"]}>
+      <NewClientPageContent />
+    </ProtectedRoute>
   );
 }
 

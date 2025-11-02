@@ -1,0 +1,20 @@
+{
+  "node": {
+    "7fc61902acd7b352b89dd86bfe0a8a04d007b050c4": {
+      "workers": {
+        "app/_not-found/page": {
+          "moduleId": "[project]/web/.next-internal/server/app/_not-found/page/actions.js { ACTIONS_MODULE0 => \"[project]/node_modules/.pnpm/@clerk+nextjs@5.4.1_next@16_595a90fac1536fe191038e5190c49c26/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "invalidateCacheAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@5.4.1_next@16_595a90fac1536fe191038e5190c49c26/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
+        }
+      },
+      "layer": {
+        "app/_not-found/page": "action-browser"
+      },
+      "exportedName": "invalidateCacheAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@5.4.1_next@16_595a90fac1536fe191038e5190c49c26/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
+    }
+  },
+  "edge": {}
+}

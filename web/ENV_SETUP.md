@@ -27,7 +27,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://프로젝트아이디.supabase.co
 # Public Anon Key (필수)
 NEXT_PUBLIC_SUPABASE_ANON_KEY=여기에실제anon키입력
 
-# Service Role Key - 서버 전용, RLS 우회 가능 (필수)
+# Service Role Key - 서버 전용, 감사 로그 등 시스템 작업에 사용 (필수)
 SUPABASE_SERVICE_ROLE_KEY=여기에실제service_role키입력
 ```
 
