@@ -16,6 +16,9 @@ export const scheduleSchema = z.object({
   customization_request_id: z.string().uuid().optional().nullable(),
   description: z.string().max(5000).optional(),
   location: z.string().max(500).optional(),
+  
+  // 평가 일정 전용 필드 (schedule_type이 'assessment'인 경우 사용)
+  assessment_type: z.enum(["functional", "environmental", "needs"]).optional(),
 
   // 일정 시간
   start_time: z
@@ -88,6 +91,7 @@ export const scheduleFilterSchema = z.object({
   status: z.enum(["scheduled", "completed", "cancelled", "no_show", "all"]).default("all"),
   start_date: z.string().datetime().optional(), // 시작 날짜 필터 (이 날짜 이후)
   end_date: z.string().datetime().optional(), // 종료 날짜 필터 (이 날짜 이전)
+  assessment_type: z.enum(["functional", "environmental", "needs"]).optional(), // 평가 유형 필터 (assessment 일정만)
   page: z.number().int().positive().default(1),
   limit: z.number().int().positive().max(100).default(25),
 });

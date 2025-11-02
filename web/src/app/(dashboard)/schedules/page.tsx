@@ -6,6 +6,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { debounce } from "@/lib/utils/debounce";
+import { useScheduleReminders } from "@/hooks/useScheduleReminders";
 import type { Schedule } from "@/lib/validations/schedule";
 
 /**
@@ -31,6 +32,9 @@ export default function SchedulesPage() {
     total: 0,
     totalPages: 0,
   });
+
+  // 일정 리마인더 알림 활성화
+  useScheduleReminders(schedules);
 
   const filters = useMemo(() => {
     return {
@@ -125,12 +129,20 @@ export default function SchedulesPage() {
             전체 {pagination.total}개의 일정을 조회하고 관리할 수 있습니다.
           </p>
         </div>
-        <Link
-          href="/schedules/new"
-          className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          + 새 일정 등록
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/schedules/calendar"
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            📅 캘린더 보기
+          </Link>
+          <Link
+            href="/schedules/new"
+            className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            + 새 일정 등록
+          </Link>
+        </div>
       </div>
 
       {/* 필터 */}

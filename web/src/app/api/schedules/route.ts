@@ -172,6 +172,7 @@ export async function POST(request: Request) {
  * - `status`: 상태 필터 (`scheduled`, `completed`, `cancelled`, `no_show`, `all`)
  * - `start_date`: 시작 날짜 필터 (이 날짜 이후)
  * - `end_date`: 종료 날짜 필터 (이 날짜 이전)
+ * - `assessment_type`: 평가 유형 필터 (`functional`, `environmental`, `needs`) - assessment 일정만 적용
  * - `page`: 페이지 번호 (기본값: 1)
  * - `limit`: 페이지당 항목 수 (기본값: 25)
  */
@@ -192,6 +193,7 @@ export async function GET(request: Request) {
       status: (searchParams.get("status") as ScheduleFilter["status"]) || "all",
       start_date: searchParams.get("start_date") || undefined,
       end_date: searchParams.get("end_date") || undefined,
+      assessment_type: searchParams.get("assessment_type") || undefined,
       page: parseInt(searchParams.get("page") || "1", 10),
       limit: parseInt(searchParams.get("limit") || "25", 10),
     };
@@ -237,6 +239,13 @@ export async function GET(request: Request) {
 
     if (validatedFilter.end_date) {
       query = query.lte("end_time", validatedFilter.end_date);
+    }
+
+    // 평가 일정 전용 필터: 평가 유형별 조회 (description 필드의 JSON에서 평가 유형 추출)
+    if (validatedFilter.assessment_type && validatedFilter.schedule_type === "assessment") {
+      // 평가 일정인 경우에만 평가 유형 필터 적용
+      // description 필드에 JSON으로 저장된 assessment_type 검색
+      query = query.like("description", `%"assessment_type":"${validatedFilter.assessment_type}"%`);
     }
 
     // 정렬: 시작 시간 기준 오름차순 (가까운 일정부터)

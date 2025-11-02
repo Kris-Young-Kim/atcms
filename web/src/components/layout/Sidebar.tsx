@@ -46,6 +46,18 @@ const navItems: NavItem[] = [
     icon: "🔧",
     allowedRoles: ["admin", "leader", "technician"],
   },
+  {
+    name: "일정 관리",
+    href: "/schedules",
+    icon: "📅",
+    allowedRoles: ["admin", "leader", "specialist", "technician", "socialWorker"],
+  },
+  {
+    name: "알림 설정",
+    href: "/settings/notifications",
+    icon: "🔔",
+    allowedRoles: ["admin", "leader", "specialist", "technician", "socialWorker"],
+  },
 ];
 
 export function Sidebar() {
