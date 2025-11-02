@@ -286,14 +286,7 @@ function ScheduleTabPanel({
   onSaveSuccess,
 }: ScheduleTabPanelProps) {
   if (activeTab === "edit" && canEdit) {
-    return (
-      <ScheduleForm
-        scheduleId={scheduleId}
-        initialData={schedule}
-        onSuccess={onSaveSuccess}
-        onCancel={onCloseEdit}
-      />
-    );
+    return <ScheduleForm scheduleId={scheduleId} initialData={schedule} mode="edit" />;
   }
 
   return (
