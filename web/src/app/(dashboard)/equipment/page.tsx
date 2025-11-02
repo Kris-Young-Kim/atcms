@@ -230,6 +230,15 @@ export default function EquipmentPage() {
           </div>
         </div>
 
+        {/* 기기 상태 차트 */}
+        <EquipmentStatusChart
+          data={{
+            normal: equipment.filter((eq) => eq.status === "normal").length,
+            maintenance: equipment.filter((eq) => eq.status === "maintenance").length,
+            retired: equipment.filter((eq) => eq.status === "retired").length,
+          }}
+        />
+
         {/* 기기 목록 테이블 */}
         <EquipmentTable
           equipment={equipment}
