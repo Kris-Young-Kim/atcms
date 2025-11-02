@@ -661,7 +661,7 @@
 
 - [x] package.json 의존성 정리 및 버전 고정 ✅ (web/package.json 완료)
 - [x] pnpm workspace 설정 확인 ✅ (pnpm-workspace.yaml 존재)
-- [ ] 의존성 취약점 정기 점검 스크립트 설정
+- [x] ✅ 의존성 취약점 정기 점검 스크립트 설정 ✅ (package.json에 audit 스크립트 추가, CI/CD 통합 완료)
 - [x] 개발/프로덕션 의존성 분리 확인 ✅ (devDependencies 분리됨)
 
 ### 2.3 개발 환경 설정

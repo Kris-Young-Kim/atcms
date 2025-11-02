@@ -11,7 +11,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest --watch",
-    "test:ci": "jest --ci --coverage --maxWorkers=2"
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "audit": "pnpm audit --audit-level=moderate",
+    "audit:fix": "pnpm audit --fix",
+    "audit:report": "pnpm audit --json > audit-report.json"
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {

@@ -35,6 +35,10 @@ jobs:
       - name: Run type check
         run: pnpm --filter web type-check
 
+      - name: Check for security vulnerabilities
+        run: pnpm --filter web audit --audit-level=moderate
+        continue-on-error: true
+
       - name: Run tests
         run: pnpm --filter web test:ci
         env:
