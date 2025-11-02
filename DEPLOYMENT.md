@@ -65,6 +65,8 @@ vercel          # Preview 배포
 
 - **[배포 프로세스 가이드](./docs/deployment-process.md)**: 전체 배포 프로세스, 체크리스트, 롤백 절차
 - **[배포 파이프라인 설정 가이드](./docs/deployment-pipeline-setup.md)**: GitHub Actions 파이프라인 설정 방법
+- **[Vercel 배포 가이드](./docs/vercel-deployment-guide.md)**: Vercel Dashboard 설정 방법
+- **[Vercel Secrets 가이드](./docs/vercel-secrets-guide.md)**: 환경 변수 관리 방법
 - **[환경 변수 설정](./web/ENV_SETUP.md)**: 환경 변수 설정 가이드
 
 ---
