@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   const router = useRouter();
   // Clerk 키 존재 여부 확인 (렌더링 시점에 직접 확인)
