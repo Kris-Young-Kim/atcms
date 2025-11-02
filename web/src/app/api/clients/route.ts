@@ -205,8 +205,20 @@ export async function GET(request: Request) {
 
     const supabase = await createSupabaseServerClient();
 
+    // 활동 필터 파라미터 파싱
+    const activityTypesParam = searchParams.get("activityTypes");
+    const activityTypes = activityTypesParam
+      ? activityTypesParam
+          .split(",")
+          .map((type) => type.trim())
+          .filter(Boolean)
+      : [];
+    const minActivityCount = searchParams.get("minActivityCount");
+    const maxActivityCount = searchParams.get("maxActivityCount");
+    const activitySince = searchParams.get("activitySince");
+
     // 쿼리 빌더 초기화: count: "exact"로 전체 개수도 함께 조회
-    let query = supabase.from("clients").select("*", { count: "exact" });
+    let query = supabase.from("client_activity_overview").select("*", { count: "exact" });
 
     // 검색 조건 추가: 이름 또는 연락처에 검색어가 포함된 경우
     // ilike는 대소문자 구분 없는 부분 일치 검색
@@ -217,6 +229,41 @@ export async function GET(request: Request) {
     // 상태 필터 추가: "all"이 아닌 경우 특정 상태만 조회
     if (status !== "all") {
       query = query.eq("status", status);
+    }
+
+    // 활동 유형 필터: 선택된 유형이 있는 경우 각 유형별로 1개 이상 활동이 있는 대상자만 포함
+    activityTypes.forEach((type) => {
+      if (type === "consultation") {
+        query = query.gt("consultation_count", 0);
+      } else if (type === "assessment") {
+        query = query.gt("assessment_count", 0);
+      } else if (type === "rental") {
+        query = query.gt("active_rental_count", 0);
+      } else if (type === "customization") {
+        query = query.gt("active_customization_count", 0);
+      }
+    });
+
+    // 활동 총합 범위 필터
+    if (minActivityCount) {
+      const minValue = Number.parseInt(minActivityCount, 10);
+      if (!Number.isNaN(minValue)) {
+        query = query.gte("total_activity_count", minValue);
+      }
+    }
+    if (maxActivityCount) {
+      const maxValue = Number.parseInt(maxActivityCount, 10);
+      if (!Number.isNaN(maxValue)) {
+        query = query.lte("total_activity_count", maxValue);
+      }
+    }
+
+    // 최근 활동 필터 (해당 날짜 이후 활동이 있는 대상자)
+    if (activitySince) {
+      const sinceDate = new Date(activitySince);
+      if (!Number.isNaN(sinceDate.getTime())) {
+        query = query.gte("last_activity_at", sinceDate.toISOString());
+      }
     }
 
     // 정렬: sortBy 필드 기준으로 정렬 (asc 또는 desc)
@@ -242,8 +289,32 @@ export async function GET(request: Request) {
       metadata: { count, search, status, page },
     });
 
+    const clientsWithSummary = (data || []).map((client) => {
+      const {
+        consultation_count,
+        assessment_count,
+        active_rental_count,
+        active_customization_count,
+        total_activity_count,
+        last_activity_at,
+        ...rest
+      } = client as Record<string, unknown>;
+
+      return {
+        ...rest,
+        activity_summary: {
+          consultation_count: Number(consultation_count) || 0,
+          assessment_count: Number(assessment_count) || 0,
+          active_rental_count: Number(active_rental_count) || 0,
+          active_customization_count: Number(active_customization_count) || 0,
+          total_activity_count: Number(total_activity_count) || 0,
+          last_activity_at: (last_activity_at as string | null) ?? null,
+        },
+      };
+    });
+
     return NextResponse.json({
-      data: data || [],
+      data: clientsWithSummary,
       pagination: {
         page,
         limit,

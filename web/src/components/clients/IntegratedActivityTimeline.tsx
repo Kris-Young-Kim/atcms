@@ -19,9 +19,13 @@ interface Activity {
 
 interface IntegratedActivityTimelineProps {
   clientId: string;
+  initialFilterType?: string;
 }
 
-export function IntegratedActivityTimeline({ clientId }: IntegratedActivityTimelineProps) {
+export function IntegratedActivityTimeline({
+  clientId,
+  initialFilterType,
+}: IntegratedActivityTimelineProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>("all");
@@ -30,8 +34,28 @@ export function IntegratedActivityTimeline({ clientId }: IntegratedActivityTimel
     fetchActivities();
   }, [clientId, filterType]);
 
+  useEffect(() => {
+    if (!initialFilterType) {
+      return;
+    }
+
+    const allowedFilters = new Set([
+      "all",
+      "consultation",
+      "assessment",
+      "rental",
+      "customization",
+      "schedule",
+    ]);
+
+    if (allowedFilters.has(initialFilterType) && initialFilterType !== filterType) {
+      setFilterType(initialFilterType);
+    }
+  }, [filterType, initialFilterType]);
+
   async function fetchActivities() {
     try {
+      setLoading(true);
       const params = new URLSearchParams();
       if (filterType !== "all") {
         params.set("activity_type", filterType);

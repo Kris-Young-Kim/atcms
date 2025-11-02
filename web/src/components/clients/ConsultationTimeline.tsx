@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 import { useToast, ToastContainer } from "@/components/ui/Toast";
-import { auditLogger } from "@/lib/logger/auditLogger";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Consultation } from "@/lib/validations/consultation";
 import { parseTextToSOAP } from "@/lib/utils/soap-template";
 
@@ -25,12 +25,9 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmTargetId, setConfirmTargetId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchConsultations();
-  }, [clientId]);
-
-  async function fetchConsultations() {
+  const fetchConsultations = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/clients/${clientId}/consultations`);
@@ -40,27 +37,35 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
       } else {
         showError("상담 기록을 불러올 수 없습니다.");
       }
-    } catch (err) {
+    } catch {
       showError("상담 기록 조회 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
+  }, [clientId, showError]);
+
+  useEffect(() => {
+    void fetchConsultations();
+  }, [fetchConsultations]);
+
+  function requestDelete(consultationId: string) {
+    setConfirmTargetId(consultationId);
   }
 
-  async function handleDelete(consultationId: string) {
-    if (!confirm("정말 이 상담 기록을 삭제하시겠습니까?")) {
+  async function handleDelete() {
+    if (!confirmTargetId) {
       return;
     }
 
-    setDeletingId(consultationId);
+    setDeletingId(confirmTargetId);
     try {
-      const response = await fetch(`/api/clients/${clientId}/consultations/${consultationId}`, {
+      const response = await fetch(`/api/clients/${clientId}/consultations/${confirmTargetId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         success("상담 기록이 삭제되었습니다.");
-        fetchConsultations(); // 목록 새로고침
+        void fetchConsultations(); // 목록 새로고침
       } else {
         showError("상담 기록 삭제에 실패했습니다.");
       }
@@ -68,6 +73,7 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
       showError("상담 기록 삭제 중 오류가 발생했습니다.");
     } finally {
       setDeletingId(null);
+      setConfirmTargetId(null);
     }
   }
 
@@ -91,6 +97,19 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
   return (
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <ConfirmDialog
+        open={!!confirmTargetId}
+        title="상담 기록을 삭제하시겠습니까?"
+        description="삭제 후에는 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        loading={deletingId !== null}
+        onCancel={() => {
+          if (deletingId === null) {
+            setConfirmTargetId(null);
+          }
+        }}
+        onConfirm={handleDelete}
+      />
 
       <div className="space-y-6">
         {/* 헤더 */}
@@ -222,7 +241,7 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
                           수정
                         </Link>
                         <button
-                          onClick={() => handleDelete(consultation.id)}
+                          onClick={() => requestDelete(consultation.id)}
                           disabled={deletingId === consultation.id}
                           className="rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
                         >

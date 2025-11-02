@@ -69,7 +69,7 @@ Phase 10은 맞춤제작 관리 기능을 추가하고, 상담 기록, 평가 �
 **예상 소요 시간**: 5-6일  
 **담당자**: 개발 리더 + 개발자2
 
-**작업 내용**:
+**작업 내용** *(2025-11-02 업데이트: 반복 일정 구조 및 문서화 완료)*:
 1. 맞춤제작 요청 테이블 설계
    - `customization_requests` 테이블 스키마 설계
    - `client_id` 외래키로 기존 대상자와 연결
@@ -379,8 +379,8 @@ Phase 10은 맞춤제작 관리 기능을 추가하고, 상담 기록, 평가 �
      - `client_id` 필수 (대상자 연결)
      - `equipment_id` 선택 (대여 일정의 경우)
      - `customization_request_id` 선택 (맞춤제작 일정의 경우)
-   - 반복 일정 지원 구조 설계
-   - ERD 다이어그램 작성 및 문서화
+  - 반복 일정 지원 구조 설계 ✅
+  - ERD 다이어그램 작성 및 문서화 ✅ (`docs/erd-schedules.md`)
 
 2. 일정 상태 Enum 정의
    - 상태 값: scheduled → confirmed → in_progress → completed → cancelled
@@ -392,10 +392,10 @@ Phase 10은 맞춤제작 관리 기능을 추가하고, 상담 기록, 평가 �
    - 여러 담당자 참석 지원
 
 4. 데이터베이스 마이그레이션 작성
-   - `schedules` 테이블 생성 마이그레이션
-   - `schedule_participants` 테이블 생성 마이그레이션
-   - 인덱스 및 외래키 설정
-   - 마이그레이션 테스트
+  - `schedules` 테이블 생성 마이그레이션
+  - `schedule_participants` 테이블 생성 마이그레이션
+  - 인덱스 및 외래키 설정
+  - 마이그레이션 테스트 ✅ (`20251102_add_schedule_recurrence.sql` 추가 테스트 스크립트 포함)
 
 **예상 파일**:
 - `web/supabase/migrations/YYYYMMDD_create_schedules.sql` (신규)

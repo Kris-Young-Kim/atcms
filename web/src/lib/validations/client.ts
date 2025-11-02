@@ -89,6 +89,15 @@ export const clientSchema = z.object({
  */
 export type ClientFormData = z.infer<typeof clientSchema>;
 
+export interface ClientActivitySummary {
+  consultation_count: number;
+  assessment_count: number;
+  active_rental_count: number;
+  active_customization_count: number;
+  total_activity_count: number;
+  last_activity_at: string | null;
+}
+
 /**
  * API 응답용 타입 (DB에서 반환되는 전체 필드)
  */
@@ -98,6 +107,7 @@ export interface Client extends ClientFormData {
   updated_at: string;
   created_by_user_id?: string;
   updated_by_user_id?: string;
+  activity_summary?: ClientActivitySummary;
 }
 
 /**

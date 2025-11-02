@@ -20,6 +20,7 @@ import {
   type EquipmentCategory,
 } from "@/lib/validations/equipment";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 /**
  * 기기 목록 테이블 컴포넌트
@@ -42,6 +43,27 @@ export function EquipmentTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const canEdit = hasRole(["admin", "leader", "technician"]);
   const canDelete = hasRole(["admin", "leader"]);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDeleteConfirmed() {
+    if (!deleteConfirmId) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/equipment/${deleteConfirmId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        router.refresh();
+      }
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmId(null);
+    }
+  }
 
   const statusColors: Record<EquipmentStatus, string> = {
     normal: "bg-green-100 text-green-700",
@@ -162,16 +184,7 @@ export function EquipmentTable({
           )}
           {canDelete && (
             <button
-              onClick={async () => {
-                if (confirm("정말 이 기기를 삭제하시겠습니까?")) {
-                  const response = await fetch(`/api/equipment/${row.original.id}`, {
-                    method: "DELETE",
-                  });
-                  if (response.ok) {
-                    router.refresh();
-                  }
-                }
-              }}
+              onClick={() => setDeleteConfirmId(row.original.id)}
               className="text-sm text-red-600 hover:text-red-700 hover:underline"
             >
               삭제
@@ -195,6 +208,20 @@ export function EquipmentTable({
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <ConfirmDialog
+        open={deleteConfirmId !== null}
+        title="기기를 삭제하시겠습니까?"
+        description="삭제 후에는 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        loading={deleting}
+        onCancel={() => {
+          if (!deleting) {
+            setDeleteConfirmId(null);
+          }
+        }}
+        onConfirm={handleDeleteConfirmed}
+      />
+
       <div className="overflow-x-auto">
         <table
           className="min-w-full divide-y divide-gray-200"

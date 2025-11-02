@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Assessment } from "@/lib/validations/assessment";
 import { ASSESSMENT_TYPE_LABELS, getScoreLevel } from "@/lib/validations/assessment";
 
@@ -24,18 +25,14 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmTargetId, setConfirmTargetId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchAssessments();
-  }, [clientId]);
-
-  async function fetchAssessments() {
+  const fetchAssessments = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/clients/${clientId}/assessments`);
       if (response.ok) {
         const data = await response.json();
-        // content를 파싱하여 Assessment 타입으로 변환
         const parsedData = (data.data || []).map((item: Assessment & { content?: string }) => {
           if (item.content) {
             try {
@@ -57,27 +54,35 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
       } else {
         showError("평가 기록을 불러올 수 없습니다.");
       }
-    } catch (err) {
+    } catch {
       showError("평가 기록 조회 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
+  }, [clientId, showError]);
+
+  useEffect(() => {
+    void fetchAssessments();
+  }, [fetchAssessments]);
+
+  function requestDelete(assessmentId: string) {
+    setConfirmTargetId(assessmentId);
   }
 
-  async function handleDelete(assessmentId: string) {
-    if (!confirm("정말 이 평가 기록을 삭제하시겠습니까?")) {
+  async function handleDelete() {
+    if (!confirmTargetId) {
       return;
     }
 
-    setDeletingId(assessmentId);
+    setDeletingId(confirmTargetId);
     try {
-      const response = await fetch(`/api/clients/${clientId}/assessments/${assessmentId}`, {
+      const response = await fetch(`/api/clients/${clientId}/assessments/${confirmTargetId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         success("평가 기록이 삭제되었습니다.");
-        fetchAssessments(); // 목록 새로고침
+        void fetchAssessments(); // 목록 새로고침
       } else {
         showError("평가 기록 삭제에 실패했습니다.");
       }
@@ -85,6 +90,7 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
       showError("평가 기록 삭제 중 오류가 발생했습니다.");
     } finally {
       setDeletingId(null);
+      setConfirmTargetId(null);
     }
   }
 
@@ -108,6 +114,19 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
   return (
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <ConfirmDialog
+        open={!!confirmTargetId}
+        title="평가 기록을 삭제하시겠습니까?"
+        description="삭제 후에는 되돌릴 수 없습니다."
+        confirmLabel="삭제"
+        loading={deletingId !== null}
+        onCancel={() => {
+          if (deletingId === null) {
+            setConfirmTargetId(null);
+          }
+        }}
+        onConfirm={handleDelete}
+      />
 
       <div className="space-y-6">
         {/* 헤더 */}
@@ -251,7 +270,7 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
                           수정
                         </Link>
                         <button
-                          onClick={() => handleDelete(assessment.id)}
+                          onClick={() => requestDelete(assessment.id)}
                           disabled={deletingId === assessment.id}
                           className="rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
                         >

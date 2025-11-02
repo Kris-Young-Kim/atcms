@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
-  scheduleSchema,
   scheduleFilterSchema,
+  scheduleSchema,
   type ScheduleFilter,
 } from "@/lib/validations/schedule";
 
@@ -199,7 +199,23 @@ export async function GET(request: Request) {
 
     // 쿼리 파라미터 파싱 및 기본값 설정
     const { searchParams } = new URL(request.url);
-    const filter: ScheduleFilter = {
+    const isRecurringParam = searchParams.get("is_recurring");
+    const includeInstancesParam = searchParams.get("include_instances");
+    const recurrenceParentParam = searchParams.get("recurrence_parent_id");
+
+    const isRecurring =
+      isRecurringParam === null
+        ? undefined
+        : isRecurringParam === "true"
+          ? true
+          : isRecurringParam === "false"
+            ? false
+            : undefined;
+
+    const includeInstances =
+      includeInstancesParam === null ? true : includeInstancesParam !== "false";
+
+    const rawFilter = {
       schedule_type:
         (searchParams.get("schedule_type") as ScheduleFilter["schedule_type"]) || "all",
       client_id: searchParams.get("client_id") || undefined,
@@ -212,12 +228,15 @@ export async function GET(request: Request) {
           | "environmental"
           | "needs"
           | undefined) || undefined,
+      is_recurring: isRecurring,
+      recurrence_parent_id: recurrenceParentParam || undefined,
+      include_instances: includeInstances,
       page: parseInt(searchParams.get("page") || "1", 10),
       limit: parseInt(searchParams.get("limit") || "25", 10),
     };
 
     // 필터 검증
-    const validationResult = scheduleFilterSchema.safeParse(filter);
+    const validationResult = scheduleFilterSchema.safeParse(rawFilter);
     if (!validationResult.success) {
       return NextResponse.json(
         {
@@ -249,6 +268,18 @@ export async function GET(request: Request) {
 
     if (validatedFilter.status !== "all") {
       query = query.eq("status", validatedFilter.status);
+    }
+
+    if (validatedFilter.is_recurring !== undefined) {
+      query = query.eq("is_recurring", validatedFilter.is_recurring);
+    }
+
+    if (validatedFilter.recurrence_parent_id) {
+      query = query.eq("recurrence_parent_id", validatedFilter.recurrence_parent_id);
+    }
+
+    if (!validatedFilter.include_instances) {
+      query = query.is("recurrence_parent_id", null);
     }
 
     if (validatedFilter.start_date) {
@@ -285,7 +316,12 @@ export async function GET(request: Request) {
 
     auditLogger.info("schedules_list_viewed", {
       actorId: userId,
-      metadata: { count, scheduleType: validatedFilter.schedule_type },
+      metadata: {
+        count,
+        scheduleType: validatedFilter.schedule_type,
+        isRecurring: validatedFilter.is_recurring,
+        includeInstances: validatedFilter.include_instances,
+      },
     });
 
     return NextResponse.json({
