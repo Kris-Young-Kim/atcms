@@ -62,6 +62,7 @@ pnpm dev
 - [Phase 5 개발 계획](./docs/phase5-development-plan.md)
 - [Phase 6 개발 계획](./docs/phase6-development-plan.md) - 테스트 및 품질 관리
 - [Phase 7 개발 계획](./docs/phase7-development-plan.md) - 배포 및 모니터링
+- [Phase 8 개발 계획](./docs/phase8-development-plan.md) - 팀 협업 체계
 - [암호화 전략](./docs/encryption-strategy.md)
 - [백업 전략](./docs/backup-strategy.md)
 - [Vercel Secrets 가이드](./docs/vercel-secrets-guide.md)
@@ -84,6 +85,15 @@ pnpm dev
 - [에러율 목표 및 모니터링 가이드](./docs/error-rate-targets.md)
 - [에러 모니터링 설정 가이드](./docs/error-monitoring-guide.md)
 - [성능 측정 도구 통합 가이드](./docs/performance-monitoring-integration.md)
+- [IDE 설정 가이드](./docs/ide-setup-guide.md)
+- [커뮤니케이션 가이드](./docs/communication-guide.md)
+- [Slack 채널 가이드](./docs/slack-channel-guide.md)
+- [회의 가이드](./docs/meeting-guide.md)
+- [일일 스탠드업 템플릿](./docs/standup-template.md)
+- [주간 계획 회의 템플릿](./docs/weekly-planning-template.md)
+- [스프린트 리뷰 템플릿](./docs/sprint-review-template.md)
+- [기술 회의 템플릿](./docs/technical-meeting-template.md)
+- [회의록 템플릿](./docs/meeting-notes-template.md)
 
 ## 🌿 브랜치 전략
 

@@ -15,20 +15,9 @@ export default function Home() {
     setHasClerkKey(!!key && key !== "pk_test_placeholder");
   }, []);
 
-  // Clerk가 설정된 경우에만 useUser 훅 사용
-  let isLoaded = true;
-  let isSignedIn = false;
-  
-  if (hasClerkKey) {
-    try {
-      const user = useUser();
-      isLoaded = user.isLoaded;
-      isSignedIn = user.isSignedIn;
-    } catch (error) {
-      // Clerk Provider가 없는 경우 무시
-      console.log("Clerk not available");
-    }
-  }
+  // React 훅 규칙 준수: 훅은 항상 컴포넌트 최상위에서 호출되어야 함
+  // useUser는 ClerkProvider 내부에서 안전하게 호출됨 (Provider가 없으면 기본값 반환)
+  const { isLoaded, isSignedIn } = useUser();
 
   useEffect(() => {
     // 로그인 상태이면 대시보드로 리디렉션
@@ -54,7 +43,7 @@ export default function Home() {
             <span className="text-6xl">🏥</span>
           </div>
           <h1 className="text-5xl font-bold text-gray-900">AT-Care</h1>
-          <p className="mt-4 text-xl text-gray-600">보조공학 사례관리 시스템</p>
+          <p className="mt-4 text-xl text-gray-600">보조공학 사례관리 플랫폼</p>
           <p className="mx-auto mt-6 max-w-2xl text-gray-500">
             대상자 관리, 상담 기록, 기기 대여를 한 곳에서 관리할 수 있는 통합 플랫폼입니다.
           </p>

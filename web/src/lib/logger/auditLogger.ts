@@ -68,8 +68,9 @@ const logToConsole = (entry: AuditLogEntry, error?: unknown) => {
 
   if (entry.level === "error") {
     console.error("[audit]", payload);
-  } else {
-    console.info("[audit]", payload);
+  } else if (process.env.NODE_ENV === "development") {
+    // 개발 환경에서만 정보 로그 출력
+    console.warn("[audit]", payload);
   }
 };
 
@@ -128,8 +129,8 @@ const logToSupabase = async (entry: AuditLogEntry, error?: unknown) => {
 const logToSentry = (entry: AuditLogEntry, error?: unknown) => {
   // Sentry는 현재 비활성화 상태이므로 조용히 건너뜁니다.
   // TODO: Sentry가 Next.js 16을 지원하면 다시 활성화
-  if (process.env.NODE_ENV !== "production") {
-    console.debug("[audit] Sentry 로깅 건너뜀 (비활성화 상태)");
+  if (process.env.NODE_ENV === "development") {
+    console.warn("[audit] Sentry 로깅 건너뜀 (비활성화 상태)");
   }
 };
 

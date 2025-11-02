@@ -116,7 +116,10 @@ async function sendToSentry(metric: ApiPerformanceMetric): Promise<void> {
     }
   } catch (error) {
     // Sentry 전송 실패 시 무시
-    console.debug("Failed to send API performance to Sentry:", error);
+    // 개발 환경에서만 로그 출력
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Failed to send API performance to Sentry:", error);
+    }
   }
 }
 
@@ -136,8 +139,9 @@ function logApiPerformance(metric: ApiPerformanceMetric): void {
     console.error(logMessage);
   } else if (status >= 400) {
     console.warn(logMessage);
-  } else {
-    console.log(logMessage);
+  } else if (process.env.NODE_ENV === "development") {
+    // 개발 환경에서만 일반 로그 출력
+    console.warn(logMessage);
   }
 }
 
@@ -170,8 +174,9 @@ export async function measureQueryPerformance<T>(
     // 느린 쿼리 경고 (300ms 초과)
     if (duration > 300) {
       console.warn(`[Slow Query] ${queryName}: ${duration.toFixed(2)}ms`);
-    } else {
-      console.log(`[Query Performance] ${queryName}: ${duration.toFixed(2)}ms`);
+    } else if (process.env.NODE_ENV === "development") {
+      // 개발 환경에서만 일반 로그 출력
+      console.warn(`[Query Performance] ${queryName}: ${duration.toFixed(2)}ms`);
     }
   }
 }

@@ -13,12 +13,13 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-  // Web Vitals 측정 초기화
+  // Web Vitals 측정 초기화 (클라이언트에서만 실행, 한 번만 실행)
   useEffect(() => {
     if (typeof window !== "undefined") {
       reportWebVitals();
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 빈 배열로 한 번만 실행
 
   // Clerk 키가 없으면 Provider 없이 렌더링 (개발 모드)
   if (!publishableKey || publishableKey === "pk_test_placeholder") {

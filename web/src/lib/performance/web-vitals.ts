@@ -33,8 +33,10 @@ function reportMetric(metric: {
 }): void {
   const { name, value, rating } = metric;
 
-  // 콘솔 로그
-  console.log(`[Web Vitals] ${name}: ${value.toFixed(2)}ms (${rating})`);
+  // 개발 환경에서만 콘솔 로그 출력
+  if (process.env.NODE_ENV === "development") {
+    console.warn(`[Web Vitals] ${name}: ${value.toFixed(2)}ms (${rating})`);
+  }
 
   // 성능이 나쁜 경우 경고
   if (rating === "poor") {
@@ -89,7 +91,10 @@ async function sendToSentry(metric: {
     }
   } catch (error) {
     // Sentry 전송 실패 시 무시 (성능 측정에 영향 없음)
-    console.debug("Failed to send Web Vitals to Sentry:", error);
+    // 개발 환경에서만 로그 출력
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Failed to send Web Vitals to Sentry:", error);
+    }
   }
 }
 

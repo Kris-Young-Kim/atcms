@@ -65,7 +65,10 @@ export async function generateRentalContractPDF(
   // 3. Supabase Storage에 업로드
   // 4. 업로드된 URL 반환
 
-  console.log("[Stub] 계약서 PDF 생성 요청:", data);
+  // 개발 환경에서만 로그 출력
+  if (process.env.NODE_ENV === "development") {
+    console.warn("[Stub] 계약서 PDF 생성 요청:", data);
+  }
 
   // 현재는 빈 문자열 반환
   // 향후 실제 PDF 생성 후 Supabase Storage URL 반환
