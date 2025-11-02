@@ -681,10 +681,10 @@
 
 ### 3.1 코딩 표준
 
-- [ ] 명명 규칙 문서화 (kebab-case, camelCase, PascalCase, UPPER_SNAKE_CASE)
-- [ ] TypeScript any 타입 금지 규칙 적용
-- [ ] ESLint 규칙 커스터마이징 및 문서화
-- [ ] 코드 포맷팅 자동화 설정 (Pre-commit hook)
+- [x] ✅ 명명 규칙 문서화 (kebab-case, camelCase, PascalCase, UPPER_SNAKE_CASE) ✅ (docs/coding-standards.md 작성 완료)
+- [x] ✅ TypeScript any 타입 금지 규칙 적용 ✅ (eslint.config.mjs에 @typescript-eslint/no-explicit-any 규칙 추가)
+- [x] ✅ ESLint 규칙 커스터마이징 및 문서화 ✅ (eslint.config.mjs 업데이트, docs/eslint-config-guide.md 작성 완료)
+- [x] ✅ 코드 포맷팅 자동화 설정 (Pre-commit hook) ✅ (husky + lint-staged 설정 완료)
 
 ### 3.2 Git 규칙
 
@@ -715,7 +715,7 @@
 - [ ] 프로덕션 배포 승인 프로세스 수립
 - [ ] 배포 후 롤백 계획 수립
 
-**진행률**: 2/18 (11%)
+**진행률**: 6/18 (33%) - 코딩 표준 구축 완료
 
 ---
 

@@ -14,7 +14,8 @@
     "test:ci": "jest --ci --coverage --maxWorkers=2",
     "audit": "pnpm audit --audit-level=moderate",
     "audit:fix": "pnpm audit --fix",
-    "audit:report": "pnpm audit --json > audit-report.json"
+    "audit:report": "pnpm audit --json > audit-report.json",
+    "prepare": "husky"
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {

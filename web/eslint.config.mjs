@@ -17,6 +17,16 @@ const eslintConfig = defineConfig([
           ignoreTemplateLiterals: true,
         },
       ],
+      // TypeScript any 타입 금지
+      "@typescript-eslint/no-explicit-any": "error",
+      // 미사용 변수 경고 (매개변수는 제외)
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   eslintPluginPrettierRecommended,
