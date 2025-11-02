@@ -28,7 +28,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // 대상자 존재 확인
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: client, error: clientError } = await supabase
       .from("clients")
       .select("id")
@@ -130,7 +130,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const validated = validationResult.data;
 
     // 대상자 존재 확인
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: client, error: clientError } = await supabase
       .from("clients")
       .select("id")
@@ -213,4 +213,3 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     );
   }
 }
-

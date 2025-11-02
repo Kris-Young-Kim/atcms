@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { ClientsTable } from "@/components/clients/ClientsTable";
 import { ClientsFilter } from "@/components/clients/ClientsFilter";
@@ -64,20 +64,21 @@ export default function ClientsPage() {
   );
 
   // 디바운스된 검색 함수
-  const debouncedSearch = useCallback(
-    debounce((searchValue: string) => {
-      const newFilters = { ...filters, search: searchValue };
-      setFilters(newFilters);
-      setPagination((prev) => ({ ...prev, page: 1 }));
-      updateURL(newFilters, sorting, 1);
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((searchValue: string) => {
+        const newFilters = { ...filters, search: searchValue };
+        setFilters(newFilters);
+        setPagination((prev) => ({ ...prev, page: 1 }));
+        updateURL(newFilters, sorting, 1);
 
-      // 감사 로그 기록
-      if (searchValue) {
-        auditLogger.info("clients_search_executed", {
-          metadata: { searchQuery: searchValue },
-        });
-      }
-    }, 300),
+        // 감사 로그 기록
+        if (searchValue) {
+          auditLogger.info("clients_search_executed", {
+            metadata: { searchQuery: searchValue },
+          });
+        }
+      }, 300),
     [filters, sorting, updateURL],
   );
 
@@ -160,7 +161,7 @@ export default function ClientsPage() {
         </div>
         <Link
           href="/clients/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           + 새 대상자 등록
         </Link>

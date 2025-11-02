@@ -18,4 +18,3 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     </ProtectedRoute>
   );
 }
-

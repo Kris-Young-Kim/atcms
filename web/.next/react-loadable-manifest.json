@@ -1,0 +1,42 @@
+{
+  "..\\..\\node_modules\\.pnpm\\@clerk+nextjs@6.34.1_next@1_3b49d40ae0aee7bd73f29561d2d5a0e9\\node_modules\\@clerk\\nextjs\\dist\\esm\\app-router\\client\\ClerkProvider.js -> ./keyless-creator-reader.js": {
+    "id": "..\\..\\node_modules\\.pnpm\\@clerk+nextjs@6.34.1_next@1_3b49d40ae0aee7bd73f29561d2d5a0e9\\node_modules\\@clerk\\nextjs\\dist\\esm\\app-router\\client\\ClerkProvider.js -> ./keyless-creator-reader.js",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_pnpm_clerk_nextjs_6_34_1_next_1_3b49d40ae0aee7bd73f29561d2d5a-90a558.js"
+    ]
+  },
+  "..\\..\\node_modules\\.pnpm\\@supabase+auth-js@2.68.0\\node_modules\\@supabase\\auth-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch": {
+    "id": "..\\..\\node_modules\\.pnpm\\@supabase+auth-js@2.68.0\\node_modules\\@supabase\\auth-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\..\\node_modules\\.pnpm\\@supabase+functions-js@2.4.4\\node_modules\\@supabase\\functions-js\\dist\\module\\helper.js -> @supabase/node-fetch": {
+    "id": "..\\..\\node_modules\\.pnpm\\@supabase+functions-js@2.4.4\\node_modules\\@supabase\\functions-js\\dist\\module\\helper.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\..\\node_modules\\.pnpm\\@supabase+realtime-js@2.11.2\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> @supabase/node-fetch": {
+    "id": "..\\..\\node_modules\\.pnpm\\@supabase+realtime-js@2.11.2\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\..\\node_modules\\.pnpm\\@supabase+realtime-js@2.11.2\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> ws": {
+    "id": "..\\..\\node_modules\\.pnpm\\@supabase+realtime-js@2.11.2\\node_modules\\@supabase\\realtime-js\\dist\\module\\RealtimeClient.js -> ws",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_pnpm_ws_8_18_3_node_modules_ws_browser_js.js"
+    ]
+  },
+  "..\\..\\node_modules\\.pnpm\\@supabase+storage-js@2.7.1\\node_modules\\@supabase\\storage-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch": {
+    "id": "..\\..\\node_modules\\.pnpm\\@supabase+storage-js@2.7.1\\node_modules\\@supabase\\storage-js\\dist\\module\\lib\\helpers.js -> @supabase/node-fetch",
+    "files": []
+  },
+  "..\\..\\node_modules\\.pnpm\\next@15.5.6_@babel+core@7.2_3239624509b85311cc11e41799abd804\\node_modules\\next\\dist\\client\\dev\\hot-reloader\\app\\use-websocket.js -> @vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts": {
+    "id": "..\\..\\node_modules\\.pnpm\\next@15.5.6_@babel+core@7.2_3239624509b85311cc11e41799abd804\\node_modules\\next\\dist\\client\\dev\\hot-reloader\\app\\use-websocket.js -> @vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_pnpm_next_15_5_6__babel_core_7_2_3239624509b85311cc11e41799ab-c55cd6.js"
+    ]
+  },
+  "lib\\performance\\web-vitals.ts -> @sentry/nextjs": {
+    "id": "lib\\performance\\web-vitals.ts -> @sentry/nextjs",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_pnpm_sentry_nextjs_8_55_0__open_e6648f3d76217210576e63b981b0f-95c24e.js"
+    ]
+  }
+}

@@ -1,13 +1,18 @@
 /**
  * 기술 부채 스캐너
- * 
+ *
  * 코드베이스에서 기술 부채를 자동으로 감지하는 유틸리티입니다.
  */
 
 /**
  * 기술 부채 유형
  */
-export type TechnicalDebtType = "architecture" | "code" | "documentation" | "dependency" | "infrastructure";
+export type TechnicalDebtType =
+  | "architecture"
+  | "code"
+  | "documentation"
+  | "dependency"
+  | "infrastructure";
 
 /**
  * 기술 부채 우선순위
@@ -33,7 +38,7 @@ export interface TechnicalDebtItem {
 
 /**
  * 기술 부채 스캐너
- * 
+ *
  * 코드베이스에서 기술 부채를 찾고 분석합니다.
  */
 export class TechnicalDebtScanner {
@@ -41,7 +46,7 @@ export class TechnicalDebtScanner {
 
   /**
    * TODO 주석에서 기술 부채 찾기
-   * 
+   *
    * @param content - 파일 내용
    * @param filePath - 파일 경로
    */
@@ -105,7 +110,7 @@ export class TechnicalDebtScanner {
 
 /**
  * 기술 부채 추적기
- * 
+ *
  * 기술 부채를 중앙에서 관리합니다.
  */
 export class TechnicalDebtTracker {
@@ -142,4 +147,3 @@ export class TechnicalDebtTracker {
 
 // 싱글톤 인스턴스
 export const technicalDebtTracker = new TechnicalDebtTracker();
-

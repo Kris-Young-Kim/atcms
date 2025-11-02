@@ -1,8 +1,8 @@
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { useEffect } from "react";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 
 import { reportWebVitals } from "@/lib/performance/web-vitals";
 
@@ -18,8 +18,7 @@ export function Providers({ children }: ProvidersProps) {
     if (typeof window !== "undefined") {
       reportWebVitals();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 빈 배열로 한 번만 실행
+  }, []);
 
   // Clerk 키가 없으면 Provider 없이 렌더링 (개발 모드)
   if (!publishableKey || publishableKey === "pk_test_placeholder") {

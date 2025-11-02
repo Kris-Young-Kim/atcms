@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 // 공개 접근 가능한 경로 정의
 const isPublicRoute = createRouteMatcher([
@@ -8,10 +9,10 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
 ]);
 
-export default clerkMiddleware((auth, request) => {
+export default clerkMiddleware(async (auth, req) => {
   // 공개 경로가 아니면 인증 필요
-  if (!isPublicRoute(request)) {
-    auth.protect();
+  if (!isPublicRoute(req)) {
+    await auth.protect();
   }
 });
 
@@ -23,4 +24,3 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-

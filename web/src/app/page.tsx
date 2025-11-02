@@ -1,19 +1,15 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const [hasClerkKey, setHasClerkKey] = useState(true);
-  
-  // Clerk 키 존재 여부 확인
-  useEffect(() => {
-    const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-    setHasClerkKey(!!key && key !== "pk_test_placeholder");
-  }, []);
+  // Clerk 키 존재 여부 확인 (렌더링 시점에 직접 확인)
+  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const hasClerkKey = !!key && key !== "pk_test_placeholder";
 
   // React 훅 규칙 준수: 훅은 항상 컴포넌트 최상위에서 호출되어야 함
   // useUser는 ClerkProvider 내부에서 안전하게 호출됨 (Provider가 없으면 기본값 반환)
@@ -36,59 +32,73 @@ export default function Home() {
 
   // 로그인되지 않은 경우 랜딩 페이지 표시
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-        <div className="text-center">
+        <div className="text-center animate-fade-in">
           <div className="mb-8 flex justify-center">
-            <span className="text-6xl">🏥</span>
+            <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-4 shadow-xl">
+              <span className="text-6xl">🏥</span>
+            </div>
           </div>
-          <h1 className="text-5xl font-bold text-gray-900">AT-Care</h1>
-          <p className="mt-4 text-xl text-gray-600">보조공학 사례관리 플랫폼</p>
-          <p className="mx-auto mt-6 max-w-2xl text-gray-500">
-            대상자 관리, 상담 기록, 기기 대여를 한 곳에서 관리할 수 있는 통합 플랫폼입니다.
+          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+            AT-CMP
+          </h1>
+          <p className="mt-4 text-xl font-semibold text-gray-700">
+            보조공학 사례관리 플랫폼
+          </p>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 leading-relaxed">
+            대상자 관리, 상담 기록, 기기 대여를 한 곳에서 체계적으로 관리할 수 있는
+            <br />
+            전문적인 통합 플랫폼입니다.
           </p>
 
           <div className="mt-10 flex justify-center gap-4">
             <Link
               href="/sign-in"
-              className="rounded-lg bg-blue-600 px-8 py-3 text-lg font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               로그인
             </Link>
             <Link
               href="/sign-up"
-              className="rounded-lg border border-gray-300 bg-white px-8 py-3 text-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-lg border-2 border-gray-300 bg-white px-8 py-3 text-base font-semibold text-gray-700 shadow-md transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               회원가입
             </Link>
           </div>
         </div>
 
-        <div className="mt-24 grid gap-8 md:grid-cols-3">
+        <div className="mt-24 grid gap-8 md:grid-cols-3 animate-slide-in">
           {[
             {
               icon: "👥",
               title: "대상자 관리",
               description: "대상자 정보를 체계적으로 등록하고 관리합니다.",
+              gradient: "from-blue-500 to-cyan-500",
             },
             {
               icon: "📝",
               title: "상담 기록",
               description: "상담 내용과 평가 결과를 기록하고 추적합니다.",
+              gradient: "from-purple-500 to-pink-500",
             },
             {
               icon: "🔧",
               title: "기기 관리",
               description: "보조기기 재고와 대여 현황을 실시간으로 관리합니다.",
+              gradient: "from-indigo-500 to-blue-500",
             },
-          ].map((feature) => (
+          ].map((feature, index) => (
             <div
               key={feature.title}
-              className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+              className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
-              <div className="text-4xl">{feature.icon}</div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">{feature.title}</h3>
-              <p className="mt-2 text-sm text-gray-600">{feature.description}</p>
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
+              <div className="relative">
+                <div className="mb-4 text-4xl">{feature.icon}</div>
+                <h3 className="mb-2 text-xl font-bold text-gray-900">{feature.title}</h3>
+                <p className="text-sm leading-relaxed text-gray-600">{feature.description}</p>
+              </div>
             </div>
           ))}
         </div>

@@ -29,7 +29,7 @@ export function Toast({ message, type = "info", duration = 3000, onClose }: Toas
   }, [duration, onClose]);
 
   const bgColors = {
-    success: "bg-green-50 border-green-200 text-green-800",
+    success: "bg-emerald-50 border-emerald-200 text-emerald-800",
     error: "bg-red-50 border-red-200 text-red-800",
     info: "bg-blue-50 border-blue-200 text-blue-800",
   };
@@ -105,6 +105,10 @@ interface ToastContainerProps {
 }
 
 export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
+  if (toasts.length === 0) {
+    return null;
+  }
+
   return (
     <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-end gap-2 p-4">
       {toasts.map((toast) => (
@@ -118,4 +122,3 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
     </div>
   );
 }
-

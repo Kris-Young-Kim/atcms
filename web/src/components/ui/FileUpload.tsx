@@ -77,7 +77,8 @@ export function FileUpload({
         onUploadComplete?.(result.url, result.fileName);
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "파일 업로드 중 오류가 발생했습니다.";
+      const errorMessage =
+        error instanceof Error ? error.message : "파일 업로드 중 오류가 발생했습니다.";
       showError(errorMessage);
       onUploadError?.(errorMessage);
     } finally {
@@ -171,4 +172,3 @@ export function useFileUpload() {
     clearUrls,
   };
 }
-

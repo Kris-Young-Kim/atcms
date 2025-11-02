@@ -1,6 +1,6 @@
 /**
  * 테스트용 Mock 대상자 데이터
- * 
+ *
  * 대상자 관련 Mock 데이터를 생성하는 팩토리 함수들입니다.
  */
 
@@ -20,10 +20,10 @@ export interface MockClient extends ClientFormData {
 
 /**
  * Mock 대상자 생성 함수
- * 
+ *
  * @param overrides - 기본값을 덮어쓸 필드들
  * @returns Mock 대상자 객체
- * 
+ *
  * @example
  * ```typescript
  * const client = createMockClient({ name: "홍길동" });
@@ -112,4 +112,3 @@ export const invalidClientData = {
   contact_phone: "123-456", // 잘못된 전화번호 형식
   birth_date: "2099-01-01", // 미래 날짜 (검증 실패)
 };
-

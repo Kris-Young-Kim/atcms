@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/USER/Downloads/valuewith/AT-CMS%20%28Assistive%20Technology%20Case%20Management%20System%29/web/src/app/providers.tsx"],"sourcesContent":["\"use client\";\n\nimport { ClerkProvider } from \"@clerk/nextjs\";\nimport type { ReactNode } from \"react\";\n\n\ninterface ProvidersProps {\n  readonly children: ReactNode;\n}\n\nexport function Providers({ children }: ProvidersProps) {\n  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;\n  \n  // Clerk 키가 없으면 Provider 없이 렌더링 (개발 모드)\n  if (!publishableKey || publishableKey === \"pk_test_placeholder\") {\n    console.warn(\n      \"⚠️ Clerk Publishable Key가 설정되지 않았습니다. \" +\n      \"인증 기능을 사용하려면 .env.local에 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY를 설정하세요.\"\n    );\n    return <>{children}</>;\n  }\n  \n  return <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;\n}\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAUO,SAAS,UAAU,EAAE,QAAQ,EAAkB;IACpD,MAAM;IAEN,uCAAuC;IACvC;;IAQA,qBAAO,6VAAC,oSAAa;QAAC,gBAAgB;kBAAiB;;;;;;AACzD","debugId":null}}]
-}

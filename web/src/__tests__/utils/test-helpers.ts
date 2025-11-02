@@ -1,6 +1,6 @@
 /**
  * 테스트 헬퍼 함수
- * 
+ *
  * 테스트 작성 시 공통으로 사용하는 유틸리티 함수들입니다.
  */
 
@@ -9,10 +9,10 @@ import { mockAdminUser, mockUnauthenticatedUser, type MockUser } from "../mocks/
 
 /**
  * Mock Request 객체 생성 함수
- * 
+ *
  * @param options - Request 옵션
  * @returns Mock Request 객체
- * 
+ *
  * @example
  * ```typescript
  * const request = createMockRequest({
@@ -47,10 +47,10 @@ export function createMockRequest(options: {
 
 /**
  * Clerk 인증 Mock 설정 헬퍼
- * 
+ *
  * @param user - Mock 사용자 객체
  * @param mockAuth - Clerk auth Mock 함수
- * 
+ *
  * @example
  * ```typescript
  * setupAuthMock(mockAdminUser, mockAuth);
@@ -72,9 +72,9 @@ export function setupAuthMock(user: MockUser, mockAuth: jest.Mock) {
 
 /**
  * 테스트 정리 함수
- * 
+ *
  * 모든 Mock을 초기화합니다.
- * 
+ *
  * @example
  * ```typescript
  * afterEach(() => {
@@ -88,10 +88,10 @@ export function cleanupMocks() {
 
 /**
  * 비동기 함수 실행 헬퍼
- * 
+ *
  * @param fn - 실행할 비동기 함수
  * @returns Promise 결과
- * 
+ *
  * @example
  * ```typescript
  * const result = await waitFor(() => someAsyncFunction());
@@ -113,10 +113,10 @@ export async function waitFor<T>(fn: () => Promise<T>, timeout = 5000): Promise<
 
 /**
  * 에러 객체 생성 헬퍼
- * 
+ *
  * @param message - 에러 메시지
  * @returns Error 객체
- * 
+ *
  * @example
  * ```typescript
  * const error = createError("Database connection failed");
@@ -128,10 +128,10 @@ export function createError(message: string): Error {
 
 /**
  * 날짜 문자열 생성 헬퍼
- * 
+ *
  * @param daysOffset - 오늘 기준 날짜 오프셋 (음수 가능)
  * @returns YYYY-MM-DD 형식의 날짜 문자열
- * 
+ *
  * @example
  * ```typescript
  * const today = createDateString(0);
@@ -147,9 +147,9 @@ export function createDateString(daysOffset = 0): string {
 
 /**
  * UUID 생성 헬퍼 (간단한 버전)
- * 
+ *
  * @returns UUID 형식의 문자열
- * 
+ *
  * @example
  * ```typescript
  * const id = createUUID();
@@ -162,4 +162,3 @@ export function createUUID(): string {
     return v.toString(16);
   });
 }
-

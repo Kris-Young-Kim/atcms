@@ -1,6 +1,10 @@
 {
-  "/_global-error/page": "app/_global-error/page.js",
+  "/api/clients/route": "app/api/clients/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/api/equipment/route": "app/api/equipment/route.js",
+  "/page": "app/page.js",
+  "/(dashboard)/clients/new/page": "app/(dashboard)/clients/new/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(dashboard)/equipment/page": "app/(dashboard)/equipment/page.js",
+  "/(dashboard)/equipment/new/page": "app/(dashboard)/equipment/new/page.js"
 }

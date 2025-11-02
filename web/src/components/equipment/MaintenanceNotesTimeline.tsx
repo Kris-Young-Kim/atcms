@@ -98,7 +98,11 @@ export function MaintenanceNotesTimeline({
                   {note.title}
                   {note.maintenance_type && (
                     <span className="ml-2 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
-                      {MAINTENANCE_TYPE_LABELS[note.maintenance_type as keyof typeof MAINTENANCE_TYPE_LABELS]}
+                      {
+                        MAINTENANCE_TYPE_LABELS[
+                          note.maintenance_type as keyof typeof MAINTENANCE_TYPE_LABELS
+                        ]
+                      }
                     </span>
                   )}
                   <time className="ml-3 text-sm font-normal text-gray-500">
@@ -113,9 +117,7 @@ export function MaintenanceNotesTimeline({
                   </p>
                 )}
                 {note.cost && (
-                  <p className="mb-2 text-sm text-gray-600">
-                    비용: {note.cost.toLocaleString()}원
-                  </p>
+                  <p className="mb-2 text-sm text-gray-600">비용: {note.cost.toLocaleString()}원</p>
                 )}
               </div>
             ))}
@@ -125,4 +127,3 @@ export function MaintenanceNotesTimeline({
     </>
   );
 }
-

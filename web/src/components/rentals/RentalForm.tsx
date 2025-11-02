@@ -153,7 +153,9 @@ export function RentalForm({
       }, 2000);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
+        err instanceof Error
+          ? err.message
+          : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
       showError(errorMessage);
       auditLogger.error(`rental_form_failed_${mode}`, {
         error: err,
@@ -243,7 +245,10 @@ export function RentalForm({
 
             {/* 예상 반납일 */}
             <div>
-              <label htmlFor="expected_return_date" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="expected_return_date"
+                className="block text-sm font-medium text-gray-700"
+              >
                 예상 반납일
               </label>
               <input
@@ -334,4 +339,3 @@ export function RentalForm({
     </>
   );
 }
-

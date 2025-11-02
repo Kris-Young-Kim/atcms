@@ -57,9 +57,7 @@ function EditEquipmentPageContent({ equipmentId }: { equipmentId: string }) {
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">기기 수정</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          기기 정보를 수정합니다.
-        </p>
+        <p className="mt-2 text-sm text-gray-600">기기 정보를 수정합니다.</p>
       </div>
 
       <EquipmentForm equipmentId={equipmentId} initialData={equipment} mode="edit" />
@@ -77,4 +75,3 @@ export default function EditEquipmentPage() {
     </ProtectedRoute>
   );
 }
-

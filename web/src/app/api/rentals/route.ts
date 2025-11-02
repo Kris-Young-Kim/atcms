@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
     const validated = validationResult.data;
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     // 기기 정보 조회 (가용 수량 및 상태 확인을 위해)
     const { data: equipment, error: equipmentError } = await supabase
@@ -181,10 +181,8 @@ export async function GET(request: Request) {
     const equipmentId = searchParams.get("equipment_id");
     const clientId = searchParams.get("client_id");
 
-    const supabase = createSupabaseServerClient();
-    let query = supabase
-      .from("rentals")
-      .select(`
+    const supabase = await createSupabaseServerClient();
+    let query = supabase.from("rentals").select(`
         *,
         equipment:equipment_id (
           id,
@@ -246,4 +244,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

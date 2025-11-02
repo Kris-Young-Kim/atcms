@@ -25,6 +25,7 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/lib/logger/auditLogger", () => ({
   auditLogger: {
     info: jest.fn(),
+    warn: jest.fn(),
     error: jest.fn(),
   },
 }));
@@ -106,7 +107,10 @@ describe("ProtectedRoute", () => {
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith("/sign-in");
-        expect(auditLogger.info).toHaveBeenCalledWith("unauthorized_access_attempt", expect.any(Object));
+        expect(auditLogger.info).toHaveBeenCalledWith(
+          "unauthorized_access_attempt",
+          expect.any(Object),
+        );
       });
 
       expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
@@ -164,7 +168,10 @@ describe("ProtectedRoute", () => {
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith("/dashboard");
-        expect(auditLogger.error).toHaveBeenCalledWith("forbidden_access_attempt", expect.any(Object));
+        expect(auditLogger.warn).toHaveBeenCalledWith(
+          "forbidden_access_attempt",
+          expect.any(Object),
+        );
       });
 
       expect(screen.queryByText("Admin Content")).not.toBeInTheDocument();
@@ -246,4 +253,3 @@ describe("ProtectedRoute", () => {
     });
   });
 });
-

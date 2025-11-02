@@ -3,7 +3,10 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { equipmentStatusUpdateSchema, equipmentQuantityUpdateSchema } from "@/lib/validations/equipment";
+import {
+  equipmentStatusUpdateSchema,
+  equipmentQuantityUpdateSchema,
+} from "@/lib/validations/equipment";
 
 /**
  * PATCH /api/equipment/[id]/status
@@ -12,10 +15,7 @@ import { equipmentStatusUpdateSchema, equipmentQuantityUpdateSchema } from "@/li
  *
  * 권한: admin, leader, technician만 가능
  */
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const { userId, sessionClaims } = await auth();
@@ -38,7 +38,7 @@ export async function PATCH(
     }
 
     // 기존 기기 조회
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingEquipment, error: fetchError } = await supabase
       .from("equipment")
       .select("*")
@@ -118,4 +118,3 @@ export async function PATCH(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

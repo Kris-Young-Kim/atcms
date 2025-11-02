@@ -5,7 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { equipmentQuantityUpdateSchema, type EquipmentQuantityUpdateData } from "@/lib/validations/equipment";
+import {
+  equipmentQuantityUpdateSchema,
+  type EquipmentQuantityUpdateData,
+} from "@/lib/validations/equipment";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 import { auditLogger } from "@/lib/logger/auditLogger";
@@ -123,9 +126,7 @@ function QuantityAdjustPageContent({ equipmentId }: { equipmentId: string }) {
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">기기 수량 조정</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            {equipment.name}의 수량을 조정합니다.
-          </p>
+          <p className="mt-2 text-sm text-gray-600">{equipment.name}의 수량을 조정합니다.</p>
         </div>
 
         <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -173,7 +174,10 @@ function QuantityAdjustPageContent({ equipmentId }: { equipmentId: string }) {
 
               {/* 가용 수량 */}
               <div>
-                <label htmlFor="available_quantity" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="available_quantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   가용 수량 <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -237,4 +241,3 @@ export default function QuantityAdjustPage() {
     </ProtectedRoute>
   );
 }
-

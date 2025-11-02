@@ -51,17 +51,18 @@ export type AssessmentItem = z.infer<typeof assessmentItemSchema>;
  */
 export const assessmentSchema = z.object({
   client_id: z.string().uuid("유효한 대상자 ID가 아닙니다."),
-  record_date: z
+  record_date: z.string().refine(
+    (val) => {
+      if (!val) return true;
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    },
+    { message: "유효한 날짜를 입력하세요." },
+  ),
+  title: z
     .string()
-    .refine(
-      (val) => {
-        if (!val) return true;
-        const date = new Date(val);
-        return !isNaN(date.getTime());
-      },
-      { message: "유효한 날짜를 입력하세요." },
-    ),
-  title: z.string().min(1, "제목은 필수 항목입니다.").max(200, "제목은 최대 200자까지 입력 가능합니다."),
+    .min(1, "제목은 필수 항목입니다.")
+    .max(200, "제목은 최대 200자까지 입력 가능합니다."),
   assessment_type: z.enum(
     [ASSESSMENT_TYPES.FUNCTIONAL, ASSESSMENT_TYPES.ENVIRONMENTAL, ASSESSMENT_TYPES.NEEDS],
     {
@@ -123,4 +124,3 @@ export function getScoreLevel(score: number): { level: string; color: string } {
   if (score >= 1.5) return { level: "미흡", color: "text-orange-600" };
   return { level: "불량", color: "text-red-600" };
 }
-

@@ -29,7 +29,7 @@ test.describe("대상자 등록", () => {
     await page.click('button[type="submit"]');
 
     // 성공 메시지 확인
-    await expect(page.locator('text=성공적으로 등록되었습니다')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=성공적으로 등록되었습니다")).toBeVisible({ timeout: 10000 });
 
     // 대상자 상세 페이지로 리디렉션 확인
     await expect(page).toHaveURL(/\/clients\/[\w-]+/, { timeout: 5000 });
@@ -42,7 +42,7 @@ test.describe("대상자 등록", () => {
     await page.click('button[type="submit"]');
 
     // 에러 메시지 확인
-    await expect(page.locator('text=이름은 최소 2자 이상이어야 합니다')).toBeVisible();
+    await expect(page.locator("text=이름은 최소 2자 이상이어야 합니다")).toBeVisible();
   });
 
   test("권한이 없는 사용자는 등록 페이지에 접근할 수 없어야 함", async ({ page }) => {
@@ -51,7 +51,6 @@ test.describe("대상자 등록", () => {
     await page.goto("/clients/new");
 
     // 권한 없음 메시지 확인
-    await expect(page.locator('text=접근 권한이 없습니다')).toBeVisible();
+    await expect(page.locator("text=접근 권한이 없습니다")).toBeVisible();
   });
 });
-

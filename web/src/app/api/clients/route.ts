@@ -7,18 +7,18 @@ import { clientSchema } from "@/lib/validations/client";
 
 /**
  * POST /api/clients
- * 
+ *
  * 새 대상자 등록
- * 
+ *
  * **권한**: `admin`, `leader`, `specialist`만 가능
- * 
+ *
  * **처리 순서:**
  * 1. 인증 확인 (Clerk)
  * 2. 역할 권한 확인
  * 3. 입력 데이터 검증 (Zod)
  * 4. 데이터베이스 저장
  * 5. 감사 로그 기록
- * 
+ *
  * **요청 본문:**
  * ```json
  * {
@@ -27,14 +27,14 @@ import { clientSchema } from "@/lib/validations/client";
  *   ...
  * }
  * ```
- * 
+ *
  * **응답:**
  * - `201 Created`: 성공 시 생성된 대상자 객체 반환
  * - `400 Bad Request`: 입력 검증 실패
  * - `401 Unauthorized`: 인증 실패
  * - `403 Forbidden`: 권한 없음
  * - `500 Internal Server Error`: 서버 오류
- * 
+ *
  * @see {@link https://github.com/Kris-Young-Kim/atcmp/blob/main/API_DOCS.md#post-apiclients API 문서}
  */
 export async function POST(request: Request) {
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     // 4. Supabase에 데이터 저장
     // created_by_user_id와 updated_by_user_id에 현재 사용자 ID 저장
     // .select().single()로 생성된 레코드를 즉시 반환받음
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     const { data, error } = await supabase
       .from("clients")
@@ -146,11 +146,11 @@ export async function POST(request: Request) {
 
 /**
  * GET /api/clients
- * 
+ *
  * 대상자 목록 조회 (검색, 필터, 정렬, 페이지네이션 지원)
- * 
+ *
  * **권한**: `admin`, `leader`, `specialist`, `socialWorker`
- * 
+ *
  * **쿼리 파라미터:**
  * - `search`: 검색어 (이름 또는 연락처)
  * - `status`: 상태 필터 (`active`, `inactive`, `discharged`, `all`)
@@ -158,7 +158,7 @@ export async function POST(request: Request) {
  * - `limit`: 페이지당 항목 수 (기본값: 25)
  * - `sortBy`: 정렬 필드 (기본값: `created_at`)
  * - `sortOrder`: 정렬 순서 (`asc`, `desc`, 기본값: `desc`)
- * 
+ *
  * **응답:**
  * ```json
  * {
@@ -171,7 +171,7 @@ export async function POST(request: Request) {
  *   }
  * }
  * ```
- * 
+ *
  * @see {@link https://github.com/Kris-Young-Kim/atcmp/blob/main/API_DOCS.md#get-apiclients API 문서}
  */
 export async function GET(request: Request) {
@@ -203,7 +203,7 @@ export async function GET(request: Request) {
     // 페이지네이션 오프셋 계산: (페이지 번호 - 1) × 페이지당 항목 수
     const offset = (page - 1) * limit;
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     // 쿼리 빌더 초기화: count: "exact"로 전체 개수도 함께 조회
     let query = supabase.from("clients").select("*", { count: "exact" });
@@ -262,4 +262,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

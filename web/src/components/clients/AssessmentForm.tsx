@@ -89,7 +89,10 @@ export function AssessmentForm({
       finalData.attachments = [...(finalData.attachments || []), ...otherUrls];
 
       // API 호출
-      const url = mode === "edit" ? `/api/clients/${clientId}/assessments/${assessmentId}` : `/api/clients/${clientId}/assessments`;
+      const url =
+        mode === "edit"
+          ? `/api/clients/${clientId}/assessments/${assessmentId}`
+          : `/api/clients/${clientId}/assessments`;
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -126,7 +129,9 @@ export function AssessmentForm({
       }, 2000);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
+        err instanceof Error
+          ? err.message
+          : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
       showError(errorMessage);
       auditLogger.error(`assessment_form_failed_${mode}`, {
         error: err,
@@ -214,9 +219,7 @@ export function AssessmentForm({
             </button>
           </div>
 
-          {fields.length === 0 && (
-            <p className="text-sm text-gray-600">평가 항목을 추가하세요.</p>
-          )}
+          {fields.length === 0 && <p className="text-sm text-gray-600">평가 항목을 추가하세요.</p>}
 
           <div className="space-y-4">
             {fields.map((field, index) => (
@@ -283,13 +286,18 @@ export function AssessmentForm({
                       placeholder="0-5"
                     />
                     {errors.items?.[index]?.score && (
-                      <p className="mt-1 text-sm text-red-600">{errors.items[index]?.score?.message}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.items[index]?.score?.message}
+                      </p>
                     )}
                   </div>
 
                   {/* 메모 */}
                   <div>
-                    <label htmlFor={`items.${index}.notes`} className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`items.${index}.notes`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       메모
                     </label>
                     <input
@@ -310,7 +318,9 @@ export function AssessmentForm({
             <div className="mt-4 rounded-lg bg-blue-50 p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">전체 평균 점수:</span>
-                <span className="text-lg font-bold text-blue-600">{totalScore.toFixed(1)} / 5.0</span>
+                <span className="text-lg font-bold text-blue-600">
+                  {totalScore.toFixed(1)} / 5.0
+                </span>
               </div>
             </div>
           )}
@@ -336,7 +346,9 @@ export function AssessmentForm({
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               placeholder="평가 결과 요약을 입력하세요"
             />
-            {errors.summary && <p className="mt-1 text-sm text-red-600">{errors.summary.message}</p>}
+            {errors.summary && (
+              <p className="mt-1 text-sm text-red-600">{errors.summary.message}</p>
+            )}
           </div>
         </section>
 
@@ -357,7 +369,12 @@ export function AssessmentForm({
               <ul className="mt-2 space-y-1">
                 {uploadedUrls.map((url, index) => (
                   <li key={index} className="text-sm text-gray-600">
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
                       PDF 파일 {index + 1}
                     </a>
                   </li>
@@ -394,4 +411,3 @@ export function AssessmentForm({
     </>
   );
 }
-

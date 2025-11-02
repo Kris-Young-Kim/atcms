@@ -22,7 +22,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("service_records")
       .select("*")
@@ -73,10 +73,10 @@ export async function PUT(
     }
 
     // 기존 기록 조회 (작성자 확인용)
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingRecord, error: fetchError } = await supabase
       .from("service_records")
-      .select("created_by_user_id")
+      .select("created_by_user_id, content, attachments")
       .eq("id", assessmentId)
       .eq("client_id", clientId)
       .single();
@@ -153,7 +153,10 @@ export async function PUT(
       // 전체 점수 계산
       if (updatedData.items && Array.isArray(updatedData.items) && updatedData.items.length > 0) {
         updatedData.total_score =
-          updatedData.total_score ?? calculateTotalScore(updatedData.items as Array<{ score: number }>);
+          updatedData.total_score ??
+          calculateTotalScore(
+            updatedData.items as Array<{ question: string; score: number; notes?: string; id?: string }>,
+          );
       }
 
       content = JSON.stringify(updatedData);
@@ -161,8 +164,10 @@ export async function PUT(
 
     // 첨부파일 업데이트
     if (validated.pdf_attachment !== undefined || validated.attachments !== undefined) {
-      const pdfUrl = validated.pdf_attachment || (attachments as string[]).find((url) => url.endsWith(".pdf"));
-      const otherAttachments = validated.attachments || (attachments as string[]).filter((url) => !url.endsWith(".pdf"));
+      const pdfUrl =
+        validated.pdf_attachment || (attachments as string[]).find((url) => url.endsWith(".pdf"));
+      const otherAttachments =
+        validated.attachments || (attachments as string[]).filter((url) => !url.endsWith(".pdf"));
       attachments = pdfUrl ? [pdfUrl, ...otherAttachments] : otherAttachments;
     }
 
@@ -237,7 +242,7 @@ export async function DELETE(
     }
 
     // 기존 기록 조회 (작성자 확인용)
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingRecord, error: fetchError } = await supabase
       .from("service_records")
       .select("created_by_user_id, title")
@@ -307,4 +312,3 @@ export async function DELETE(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

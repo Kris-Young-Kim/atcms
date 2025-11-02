@@ -47,21 +47,26 @@ export const maintenanceNoteSchema = z.object({
       { message: "유효한 날짜를 입력하세요." },
     )
     .optional(),
-  title: z.string().min(1, "제목은 필수 항목입니다.").max(200, "제목은 최대 200자까지 입력 가능합니다."),
+  title: z
+    .string()
+    .min(1, "제목은 필수 항목입니다.")
+    .max(200, "제목은 최대 200자까지 입력 가능합니다."),
   content: z.string().max(5000, "내용은 최대 5000자까지 입력 가능합니다.").optional(),
-  maintenance_type: z.enum(
-    [
-      MAINTENANCE_TYPES.REPAIR,
-      MAINTENANCE_TYPES.INSPECTION,
-      MAINTENANCE_TYPES.CLEANING,
-      MAINTENANCE_TYPES.CALIBRATION,
-      MAINTENANCE_TYPES.REPLACEMENT,
-      MAINTENANCE_TYPES.OTHER,
-    ],
-    {
-      errorMap: () => ({ message: "유효한 유지보수 유형을 선택하세요." }),
-    },
-  ).optional(),
+  maintenance_type: z
+    .enum(
+      [
+        MAINTENANCE_TYPES.REPAIR,
+        MAINTENANCE_TYPES.INSPECTION,
+        MAINTENANCE_TYPES.CLEANING,
+        MAINTENANCE_TYPES.CALIBRATION,
+        MAINTENANCE_TYPES.REPLACEMENT,
+        MAINTENANCE_TYPES.OTHER,
+      ],
+      {
+        errorMap: () => ({ message: "유효한 유지보수 유형을 선택하세요." }),
+      },
+    )
+    .optional(),
   cost: z
     .number()
     .min(0, "비용은 0 이상이어야 합니다.")
@@ -90,4 +95,3 @@ export const maintenanceNoteUpdateSchema = maintenanceNoteSchema.partial().exten
 });
 
 export type MaintenanceNoteUpdateData = z.infer<typeof maintenanceNoteUpdateSchema>;
-

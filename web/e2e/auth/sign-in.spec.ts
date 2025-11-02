@@ -19,7 +19,7 @@ test.describe("인증 플로우", () => {
     await page.goto("/sign-in");
 
     // Clerk SignIn 컴포넌트가 표시되어야 함
-    await expect(page.locator('text=Sign in')).toBeVisible();
+    await expect(page.locator("text=Sign in")).toBeVisible();
   });
 
   test("로그인 성공 후 대시보드로 리디렉션되어야 함", async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe("인증 플로우", () => {
 
     // 대시보드로 리디렉션 확인
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.locator('text=대시보드')).toBeVisible();
+    await expect(page.locator("text=대시보드")).toBeVisible();
   });
 
   test("로그아웃 후 로그인 페이지로 리디렉션되어야 함", async ({ page }) => {
@@ -44,4 +44,3 @@ test.describe("인증 플로우", () => {
     await expect(page).toHaveURL(/\/sign-in/);
   });
 });
-

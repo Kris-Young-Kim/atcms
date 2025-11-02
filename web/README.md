@@ -1,6 +1,6 @@
-# AT-Care Web (Next.js 16)
+# AT-CMP Web (Next.js 15)
 
-AT-Care MVP를 위한 Next.js 16 + TypeScript 기반 프런트엔드입니다. Clerk 인증, Supabase 연동,
+AT-CMP MVP를 위한 Next.js 15 + TypeScript 기반 프런트엔드입니다. Clerk 인증, Supabase 연동,
 감사 로그, Sentry 모니터링을 기본 제공하여 Phase 1 P0 백로그를 바로 구현할 수 있습니다.
 
 ## 1. 사전 준비

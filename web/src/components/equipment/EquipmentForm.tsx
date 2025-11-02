@@ -27,11 +27,7 @@ interface EquipmentFormProps {
   mode?: "create" | "edit";
 }
 
-export function EquipmentForm({
-  initialData,
-  equipmentId,
-  mode = "create",
-}: EquipmentFormProps) {
+export function EquipmentForm({ initialData, equipmentId, mode = "create" }: EquipmentFormProps) {
   const router = useRouter();
   const { toasts, removeToast, success, error: showError } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,9 +85,7 @@ export function EquipmentForm({
       const result = await response.json();
 
       success(
-        mode === "edit"
-          ? "기기가 성공적으로 수정되었습니다."
-          : "기기가 성공적으로 등록되었습니다.",
+        mode === "edit" ? "기기가 성공적으로 수정되었습니다." : "기기가 성공적으로 등록되었습니다.",
       );
 
       auditLogger.info(`equipment_form_success_${mode}`, {
@@ -104,7 +98,9 @@ export function EquipmentForm({
       }, 2000);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
+        err instanceof Error
+          ? err.message
+          : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
       showError(errorMessage);
       auditLogger.error(`equipment_form_failed_${mode}`, {
         error: err,
@@ -221,7 +217,9 @@ export function EquipmentForm({
                   </option>
                 ))}
               </select>
-              {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>}
+              {errors.status && (
+                <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>
+              )}
             </div>
           </div>
         </section>
@@ -253,7 +251,10 @@ export function EquipmentForm({
 
             {/* 가용 수량 */}
             <div>
-              <label htmlFor="available_quantity" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="available_quantity"
+                className="block text-sm font-medium text-gray-700"
+              >
                 가용 수량 <span className="text-red-500">*</span>
               </label>
               <input
@@ -278,7 +279,8 @@ export function EquipmentForm({
                 <p className="mt-1 text-sm text-red-600">{errors.available_quantity.message}</p>
               )}
               <p className="mt-1 text-xs text-gray-500">
-                최대 {totalQuantity}개까지 입력 가능 (대여 중: {totalQuantity - availableQuantity}개)
+                최대 {totalQuantity}개까지 입력 가능 (대여 중: {totalQuantity - availableQuantity}
+                개)
               </p>
             </div>
           </div>
@@ -418,4 +420,3 @@ export function EquipmentForm({
     </>
   );
 }
-

@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     const category = searchParams.get("category");
     const search = searchParams.get("search");
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     let query = supabase.from("equipment").select("*");
 
     // 상태 필터
@@ -144,7 +144,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     // 기기 저장
     const { data, error } = await supabase
@@ -199,4 +199,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

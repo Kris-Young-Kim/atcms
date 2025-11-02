@@ -12,10 +12,7 @@ import { equipmentQuantityUpdateSchema } from "@/lib/validations/equipment";
  *
  * 권한: admin, leader, technician만 가능
  */
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const { userId, sessionClaims } = await auth();
@@ -38,7 +35,7 @@ export async function PATCH(
     }
 
     // 기존 기기 조회
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingEquipment, error: fetchError } = await supabase
       .from("equipment")
       .select("*")
@@ -72,7 +69,8 @@ export async function PATCH(
       .eq("equipment_id", id)
       .eq("status", "active");
 
-    const totalRentedQuantity = activeRentals?.reduce((sum, rental) => sum + (rental.quantity || 0), 0) || 0;
+    const totalRentedQuantity =
+      activeRentals?.reduce((sum, rental) => sum + (rental.quantity || 0), 0) || 0;
 
     // 가용 수량은 전체 수량에서 대여 중인 수량을 뺀 값 이상이어야 함
     const minAvailableQuantity = Math.max(0, validated.total_quantity - totalRentedQuantity);
@@ -133,4 +131,3 @@ export async function PATCH(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

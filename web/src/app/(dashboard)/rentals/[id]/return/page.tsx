@@ -127,9 +127,7 @@ function ReturnRentalPageContent({ rentalId }: { rentalId: string }) {
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">대여 반납 처리</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            반납 정보를 입력하여 처리하세요.
-          </p>
+          <p className="mt-2 text-sm text-gray-600">반납 정보를 입력하여 처리하세요.</p>
         </div>
 
         <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -164,7 +162,10 @@ function ReturnRentalPageContent({ rentalId }: { rentalId: string }) {
             <div className="grid grid-cols-1 gap-6">
               {/* 실제 반납일 */}
               <div>
-                <label htmlFor="actual_return_date" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="actual_return_date"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   실제 반납일
                 </label>
                 <input
@@ -190,7 +191,9 @@ function ReturnRentalPageContent({ rentalId }: { rentalId: string }) {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   placeholder="반납 관련 메모를 입력하세요"
                 />
-                {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
+                {errors.notes && (
+                  <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
+                )}
               </div>
             </div>
           </div>
@@ -228,4 +231,3 @@ export default function ReturnRentalPage() {
     </ProtectedRoute>
   );
 }
-

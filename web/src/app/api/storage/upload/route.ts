@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 /**
  * 파일 업로드 API Route
  * POST /api/storage/upload
- * 
+ *
  * Supabase Storage에 파일을 업로드하고 URL을 반환합니다.
  * Sprint 1: CMS-US-04, CMS-US-05 (파일 첨부 기능)
  */
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     }
 
     // Supabase Storage 클라이언트 생성
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     // 버킷 경로 결정
     const bucketPath = getBucketPath(file.type);
@@ -136,7 +136,7 @@ export async function POST(request: Request) {
 /**
  * 파일 삭제 API Route
  * DELETE /api/storage/upload
- * 
+ *
  * Supabase Storage에서 파일을 삭제합니다.
  */
 export async function DELETE(request: Request) {
@@ -159,7 +159,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { error } = await supabase.storage.from("attachments").remove([filePath]);
 
     if (error) {
@@ -182,4 +182,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-

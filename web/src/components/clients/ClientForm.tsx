@@ -82,7 +82,9 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
       }, 2000);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
+        err instanceof Error
+          ? err.message
+          : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
       showError(errorMessage);
       auditLogger.error(`client_form_failed_${mode}`, {
         error: err,
@@ -97,24 +99,24 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* 기본 정보 섹션 */}
-        <section className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">기본 정보</h2>
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
+          <h2 className="mb-6 text-lg font-semibold text-gray-900">기본 정보</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* 이름 (필수) */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
                 이름 <span className="text-red-500">*</span>
               </label>
               <input
                 {...register("name", { required: "이름은 필수 항목입니다." })}
                 type="text"
                 id="name"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 aria-required="true"
               />
-              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+              {errors.name && <p className="mt-1.5 text-sm font-medium text-red-600">{errors.name.message}</p>}
             </div>
 
             {/* 생년월일 */}
@@ -126,7 +128,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 {...register("birth_date")}
                 type="date"
                 id="birth_date"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               {errors.birth_date && (
                 <p className="mt-1 text-sm text-red-600">{errors.birth_date.message}</p>
@@ -141,7 +143,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
               <select
                 {...register("gender")}
                 id="gender"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="">선택 안 함</option>
                 <option value="male">남성</option>
@@ -160,15 +162,15 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="date"
                 id="intake_date"
                 defaultValue={new Date().toISOString().split("T")[0]}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
           </div>
         </section>
 
         {/* 장애 정보 섹션 */}
-        <section className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">장애 정보</h2>
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
+          <h2 className="mb-6 text-lg font-semibold text-gray-900">장애 정보</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* 장애 유형 */}
             <div>
@@ -180,7 +182,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="text"
                 id="disability_type"
                 placeholder="예: 지체장애, 시각장애 등"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
@@ -194,15 +196,15 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="text"
                 id="disability_grade"
                 placeholder="예: 1급, 2급 등"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
           </div>
         </section>
 
         {/* 연락처 정보 섹션 */}
-        <section className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">연락처 정보</h2>
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
+          <h2 className="mb-6 text-lg font-semibold text-gray-900">연락처 정보</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* 전화번호 */}
             <div>
@@ -214,7 +216,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="tel"
                 id="contact_phone"
                 placeholder="010-1234-5678"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               {errors.contact_phone && (
                 <p className="mt-1 text-sm text-red-600">{errors.contact_phone.message}</p>
@@ -231,7 +233,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="email"
                 id="contact_email"
                 placeholder="example@email.com"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               {errors.contact_email && (
                 <p className="mt-1 text-sm text-red-600">{errors.contact_email.message}</p>
@@ -247,15 +249,15 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 {...register("address")}
                 type="text"
                 id="address"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
           </div>
         </section>
 
         {/* 보호자 정보 섹션 */}
-        <section className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">보호자 정보</h2>
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
+          <h2 className="mb-6 text-lg font-semibold text-gray-900">보호자 정보</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* 보호자 이름 */}
             <div>
@@ -266,7 +268,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 {...register("guardian_name")}
                 type="text"
                 id="guardian_name"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
@@ -280,7 +282,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="tel"
                 id="guardian_phone"
                 placeholder="010-1234-5678"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               {errors.guardian_phone && (
                 <p className="mt-1 text-sm text-red-600">{errors.guardian_phone.message}</p>
@@ -290,8 +292,8 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
         </section>
 
         {/* 기타 정보 섹션 */}
-        <section className="rounded-lg border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">기타 정보</h2>
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
+          <h2 className="mb-6 text-lg font-semibold text-gray-900">기타 정보</h2>
           <div className="space-y-6">
             {/* 의뢰 경로 */}
             <div>
@@ -303,7 +305,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 type="text"
                 id="referral_source"
                 placeholder="예: 병원, 복지관, 자가 등"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
@@ -316,7 +318,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 {...register("status")}
                 id="status"
                 defaultValue="active"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="active">활동중</option>
                 <option value="inactive">비활동</option>
@@ -333,7 +335,7 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 {...register("notes")}
                 id="notes"
                 rows={4}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 placeholder="추가 메모나 특이사항을 입력하세요"
               />
             </div>
@@ -341,30 +343,23 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
         </section>
 
         {/* 제출 버튼 */}
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4 border-t border-gray-200 pt-6">
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-md border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="rounded-lg border-2 border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             취소
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
           >
-            {isSubmitting
-              ? mode === "edit"
-                ? "수정 중..."
-                : "등록 중..."
-              : mode === "edit"
-                ? "수정"
-                : "등록"}
+            {isSubmitting ? "처리 중..." : mode === "edit" ? "수정" : "등록"}
           </button>
         </div>
       </form>
     </>
   );
 }
-

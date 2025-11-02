@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AT-Care | 보조공학 사례관리 플랫폼",
+  title: "AT-CMP | 보조공학 사례관리 플랫폼",
   description:
-    "보조공학 전문가 팀을 위한 AT-Care MVP 환경. Clerk 인증과 Supabase 연동을 갖춘 Next.js 기반 웹앱입니다.",
+    "보조공학 전문가 팀을 위한 AT-CMP MVP 환경. Clerk 인증과 Supabase 연동을 갖춘 Next.js 기반 웹앱입니다.",
 };
 
 export default function RootLayout({

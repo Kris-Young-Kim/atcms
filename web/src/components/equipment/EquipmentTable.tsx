@@ -107,9 +107,7 @@ export function EquipmentTable({
         return (
           <div className="space-y-1">
             <span className="font-medium">{available}</span>
-            {rented > 0 && (
-              <span className="ml-2 text-xs text-gray-500">(대여중: {rented})</span>
-            )}
+            {rented > 0 && <span className="ml-2 text-xs text-gray-500">(대여중: {rented})</span>}
           </div>
         );
       },
@@ -198,7 +196,11 @@ export function EquipmentTable({
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200" role="table" aria-label="기기 목록 테이블">
+        <table
+          className="min-w-full divide-y divide-gray-200"
+          role="table"
+          aria-label="기기 목록 테이블"
+        >
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -233,10 +235,14 @@ export function EquipmentTable({
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {header.column.getIsSorted() === "asc" && (
-                          <span className="text-xs" aria-label="오름차순 정렬">▲</span>
+                          <span className="text-xs" aria-label="오름차순 정렬">
+                            ▲
+                          </span>
                         )}
                         {header.column.getIsSorted() === "desc" && (
-                          <span className="text-xs" aria-label="내림차순 정렬">▼</span>
+                          <span className="text-xs" aria-label="내림차순 정렬">
+                            ▼
+                          </span>
                         )}
                       </div>
                     )}
@@ -264,4 +270,3 @@ export function EquipmentTable({
     </div>
   );
 }
-

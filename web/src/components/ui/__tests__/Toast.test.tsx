@@ -5,19 +5,18 @@
 
 import { render, screen, waitFor } from "@testing-library/react";
 import { act } from "react";
-import { Toast, useToast, ToastContainer } from "../Toast";
-
-jest.useFakeTimers();
+import { Toast, ToastContainer, useToast } from "../Toast";
 
 describe("Toast", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
-    jest.useFakeTimers();
   });
 
   describe("렌더링", () => {
@@ -42,7 +41,7 @@ describe("Toast", () => {
       render(<Toast message="성공 메시지" type="success" onClose={onClose} />);
 
       const toast = screen.getByRole("alert");
-      expect(toast).toHaveClass("bg-green-50");
+      expect(toast).toHaveClass("bg-emerald-50");
       expect(screen.getByText("✓")).toBeInTheDocument();
     });
 
@@ -92,7 +91,11 @@ describe("Toast", () => {
       render(<Toast message="테스트 메시지" onClose={onClose} />);
 
       const closeButton = screen.getByLabelText("닫기");
-      closeButton.click();
+
+      act(() => {
+        closeButton.click();
+        jest.advanceTimersByTime(300);
+      });
 
       await waitFor(() => {
         expect(onClose).toHaveBeenCalled();
@@ -102,7 +105,11 @@ describe("Toast", () => {
 });
 
 describe("useToast", () => {
-  it("toast를 추가할 수 있어야 함", () => {
+  beforeEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("toast를 추가할 수 있어야 함", async () => {
     function TestComponent() {
       const { toasts, showToast } = useToast();
 
@@ -118,13 +125,17 @@ describe("useToast", () => {
 
     expect(getByTestId("toast-count")).toHaveTextContent("0");
 
-    const button = getByRole("button");
-    button.click();
+    act(() => {
+      const button = getByRole("button");
+      button.click();
+    });
 
-    expect(getByTestId("toast-count")).toHaveTextContent("1");
+    await waitFor(() => {
+      expect(getByTestId("toast-count")).toHaveTextContent("1");
+    });
   });
 
-  it("toast를 제거할 수 있어야 함", () => {
+  it("toast를 제거할 수 있어야 함", async () => {
     function TestComponent() {
       const { toasts, showToast, removeToast } = useToast();
 
@@ -139,15 +150,26 @@ describe("useToast", () => {
 
     const { getByTestId, getAllByRole } = render(<TestComponent />);
 
-    const buttons = getAllByRole("button");
-    buttons[0].click(); // Show Toast
-    expect(getByTestId("toast-count")).toHaveTextContent("1");
+    act(() => {
+      const buttons = getAllByRole("button");
+      buttons[0].click(); // Show Toast
+    });
 
-    buttons[1].click(); // Remove Toast
-    expect(getByTestId("toast-count")).toHaveTextContent("0");
+    await waitFor(() => {
+      expect(getByTestId("toast-count")).toHaveTextContent("1");
+    });
+
+    act(() => {
+      const buttons = getAllByRole("button");
+      buttons[1].click(); // Remove Toast
+    });
+
+    await waitFor(() => {
+      expect(getByTestId("toast-count")).toHaveTextContent("0");
+    });
   });
 
-  it("success, error, info 헬퍼 함수가 작동해야 함", () => {
+  it("success, error, info 헬퍼 함수가 작동해야 함", async () => {
     function TestComponent() {
       const { toasts, success, error, info } = useToast();
 
@@ -157,8 +179,8 @@ describe("useToast", () => {
           <button onClick={() => error("에러")}>Error</button>
           <button onClick={() => info("정보")}>Info</button>
           <div data-testid="toast-count">{toasts.length}</div>
-          {toasts.map((toast) => (
-            <div key={toast.id} data-testid={`toast-${toast.id}`}>
+          {toasts.map((toast, index) => (
+            <div key={toast.id} data-testid={`toast-${index}`}>
               {toast.message} - {toast.type}
             </div>
           ))}
@@ -170,16 +192,30 @@ describe("useToast", () => {
 
     const buttons = getAllByRole("button");
 
-    buttons[0].click(); // Success
-    expect(getByTestId("toast-0")).toHaveTextContent("성공 - success");
+    act(() => {
+      buttons[0].click(); // Success
+    });
 
-    buttons[1].click(); // Error
-    expect(getByTestId("toast-1")).toHaveTextContent("에러 - error");
+    await waitFor(() => {
+      expect(getByTestId("toast-0")).toHaveTextContent("성공 - success");
+    });
 
-    buttons[2].click(); // Info
-    expect(getByTestId("toast-2")).toHaveTextContent("정보 - info");
+    act(() => {
+      buttons[1].click(); // Error
+    });
 
-    expect(getByTestId("toast-count")).toHaveTextContent("3");
+    await waitFor(() => {
+      expect(getByTestId("toast-1")).toHaveTextContent("에러 - error");
+    });
+
+    act(() => {
+      buttons[2].click(); // Info
+    });
+
+    await waitFor(() => {
+      expect(getByTestId("toast-2")).toHaveTextContent("정보 - info");
+      expect(getByTestId("toast-count")).toHaveTextContent("3");
+    });
   });
 });
 
@@ -206,4 +242,3 @@ describe("ToastContainer", () => {
     expect(container.firstChild).toBeNull();
   });
 });
-

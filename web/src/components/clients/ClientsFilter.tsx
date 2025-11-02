@@ -5,7 +5,7 @@ import { useState, FormEvent, useEffect, useRef } from "react";
 /**
  * 대상자 검색 및 필터 컴포넌트
  * Sprint 1: CMS-US-03
- * 
+ *
  * 기능:
  * - 검색 입력 (300ms 디바운스)
  * - 상태 필터
@@ -16,10 +16,7 @@ import { useState, FormEvent, useEffect, useRef } from "react";
 interface ClientsFilterProps {
   initialSearch?: string;
   initialStatus?: string;
-  onFilterChange: (filters: {
-    search: string;
-    status: string;
-  }) => void;
+  onFilterChange: (filters: { search: string; status: string }) => void;
 }
 
 export function ClientsFilter({
@@ -101,7 +98,8 @@ export function ClientsFilter({
             aria-describedby="search-description"
           />
           <p id="search-description" className="sr-only">
-            이름 또는 연락처를 입력하여 대상자를 검색할 수 있습니다. Escape 키를 누르면 검색어가 초기화됩니다.
+            이름 또는 연락처를 입력하여 대상자를 검색할 수 있습니다. Escape 키를 누르면 검색어가
+            초기화됩니다.
           </p>
         </div>
 
@@ -147,4 +145,3 @@ export function ClientsFilter({
     </form>
   );
 }
-

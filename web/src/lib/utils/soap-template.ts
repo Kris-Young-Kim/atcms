@@ -1,36 +1,36 @@
 /**
  * SOAP 템플릿 자동 삽입 유틸리티
  * Sprint 1: CMS-US-04
- * 
+ *
  * SOAP: Subjective(주관적), Objective(객관적), Assessment(평가), Plan(계획)
  */
 
 /**
  * SOAP 템플릿 데이터 구조
- * 
+ *
  * SOAP: Subjective(주관적), Objective(객관적), Assessment(평가), Plan(계획)
  */
 export interface SOAPTemplate {
   /** 주관적 정보 (환자가 호소하는 증상) */
   subjective: string;
-  
+
   /** 객관적 정보 (관찰된 정보) */
   objective: string;
-  
+
   /** 평가 (평가 내용) */
   assessment: string;
-  
+
   /** 계획 (치료 계획) */
   plan: string;
 }
 
 /**
  * 기본 SOAP 템플릿을 생성합니다.
- * 
+ *
  * 모든 필드가 빈 문자열로 초기화된 템플릿을 반환합니다.
- * 
+ *
  * @returns {SOAPTemplate} 빈 SOAP 템플릿 객체
- * 
+ *
  * @example
  * ```typescript
  * const template = createSOAPTemplate();
@@ -51,12 +51,12 @@ export function createSOAPTemplate(): SOAPTemplate {
 
 /**
  * SOAP 템플릿을 마크다운 형식의 텍스트로 변환합니다.
- * 
+ *
  * 비어있는 섹션은 제외하고, 각 섹션을 마크다운 헤더 형식으로 포맷팅합니다.
- * 
+ *
  * @param {SOAPTemplate} soap - 변환할 SOAP 템플릿 객체
  * @returns {string} 마크다운 형식의 텍스트
- * 
+ *
  * @example
  * ```typescript
  * const soap = {
@@ -88,13 +88,13 @@ export function formatSOAPToText(soap: SOAPTemplate): string {
 
 /**
  * 마크다운 형식의 텍스트를 SOAP 템플릿 객체로 파싱합니다.
- * 
+ *
  * 텍스트에서 SOAP 섹션을 찾아 각 필드에 추출합니다.
  * 섹션이 없으면 빈 문자열로 설정됩니다.
- * 
+ *
  * @param {string} text - 파싱할 마크다운 형식의 텍스트
  * @returns {SOAPTemplate} 파싱된 SOAP 템플릿 객체
- * 
+ *
  * @example
  * ```typescript
  * const text = "## S (Subjective - 주관적)\n\n두통\n\n## O (Objective - 객관적)\n\n체온 37.5도";
@@ -136,13 +136,12 @@ export function parseTextToSOAP(text: string): SOAPTemplate {
 
 /**
  * SOAP 템플릿이 비어있는지 확인합니다.
- * 
+ *
  * 모든 필드가 빈 문자열이면 `true`를 반환합니다.
- * 
+ *
  * @param {SOAPTemplate} soap - 확인할 SOAP 템플릿 객체
  * @returns {boolean} 모든 필드가 비어있으면 `true`
  */
 export function isSOAPEmpty(soap: SOAPTemplate): boolean {
   return !soap.subjective && !soap.objective && !soap.assessment && !soap.plan;
 }
-

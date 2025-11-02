@@ -36,7 +36,9 @@ export function ConsultationForm({
   const { uploadedUrls, handleUploadComplete, clearUrls } = useFileUpload();
 
   // 초기 데이터에서 SOAP 형식 확인
-  const initialSOAP = initialData?.content ? parseTextToSOAP(initialData.content) : createSOAPTemplate();
+  const initialSOAP = initialData?.content
+    ? parseTextToSOAP(initialData.content)
+    : createSOAPTemplate();
   const [soapData, setSOAPData] = useState(initialSOAP);
 
   // SOAP 사용 여부 확인 (초기 데이터에 SOAP 형식이 있는 경우)
@@ -74,7 +76,7 @@ export function ConsultationForm({
       });
 
       // SOAP 형식 사용 시 SOAP 데이터를 content에 통합
-      let finalData = { ...data };
+      const finalData = { ...data };
       if (useSOAP) {
         const soapText = formatSOAPToText(soapData);
         finalData.content = finalData.content ? `${finalData.content}\n\n${soapText}` : soapText;
@@ -88,7 +90,10 @@ export function ConsultationForm({
       finalData.attachments = [...(finalData.attachments || []), ...uploadedUrls];
 
       // API 호출
-      const url = mode === "edit" ? `/api/clients/${clientId}/consultations/${consultationId}` : `/api/clients/${clientId}/consultations`;
+      const url =
+        mode === "edit"
+          ? `/api/clients/${clientId}/consultations/${consultationId}`
+          : `/api/clients/${clientId}/consultations`;
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -125,7 +130,9 @@ export function ConsultationForm({
       }, 2000);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
+        err instanceof Error
+          ? err.message
+          : `${mode === "edit" ? "수정" : "등록"} 중 오류가 발생했습니다.`;
       showError(errorMessage);
       auditLogger.error(`consultation_form_failed_${mode}`, {
         error: err,
@@ -280,7 +287,9 @@ export function ConsultationForm({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 placeholder="상담 내용을 자유롭게 기록하세요"
               />
-              {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>}
+              {errors.content && (
+                <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>
+              )}
             </div>
           </section>
         )}
@@ -298,11 +307,18 @@ export function ConsultationForm({
           />
           {uploadedUrls.length > 0 && (
             <div className="mt-4">
-              <p className="text-sm font-medium text-gray-700">업로드된 파일 ({uploadedUrls.length}개):</p>
+              <p className="text-sm font-medium text-gray-700">
+                업로드된 파일 ({uploadedUrls.length}개):
+              </p>
               <ul className="mt-2 space-y-1">
                 {uploadedUrls.map((url, index) => (
                   <li key={index} className="text-sm text-gray-600">
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
                       파일 {index + 1}
                     </a>
                   </li>
@@ -339,4 +355,3 @@ export function ConsultationForm({
     </>
   );
 }
-

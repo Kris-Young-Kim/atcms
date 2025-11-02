@@ -133,7 +133,9 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900">{consultation.title}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {consultation.title}
+                        </h3>
                         <span className="text-sm text-gray-500">
                           {new Date(consultation.record_date).toLocaleDateString("ko-KR")}
                         </span>
@@ -144,32 +146,48 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
                         <div className="mt-4 space-y-3">
                           {soap.subjective && (
                             <div>
-                              <h4 className="text-sm font-medium text-gray-700">S (Subjective - 주관적)</h4>
-                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{soap.subjective}</p>
+                              <h4 className="text-sm font-medium text-gray-700">
+                                S (Subjective - 주관적)
+                              </h4>
+                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
+                                {soap.subjective}
+                              </p>
                             </div>
                           )}
                           {soap.objective && (
                             <div>
-                              <h4 className="text-sm font-medium text-gray-700">O (Objective - 객관적)</h4>
-                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{soap.objective}</p>
+                              <h4 className="text-sm font-medium text-gray-700">
+                                O (Objective - 객관적)
+                              </h4>
+                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
+                                {soap.objective}
+                              </p>
                             </div>
                           )}
                           {soap.assessment && (
                             <div>
-                              <h4 className="text-sm font-medium text-gray-700">A (Assessment - 평가)</h4>
-                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{soap.assessment}</p>
+                              <h4 className="text-sm font-medium text-gray-700">
+                                A (Assessment - 평가)
+                              </h4>
+                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
+                                {soap.assessment}
+                              </p>
                             </div>
                           )}
                           {soap.plan && (
                             <div>
                               <h4 className="text-sm font-medium text-gray-700">P (Plan - 계획)</h4>
-                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{soap.plan}</p>
+                              <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
+                                {soap.plan}
+                              </p>
                             </div>
                           )}
                         </div>
                       ) : (
                         consultation.content && (
-                          <p className="mt-2 whitespace-pre-wrap text-sm text-gray-600">{consultation.content}</p>
+                          <p className="mt-2 whitespace-pre-wrap text-sm text-gray-600">
+                            {consultation.content}
+                          </p>
                         )
                       )}
 
@@ -222,4 +240,3 @@ export function ConsultationTimeline({ clientId, onCreateNew }: ConsultationTime
     </>
   );
 }
-

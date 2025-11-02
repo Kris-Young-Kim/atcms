@@ -1,6 +1,6 @@
 /**
  * E2E 테스트 데이터
- * 
+ *
  * 테스트에서 사용하는 공통 데이터를 정의합니다.
  */
 
@@ -51,7 +51,9 @@ export const testRental = {
     equipment_id: "equipment_001", // 실제 기기 ID로 교체 필요
     client_id: "client_001", // 실제 대상자 ID로 교체 필요
     rental_date: new Date().toISOString().split("T")[0],
-    expected_return_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    expected_return_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
     quantity: 1,
     notes: "E2E 테스트 대여",
   },
@@ -90,4 +92,3 @@ export const testAssessment = {
     notes: "E2E 테스트 평가 기록",
   },
 };
-

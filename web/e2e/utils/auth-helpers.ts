@@ -1,6 +1,6 @@
 /**
  * E2E 테스트 인증 헬퍼 함수
- * 
+ *
  * 로그인/로그아웃 등 인증 관련 공통 함수를 제공합니다.
  */
 
@@ -26,11 +26,11 @@ export const testUsers = {
 
 /**
  * 로그인 헬퍼 함수
- * 
+ *
  * @param page - Playwright Page 객체
  * @param email - 이메일 주소
  * @param password - 비밀번호
- * 
+ *
  * @example
  * ```typescript
  * await login(page, testUsers.admin.email, testUsers.admin.password);
@@ -63,9 +63,9 @@ export async function login(page: Page, email: string, password: string): Promis
 
 /**
  * 로그아웃 헬퍼 함수
- * 
+ *
  * @param page - Playwright Page 객체
- * 
+ *
  * @example
  * ```typescript
  * await logout(page);
@@ -76,7 +76,7 @@ export async function logout(page: Page): Promise<void> {
   await page.click('[data-testid="user-button"]');
 
   // 로그아웃 버튼 클릭
-  await page.click('text=Sign out');
+  await page.click("text=Sign out");
 
   // 로그인 페이지로 리디렉션될 때까지 대기
   await page.waitForURL(/\/sign-in/, { timeout: 5000 });
@@ -84,7 +84,7 @@ export async function logout(page: Page): Promise<void> {
 
 /**
  * 관리자로 로그인
- * 
+ *
  * @param page - Playwright Page 객체
  */
 export async function loginAsAdmin(page: Page): Promise<void> {
@@ -93,7 +93,7 @@ export async function loginAsAdmin(page: Page): Promise<void> {
 
 /**
  * 팀장으로 로그인
- * 
+ *
  * @param page - Playwright Page 객체
  */
 export async function loginAsLeader(page: Page): Promise<void> {
@@ -102,10 +102,9 @@ export async function loginAsLeader(page: Page): Promise<void> {
 
 /**
  * 작업치료사로 로그인
- * 
+ *
  * @param page - Playwright Page 객체
  */
 export async function loginAsSpecialist(page: Page): Promise<void> {
   await login(page, testUsers.specialist.email, testUsers.specialist.password);
 }
-

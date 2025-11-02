@@ -7,17 +7,18 @@ import { z } from "zod";
 
 export const consultationSchema = z.object({
   client_id: z.string().uuid("유효한 대상자 ID가 아닙니다."),
-  record_date: z
+  record_date: z.string().refine(
+    (val) => {
+      if (!val) return true;
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    },
+    { message: "유효한 날짜를 입력하세요." },
+  ),
+  title: z
     .string()
-    .refine(
-      (val) => {
-        if (!val) return true;
-        const date = new Date(val);
-        return !isNaN(date.getTime());
-      },
-      { message: "유효한 날짜를 입력하세요." },
-    ),
-  title: z.string().min(1, "제목은 필수 항목입니다.").max(200, "제목은 최대 200자까지 입력 가능합니다."),
+    .min(1, "제목은 필수 항목입니다.")
+    .max(200, "제목은 최대 200자까지 입력 가능합니다."),
   content: z.string().max(10000, "내용은 최대 10000자까지 입력 가능합니다.").optional(),
   // SOAP 필드 (선택적)
   subjective: z.string().max(5000).optional(),
@@ -55,4 +56,3 @@ export const consultationUpdateSchema = consultationSchema.partial().extend({
 });
 
 export type ConsultationUpdateData = z.infer<typeof consultationUpdateSchema>;
-

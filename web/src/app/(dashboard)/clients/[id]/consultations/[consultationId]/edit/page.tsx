@@ -71,7 +71,11 @@ function EditConsultationPageContent({
       <ConsultationForm
         clientId={clientId}
         consultationId={consultationId}
-        initialData={consultation}
+        initialData={{
+          ...consultation,
+          attachments: consultation.attachments || [],
+          record_date: consultation.record_date,
+        }}
         mode="edit"
       />
     </div>
@@ -89,4 +93,3 @@ export default function EditConsultationPage() {
     </ProtectedRoute>
   );
 }
-

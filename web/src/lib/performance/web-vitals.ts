@@ -2,9 +2,9 @@ import { onCLS, onFID, onLCP, onTTFB } from "web-vitals";
 
 /**
  * Web Vitals 성능 측정 및 리포트
- * 
+ *
  * Core Web Vitals를 측정하고 분석 도구로 전송합니다.
- * 
+ *
  * @see https://web.dev/vitals/
  */
 
@@ -21,7 +21,7 @@ type ReportHandler = (metric: {
 
 /**
  * Web Vitals 메트릭을 로깅하는 리포트 핸들러
- * 
+ *
  * @param metric - Web Vitals 메트릭 데이터
  */
 function reportMetric(metric: {
@@ -51,7 +51,7 @@ function reportMetric(metric: {
 
 /**
  * Sentry로 Web Vitals 전송
- * 
+ *
  * @param metric - Web Vitals 메트릭 데이터
  */
 async function sendToSentry(metric: {
@@ -100,9 +100,9 @@ async function sendToSentry(metric: {
 
 /**
  * Web Vitals 측정 초기화
- * 
+ *
  * 브라우저에서 Core Web Vitals를 측정하고 리포트합니다.
- * 
+ *
  * @example
  * ```typescript
  * // _app.tsx 또는 layout.tsx에서 호출
@@ -125,7 +125,7 @@ export function reportWebVitals(): void {
 
 /**
  * 성능 메트릭 수집기
- * 
+ *
  * 커스텀 성능 메트릭을 수집합니다.
  */
 export class PerformanceCollector {
@@ -133,7 +133,7 @@ export class PerformanceCollector {
 
   /**
    * 성능 메트릭 기록
-   * 
+   *
    * @param name - 메트릭 이름
    * @param value - 메트릭 값 (밀리초)
    */
@@ -146,7 +146,7 @@ export class PerformanceCollector {
 
   /**
    * 메트릭 평균값 계산
-   * 
+   *
    * @param name - 메트릭 이름
    * @returns 평균값 (밀리초)
    */
@@ -160,7 +160,7 @@ export class PerformanceCollector {
 
   /**
    * 메트릭 통계 반환
-   * 
+   *
    * @param name - 메트릭 이름
    * @returns 통계 객체
    */
@@ -188,4 +188,3 @@ export class PerformanceCollector {
 
 // 싱글톤 인스턴스
 export const performanceCollector = new PerformanceCollector();
-

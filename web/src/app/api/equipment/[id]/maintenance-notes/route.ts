@@ -10,10 +10,7 @@ import { maintenanceNoteSchema } from "@/lib/validations/maintenance-note";
  * 기기별 유지보수 노트 목록 조회
  * Sprint 1: ERM-US-03
  */
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const { userId } = await auth();
@@ -22,7 +19,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("maintenance_notes")
       .select("*")
@@ -64,10 +61,7 @@ export async function GET(
  *
  * 권한: admin, leader, technician만 가능
  */
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const { userId, sessionClaims } = await auth();
@@ -93,7 +87,7 @@ export async function POST(
     }
 
     // 기기 존재 확인
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: equipment, error: equipmentError } = await supabase
       .from("equipment")
       .select("id, name")
@@ -182,4 +176,3 @@ export async function POST(
     );
   }
 }
-

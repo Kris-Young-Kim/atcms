@@ -17,7 +17,7 @@ interface EquipmentStatusChartProps {
 
 /**
  * 기기 상태 차트 컴포넌트 (Stub)
- * 
+ *
  * 현재는 간단한 통계 표시로 구현
  * 향후 Chart.js 또는 Recharts를 사용하여 실제 차트로 업그레이드 예정
  */
@@ -42,13 +42,15 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">기기 상태 통계</h3>
-      
+
       {/* 간단한 막대 차트 Stub */}
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium text-gray-700">정상</span>
-            <span className="text-sm text-gray-600">{data.normal}개 ({percentages.normal}%)</span>
+            <span className="text-sm text-gray-600">
+              {data.normal}개 ({percentages.normal}%)
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
@@ -62,7 +64,9 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium text-gray-700">유지보수</span>
-            <span className="text-sm text-gray-600">{data.maintenance}개 ({percentages.maintenance}%)</span>
+            <span className="text-sm text-gray-600">
+              {data.maintenance}개 ({percentages.maintenance}%)
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
@@ -76,7 +80,9 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium text-gray-700">폐기</span>
-            <span className="text-sm text-gray-600">{data.retired}개 ({percentages.retired}%)</span>
+            <span className="text-sm text-gray-600">
+              {data.retired}개 ({percentages.retired}%)
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4">
             <div
@@ -106,4 +112,3 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
     </div>
   );
 }
-

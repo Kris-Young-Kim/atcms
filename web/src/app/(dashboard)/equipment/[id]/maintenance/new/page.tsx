@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { MaintenanceNoteForm } from "@/components/equipment/MaintenanceNoteForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 
@@ -31,9 +32,7 @@ function NewMaintenanceNotePageContent({ equipmentId }: { equipmentId: string })
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">새 유지보수 노트 작성</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          유지보수 내용을 기록하세요.
-        </p>
+        <p className="mt-2 text-sm text-gray-600">유지보수 내용을 기록하세요.</p>
       </div>
 
       <MaintenanceNoteForm equipmentId={equipmentId} />
@@ -51,4 +50,3 @@ export default function NewMaintenanceNotePage() {
     </ProtectedRoute>
   );
 }
-

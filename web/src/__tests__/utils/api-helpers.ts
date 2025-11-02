@@ -1,6 +1,6 @@
 /**
  * API 테스트 헬퍼 함수
- * 
+ *
  * API Route 테스트 작성 시 사용하는 헬퍼 함수들입니다.
  */
 
@@ -11,11 +11,11 @@ import { createMockSuccessResponse, createMockErrorResponse } from "../mocks/sup
 
 /**
  * API 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
  * @param expectedStatus - 예상 HTTP 상태 코드
  * @returns 응답 JSON 데이터
- * 
+ *
  * @example
  * ```typescript
  * const response = await POST(request);
@@ -33,9 +33,9 @@ export async function expectResponseStatus(
 
 /**
  * 401 Unauthorized 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
- * 
+ *
  * @example
  * ```typescript
  * await expectUnauthorized(response);
@@ -49,9 +49,9 @@ export async function expectUnauthorized(response: NextResponse): Promise<void> 
 
 /**
  * 403 Forbidden 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
- * 
+ *
  * @example
  * ```typescript
  * await expectForbidden(response);
@@ -65,10 +65,10 @@ export async function expectForbidden(response: NextResponse): Promise<void> {
 
 /**
  * 400 Bad Request 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
  * @returns 검증 에러 상세 정보
- * 
+ *
  * @example
  * ```typescript
  * const details = await expectBadRequest(response);
@@ -84,10 +84,10 @@ export async function expectBadRequest(response: NextResponse): Promise<unknown>
 
 /**
  * 201 Created 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
  * @returns 생성된 리소스 데이터
- * 
+ *
  * @example
  * ```typescript
  * const created = await expectCreated(response);
@@ -100,10 +100,10 @@ export async function expectCreated<T>(response: NextResponse): Promise<T> {
 
 /**
  * 200 OK 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
  * @returns 응답 데이터
- * 
+ *
  * @example
  * ```typescript
  * const data = await expectOk(response);
@@ -116,9 +116,9 @@ export async function expectOk<T>(response: NextResponse): Promise<T> {
 
 /**
  * 500 Internal Server Error 응답 검증 헬퍼
- * 
+ *
  * @param response - NextResponse 객체
- * 
+ *
  * @example
  * ```typescript
  * await expectInternalServerError(response);
@@ -131,10 +131,10 @@ export async function expectInternalServerError(response: NextResponse): Promise
 
 /**
  * Clerk 인증 Mock 설정 헬퍼 (API 테스트용)
- * 
+ *
  * @param user - Mock 사용자 객체
  * @param mockAuth - Clerk auth Mock 함수
- * 
+ *
  * @example
  * ```typescript
  * setupApiAuthMock(mockAdminUser, mockAuth);
@@ -146,11 +146,11 @@ export function setupApiAuthMock(user: MockUser, mockAuth: jest.Mock): void {
 
 /**
  * Supabase Query Builder Mock 설정 헬퍼
- * 
+ *
  * @param mockSupabase - Mock Supabase 클라이언트
  * @param tableName - 테이블 이름
  * @param response - Mock 응답
- * 
+ *
  * @example
  * ```typescript
  * setupSupabaseMock(mockSupabase, "clients", {
@@ -175,11 +175,11 @@ export function setupSupabaseMock(
 
 /**
  * Supabase 성공 응답 Mock 설정
- * 
+ *
  * @param mockSupabase - Mock Supabase 클라이언트
  * @param tableName - 테이블 이름
  * @param data - 반환할 데이터
- * 
+ *
  * @example
  * ```typescript
  * setupSupabaseSuccess(mockSupabase, "clients", { id: "client_001", name: "홍길동" });
@@ -195,11 +195,11 @@ export function setupSupabaseSuccess(
 
 /**
  * Supabase 에러 응답 Mock 설정
- * 
+ *
  * @param mockSupabase - Mock Supabase 클라이언트
  * @param tableName - 테이블 이름
  * @param errorMessage - 에러 메시지
- * 
+ *
  * @example
  * ```typescript
  * setupSupabaseError(mockSupabase, "clients", "Database connection failed");
@@ -212,4 +212,3 @@ export function setupSupabaseError(
 ): void {
   setupSupabaseMock(mockSupabase, tableName, createMockErrorResponse(errorMessage));
 }
-

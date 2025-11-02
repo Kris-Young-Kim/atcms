@@ -119,4 +119,3 @@ export type ClientFilter = z.infer<typeof clientFilterSchema>;
 export const clientUpdateSchema = clientSchema.partial();
 
 export type ClientUpdateData = z.infer<typeof clientUpdateSchema>;
-

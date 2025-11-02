@@ -2,9 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright 설정 파일
- * 
+ *
  * E2E 테스트 환경 설정을 정의합니다.
- * 
+ *
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -78,4 +78,3 @@ export default defineConfig({
     timeout: 5 * 1000,
   },
 });
-

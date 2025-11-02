@@ -8,6 +8,14 @@ import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ConsultationTimeline } from "@/components/clients/ConsultationTimeline";
 import { AssessmentTimeline } from "@/components/clients/AssessmentTimeline";
+import { IntegratedActivityTimeline } from "@/components/clients/IntegratedActivityTimeline";
+import {
+  ClientStatsWidget,
+  ActiveTasksWidget,
+  NextScheduleWidget,
+  RecentActivitiesWidget,
+  QuickActionsWidget,
+} from "@/components/clients/ClientDashboardWidgets";
 import type { Client } from "@/lib/validations/client";
 
 /**
@@ -24,7 +32,32 @@ export default function ClientDetailPage() {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "consultations" | "assessments">("overview");
+  const [clientStats, setClientStats] = useState<{
+    client_id: string;
+    client_name: string;
+    stats: {
+      consultation_count: number;
+      assessment_count: number;
+      active_rentals_count: number;
+      active_customizations_count: number;
+      upcoming_schedules: Array<{
+        id: string;
+        title: string;
+        start_time: string;
+        schedule_type: string;
+        status: string;
+      }>;
+      next_schedule: {
+        id: string;
+        title: string;
+        start_time: string;
+        schedule_type: string;
+      } | null;
+    };
+  } | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "consultations" | "assessments" | "activities">(
+    "overview",
+  );
 
   const clientId = params.id as string;
   const canEdit = hasRole(["admin", "leader", "specialist"]);
@@ -32,6 +65,7 @@ export default function ClientDetailPage() {
 
   useEffect(() => {
     fetchClient();
+    fetchStats();
   }, [clientId]);
 
   async function fetchClient() {
@@ -47,6 +81,18 @@ export default function ClientDetailPage() {
       showError("대상자 정보 조회 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchStats() {
+    try {
+      const response = await fetch(`/api/clients/${clientId}/stats`);
+      if (response.ok) {
+        const data = await response.json();
+        setClientStats(data);
+      }
+    } catch (err) {
+      console.error("통계 조회 실패:", err);
     }
   }
 
@@ -115,7 +161,8 @@ export default function ClientDetailPage() {
               </span>
             </div>
             <p className="mt-2 text-sm text-gray-600">
-              접수일: {client.intake_date ? new Date(client.intake_date).toLocaleDateString("ko-KR") : "-"}
+              접수일:{" "}
+              {client.intake_date ? new Date(client.intake_date).toLocaleDateString("ko-KR") : "-"}
             </p>
           </div>
           <div className="flex gap-3">
@@ -181,12 +228,49 @@ export default function ClientDetailPage() {
             >
               평가 기록
             </button>
+            <button
+              onClick={() => setActiveTab("activities")}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "activities"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+              aria-current={activeTab === "activities" ? "page" : undefined}
+            >
+              통합 활동
+            </button>
           </nav>
         </div>
 
         {/* 탭 내용 */}
         {activeTab === "overview" && (
           <div className="space-y-6">
+            {/* 통합 통계 위젯 */}
+            <ClientStatsWidget clientId={clientId} />
+
+            {/* 대시보드 위젯 그리드 */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {/* 진행 중인 작업 및 최근 활동 */}
+              <div className="space-y-6">
+                {clientStats && (
+                  <ActiveTasksWidget clientId={clientId} stats={clientStats.stats} />
+                )}
+                <RecentActivitiesWidget clientId={clientId} />
+              </div>
+
+              {/* 다음 일정 및 빠른 액션 */}
+              <div className="space-y-6">
+                {clientStats && (
+                  <NextScheduleWidget
+                    clientId={clientId}
+                    nextSchedule={clientStats.stats.next_schedule}
+                    upcomingSchedules={clientStats.stats.upcoming_schedules}
+                  />
+                )}
+                <QuickActionsWidget clientId={clientId} />
+              </div>
+            </div>
+
             {/* 기본 정보 */}
             <div className="rounded-lg border border-gray-200 bg-white p-6">
               <h2 className="mb-4 text-lg font-semibold text-gray-900">기본 정보</h2>
@@ -198,7 +282,9 @@ export default function ClientDetailPage() {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">생년월일</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {client.birth_date ? new Date(client.birth_date).toLocaleDateString("ko-KR") : "-"}
+                    {client.birth_date
+                      ? new Date(client.birth_date).toLocaleDateString("ko-KR")
+                      : "-"}
                   </dd>
                 </div>
                 <div>
@@ -292,8 +378,9 @@ export default function ClientDetailPage() {
             onCreateNew={() => router.push(`/clients/${clientId}/assessments/new`)}
           />
         )}
+
+        {activeTab === "activities" && <IntegratedActivityTimeline clientId={clientId} />}
       </div>
     </>
   );
 }
-

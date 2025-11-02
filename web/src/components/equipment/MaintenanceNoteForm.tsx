@@ -89,8 +89,7 @@ export function MaintenanceNoteForm({
         router.push(`/equipment/${equipmentId}`);
       }, 2000);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "등록 중 오류가 발생했습니다.";
+      const errorMessage = err instanceof Error ? err.message : "등록 중 오류가 발생했습니다.";
       showError(errorMessage);
       auditLogger.error(`maintenance_note_form_failed_${mode}`, {
         error: err,
@@ -223,4 +222,3 @@ export function MaintenanceNoteForm({
     </>
   );
 }
-

@@ -55,29 +55,44 @@ export const EQUIPMENT_CATEGORY_LABELS: Record<EquipmentCategory, string> = {
  * 기기 검증 스키마
  */
 export const equipmentSchema = z.object({
-  name: z.string().min(1, "기기명은 필수 항목입니다.").max(200, "기기명은 최대 200자까지 입력 가능합니다."),
-  category: z.enum(
-    [
-      EQUIPMENT_CATEGORIES.WHEELCHAIR,
-      EQUIPMENT_CATEGORIES.HEARING_AID,
-      EQUIPMENT_CATEGORIES.COMMUNICATION_AID,
-      EQUIPMENT_CATEGORIES.MOBILITY_AID,
-      EQUIPMENT_CATEGORIES.DAILY_LIVING_AID,
-      EQUIPMENT_CATEGORIES.OTHER,
-    ],
-    {
-      errorMap: () => ({ message: "유효한 카테고리를 선택하세요." }),
-    },
-  ).optional(),
+  name: z
+    .string()
+    .min(1, "기기명은 필수 항목입니다.")
+    .max(200, "기기명은 최대 200자까지 입력 가능합니다."),
+  category: z
+    .enum(
+      [
+        EQUIPMENT_CATEGORIES.WHEELCHAIR,
+        EQUIPMENT_CATEGORIES.HEARING_AID,
+        EQUIPMENT_CATEGORIES.COMMUNICATION_AID,
+        EQUIPMENT_CATEGORIES.MOBILITY_AID,
+        EQUIPMENT_CATEGORIES.DAILY_LIVING_AID,
+        EQUIPMENT_CATEGORIES.OTHER,
+      ],
+      {
+        errorMap: () => ({ message: "유효한 카테고리를 선택하세요." }),
+      },
+    )
+    .optional(),
   brand: z.string().max(100, "브랜드는 최대 100자까지 입력 가능합니다.").optional(),
   model: z.string().max(100, "모델명은 최대 100자까지 입력 가능합니다.").optional(),
   serial_number: z.string().max(100, "시리얼 번호는 최대 100자까지 입력 가능합니다.").optional(),
   description: z.string().max(1000, "설명은 최대 1000자까지 입력 가능합니다.").optional(),
-  status: z.enum([EQUIPMENT_STATUS.NORMAL, EQUIPMENT_STATUS.MAINTENANCE, EQUIPMENT_STATUS.RETIRED], {
-    errorMap: () => ({ message: "유효한 상태를 선택하세요." }),
-  }).default(EQUIPMENT_STATUS.NORMAL),
-  total_quantity: z.number().int("수량은 정수여야 합니다.").min(0, "수량은 0 이상이어야 합니다.").default(1),
-  available_quantity: z.number().int("수량은 정수여야 합니다.").min(0, "수량은 0 이상이어야 합니다.").default(0),
+  status: z
+    .enum([EQUIPMENT_STATUS.NORMAL, EQUIPMENT_STATUS.MAINTENANCE, EQUIPMENT_STATUS.RETIRED], {
+      errorMap: () => ({ message: "유효한 상태를 선택하세요." }),
+    })
+    .default(EQUIPMENT_STATUS.NORMAL),
+  total_quantity: z
+    .number()
+    .int("수량은 정수여야 합니다.")
+    .min(0, "수량은 0 이상이어야 합니다.")
+    .default(1),
+  available_quantity: z
+    .number()
+    .int("수량은 정수여야 합니다.")
+    .min(0, "수량은 0 이상이어야 합니다.")
+    .default(0),
   location: z.string().max(200, "보관 위치는 최대 200자까지 입력 가능합니다.").optional(),
   purchase_date: z
     .string()
@@ -133,9 +148,12 @@ export type EquipmentUpdateData = z.infer<typeof equipmentUpdateSchema>;
  * 기기 상태 변경 스키마
  */
 export const equipmentStatusUpdateSchema = z.object({
-  status: z.enum([EQUIPMENT_STATUS.NORMAL, EQUIPMENT_STATUS.MAINTENANCE, EQUIPMENT_STATUS.RETIRED], {
-    errorMap: () => ({ message: "유효한 상태를 선택하세요." }),
-  }),
+  status: z.enum(
+    [EQUIPMENT_STATUS.NORMAL, EQUIPMENT_STATUS.MAINTENANCE, EQUIPMENT_STATUS.RETIRED],
+    {
+      errorMap: () => ({ message: "유효한 상태를 선택하세요." }),
+    },
+  ),
 });
 
 export type EquipmentStatusUpdateData = z.infer<typeof equipmentStatusUpdateSchema>;
@@ -143,16 +161,14 @@ export type EquipmentStatusUpdateData = z.infer<typeof equipmentStatusUpdateSche
 /**
  * 기기 수량 조정 스키마
  */
-export const equipmentQuantityUpdateSchema = z.object({
-  total_quantity: z.number().int().min(0),
-  available_quantity: z.number().int().min(0),
-}).refine(
-  (data) => data.available_quantity <= data.total_quantity,
-  {
+export const equipmentQuantityUpdateSchema = z
+  .object({
+    total_quantity: z.number().int().min(0),
+    available_quantity: z.number().int().min(0),
+  })
+  .refine((data) => data.available_quantity <= data.total_quantity, {
     message: "가용 수량은 전체 수량을 초과할 수 없습니다.",
     path: ["available_quantity"],
-  },
-);
+  });
 
 export type EquipmentQuantityUpdateData = z.infer<typeof equipmentQuantityUpdateSchema>;
-

@@ -31,9 +31,7 @@ function NewEquipmentPageContent() {
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">새 기기 등록</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          기기 정보를 입력하여 재고에 등록하세요.
-        </p>
+        <p className="mt-2 text-sm text-gray-600">기기 정보를 입력하여 재고에 등록하세요.</p>
       </div>
 
       <EquipmentForm />
@@ -48,4 +46,3 @@ export default function NewEquipmentPage() {
     </ProtectedRoute>
   );
 }
-

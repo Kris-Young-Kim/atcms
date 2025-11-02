@@ -12,10 +12,7 @@ import { rentalReturnSchema, RENTAL_STATUS } from "@/lib/validations/rental";
  *
  * 권한: admin, leader, technician만 가능
  */
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const { userId, sessionClaims } = await auth();
@@ -37,7 +34,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden: Insufficient permissions" }, { status: 403 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
     // 기존 대여 기록 조회
     const { data: existingRental, error: fetchError } = await supabase
@@ -131,4 +128,3 @@ export async function PATCH(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

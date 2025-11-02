@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 /**
  * GET /api/health
- * 
+ *
  * 헬스 체크 엔드포인트
  * 배포 후 검증 및 모니터링에 사용됩니다.
- * 
+ *
  * @returns 헬스 체크 응답
  */
 export async function GET() {
@@ -31,4 +31,3 @@ export async function GET() {
     );
   }
 }
-

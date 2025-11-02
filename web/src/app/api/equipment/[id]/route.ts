@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("equipment").select("*").eq("id", id).single();
 
     if (error || !data) {
@@ -78,7 +78,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // 기존 기기 조회
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingEquipment, error: fetchError } = await supabase
       .from("equipment")
       .select("*")
@@ -191,7 +191,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     // 기존 기기 조회
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingEquipment, error: fetchError } = await supabase
       .from("equipment")
       .select("name")
@@ -250,4 +250,3 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

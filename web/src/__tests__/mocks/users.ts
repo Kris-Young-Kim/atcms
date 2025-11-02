@@ -1,6 +1,6 @@
 /**
  * 테스트용 Mock 사용자 데이터
- * 
+ *
  * 역할별 사용자 Mock 데이터를 생성하는 팩토리 함수들입니다.
  */
 
@@ -17,11 +17,11 @@ export interface MockUser {
 
 /**
  * Mock 사용자 생성 함수
- * 
+ *
  * @param role - 사용자 역할
  * @param userId - 사용자 ID (선택사항, 기본값: `user_${role}_test`)
  * @returns Mock 사용자 객체
- * 
+ *
  * @example
  * ```typescript
  * const adminUser = createMockUser("admin");
@@ -73,4 +73,3 @@ export const mockUnauthenticatedUser: MockUser = {
     metadata: {},
   },
 };
-

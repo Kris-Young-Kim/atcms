@@ -38,7 +38,7 @@ test.describe("대여 신청", () => {
     await page.click('button[type="submit"]');
 
     // 성공 메시지 확인
-    await expect(page.locator('text=성공적으로 등록되었습니다')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=성공적으로 등록되었습니다")).toBeVisible({ timeout: 10000 });
 
     // 대여 목록 페이지로 리디렉션 확인
     await expect(page).toHaveURL(/\/rentals/, { timeout: 5000 });
@@ -57,7 +57,6 @@ test.describe("대여 신청", () => {
     await page.click('button[type="submit"]');
 
     // 에러 메시지 확인
-    await expect(page.locator('text=가용 수량이 부족합니다')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator("text=가용 수량이 부족합니다")).toBeVisible({ timeout: 5000 });
   });
 });
-

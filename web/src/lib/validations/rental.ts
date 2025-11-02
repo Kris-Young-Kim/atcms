@@ -53,7 +53,11 @@ export const rentalSchema = z.object({
       { message: "유효한 날짜를 입력하세요." },
     )
     .optional(),
-  quantity: z.number().int("수량은 정수여야 합니다.").min(1, "수량은 1 이상이어야 합니다.").default(1),
+  quantity: z
+    .number()
+    .int("수량은 정수여야 합니다.")
+    .min(1, "수량은 1 이상이어야 합니다.")
+    .default(1),
   notes: z.string().max(5000, "메모는 최대 5000자까지 입력 가능합니다.").optional(),
 });
 
@@ -112,4 +116,3 @@ export const rentalReturnSchema = z.object({
 });
 
 export type RentalReturnData = z.infer<typeof rentalReturnSchema>;
-

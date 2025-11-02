@@ -19,10 +19,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("rentals")
-      .select(`
+      .select(
+        `
         *,
         equipment:equipment_id (
           id,
@@ -37,7 +38,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           contact_phone,
           contact_email
         )
-      `)
+      `,
+      )
       .eq("id", id)
       .single();
 
@@ -62,4 +64,3 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

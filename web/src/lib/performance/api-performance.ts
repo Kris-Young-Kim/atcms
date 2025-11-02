@@ -1,6 +1,6 @@
 /**
  * API 성능 측정 유틸리티
- * 
+ *
  * API 엔드포인트의 응답 시간을 측정하고 로깅합니다.
  * 목표: 평균 < 2초, 95%ile < 3초, 99%ile < 5초
  */
@@ -18,14 +18,14 @@ interface ApiPerformanceMetric {
 
 /**
  * API 성능 측정 함수
- * 
+ *
  * API 핸들러의 실행 시간을 측정하고 로깅합니다.
- * 
+ *
  * @param endpoint - API 엔드포인트 경로
  * @param method - HTTP 메서드
  * @param handler - API 핸들러 함수
  * @returns API 응답
- * 
+ *
  * @example
  * ```typescript
  * export async function GET(request: Request) {
@@ -85,7 +85,7 @@ export async function measureApiPerformance<T>(
 
 /**
  * Sentry로 API 성능 메트릭 전송
- * 
+ *
  * @param metric - API 성능 메트릭 데이터
  */
 async function sendToSentry(metric: ApiPerformanceMetric): Promise<void> {
@@ -125,7 +125,7 @@ async function sendToSentry(metric: ApiPerformanceMetric): Promise<void> {
 
 /**
  * API 성능 메트릭 로깅
- * 
+ *
  * @param metric - 성능 메트릭 데이터
  */
 function logApiPerformance(metric: ApiPerformanceMetric): void {
@@ -147,11 +147,11 @@ function logApiPerformance(metric: ApiPerformanceMetric): void {
 
 /**
  * 데이터베이스 쿼리 성능 측정
- * 
+ *
  * @param queryName - 쿼리 이름
  * @param queryFn - 쿼리 함수
  * @returns 쿼리 결과
- * 
+ *
  * @example
  * ```typescript
  * const data = await measureQueryPerformance('getClients', async () => {
@@ -180,4 +180,3 @@ export async function measureQueryPerformance<T>(
     }
   }
 }
-

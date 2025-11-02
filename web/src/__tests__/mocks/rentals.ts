@@ -1,6 +1,6 @@
 /**
  * 테스트용 Mock 대여 데이터
- * 
+ *
  * 대여 관련 Mock 데이터를 생성하는 팩토리 함수들입니다.
  */
 
@@ -24,10 +24,10 @@ export interface MockRental extends RentalFormData {
 
 /**
  * Mock 대여 기록 생성 함수
- * 
+ *
  * @param overrides - 기본값을 덮어쓸 필드들
  * @returns Mock 대여 기록 객체
- * 
+ *
  * @example
  * ```typescript
  * const rental = createMockRental({ equipment_id: "equipment_001" });
@@ -110,4 +110,3 @@ export const invalidRentalData = {
   client_id: "invalid-uuid", // 잘못된 UUID 형식
   rental_date: "invalid-date", // 잘못된 날짜 형식
 };
-

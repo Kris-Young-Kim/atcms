@@ -168,7 +168,9 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
                             <span className={`text-lg font-bold ${scoreLevel.color}`}>
                               {assessment.total_score} / 5.0
                             </span>
-                            <span className={`ml-2 text-sm ${scoreLevel.color}`}>({scoreLevel.level})</span>
+                            <span className={`ml-2 text-sm ${scoreLevel.color}`}>
+                              ({scoreLevel.level})
+                            </span>
                           </div>
                         </div>
                       )}
@@ -179,7 +181,10 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
                           <h4 className="text-sm font-medium text-gray-700">평가 항목</h4>
                           <ul className="mt-2 space-y-2">
                             {assessment.items.map((item, index) => (
-                              <li key={item.id || index} className="flex items-center gap-4 text-sm">
+                              <li
+                                key={item.id || index}
+                                className="flex items-center gap-4 text-sm"
+                              >
                                 <span className="flex-1 text-gray-900">{item.question}</span>
                                 <span className="text-gray-600">
                                   점수: <span className="font-medium">{item.score} / 5</span>
@@ -194,7 +199,9 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
                       {assessment.summary && (
                         <div className="mt-4">
                           <h4 className="text-sm font-medium text-gray-700">요약</h4>
-                          <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{assessment.summary}</p>
+                          <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">
+                            {assessment.summary}
+                          </p>
                         </div>
                       )}
 
@@ -262,4 +269,3 @@ export function AssessmentTimeline({ clientId, onCreateNew }: AssessmentTimeline
     </>
   );
 }
-

@@ -1,6 +1,6 @@
 /**
  * 테스트용 Supabase Mock
- * 
+ *
  * Supabase 클라이언트를 Mock하는 유틸리티 함수들입니다.
  */
 
@@ -43,9 +43,9 @@ export interface MockSupabaseQueryBuilder {
 
 /**
  * Mock Supabase 클라이언트 생성 함수
- * 
+ *
  * @returns Mock Supabase 클라이언트
- * 
+ *
  * @example
  * ```typescript
  * const mockSupabase = createMockSupabaseClient();
@@ -69,7 +69,7 @@ export function createMockSupabaseClient(): jest.Mocked<SupabaseClient> {
 
 /**
  * Mock Query Builder 생성 함수
- * 
+ *
  * @returns Mock Query Builder
  */
 export function createMockQueryBuilder(): MockSupabaseQueryBuilder {
@@ -126,7 +126,7 @@ export function createMockQueryBuilder(): MockSupabaseQueryBuilder {
 
 /**
  * 성공 응답을 반환하는 Mock 설정 헬퍼
- * 
+ *
  * @param data - 반환할 데이터
  * @returns Mock 응답 객체
  */
@@ -139,7 +139,7 @@ export function createMockSuccessResponse<T>(data: T) {
 
 /**
  * 실패 응답을 반환하는 Mock 설정 헬퍼
- * 
+ *
  * @param message - 에러 메시지
  * @returns Mock 응답 객체
  */
@@ -154,4 +154,3 @@ export function createMockErrorResponse(message: string) {
     },
   };
 }
-

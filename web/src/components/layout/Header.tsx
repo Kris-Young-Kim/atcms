@@ -20,7 +20,7 @@ export function Header() {
   const { userRole } = useUserRole();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
+    <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 shadow-sm">
       <div className="flex items-center gap-4">
         <h1 className="text-lg font-semibold text-gray-900">
           {/* 현재 페이지 타이틀은 각 페이지에서 설정 */}
@@ -31,16 +31,17 @@ export function Header() {
         {/* 사용자 정보 */}
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-semibold text-gray-900">
               {user?.firstName || user?.username || "사용자"}
             </p>
-            <p className="text-xs text-gray-500">{roleNames[userRole] || userRole}</p>
+            <p className="text-xs font-medium text-gray-500">{roleNames[userRole] || userRole}</p>
           </div>
           {/* Clerk 사용자 버튼 (프로필, 로그아웃) */}
-          <UserButton afterSignOutUrl="/" />
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-1 transition-all hover:border-gray-300 hover:bg-gray-100">
+            <UserButton afterSignOutUrl="/" />
+          </div>
         </div>
       </div>
     </header>
   );
 }
-

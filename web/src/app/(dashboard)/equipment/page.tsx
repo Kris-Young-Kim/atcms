@@ -84,11 +84,7 @@ export default function EquipmentPage() {
   }, 300);
 
   const handleStatusChange = async (equipmentId: string, newStatus: EquipmentStatus) => {
-    if (
-      !confirm(
-        `기기 상태를 "${EQUIPMENT_STATUS_LABELS[newStatus]}"로 변경하시겠습니까?`,
-      )
-    ) {
+    if (!confirm(`기기 상태를 "${EQUIPMENT_STATUS_LABELS[newStatus]}"로 변경하시겠습니까?`)) {
       return;
     }
 
@@ -134,9 +130,7 @@ export default function EquipmentPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">기기 재고 관리</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              재고를 관리하고 상태를 변경할 수 있습니다.
-            </p>
+            <p className="mt-2 text-sm text-gray-600">재고를 관리하고 상태를 변경할 수 있습니다.</p>
           </div>
           {canCreate && (
             <Link
@@ -250,4 +244,3 @@ export default function EquipmentPage() {
     </>
   );
 }
-

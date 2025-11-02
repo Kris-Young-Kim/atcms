@@ -1,6 +1,6 @@
 /**
  * 테스트용 Mock 기기 데이터
- * 
+ *
  * 기기 관련 Mock 데이터를 생성하는 팩토리 함수들입니다.
  */
 
@@ -21,10 +21,10 @@ export interface MockEquipment extends EquipmentFormData {
 
 /**
  * Mock 기기 생성 함수
- * 
+ *
  * @param overrides - 기본값을 덮어쓸 필드들
  * @returns Mock 기기 객체
- * 
+ *
  * @example
  * ```typescript
  * const equipment = createMockEquipment({ name: "휠체어 A형" });
@@ -119,4 +119,3 @@ export const invalidEquipmentData = {
   category: "invalid_category", // 잘못된 카테고리
   quantity: -1, // 음수 수량 (검증 실패)
 };
-

@@ -95,7 +95,10 @@ export default function EquipmentDetailPage() {
               </span>
             </div>
             <p className="mt-2 text-sm text-gray-600">
-              등록일: {equipment.created_at ? new Date(equipment.created_at).toLocaleDateString("ko-KR") : "-"}
+              등록일:{" "}
+              {equipment.created_at
+                ? new Date(equipment.created_at).toLocaleDateString("ko-KR")
+                : "-"}
             </p>
           </div>
           <div className="flex gap-3">
@@ -158,7 +161,11 @@ export default function EquipmentDetailPage() {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">카테고리</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {equipment.category ? EQUIPMENT_CATEGORY_LABELS[equipment.category as keyof typeof EQUIPMENT_CATEGORY_LABELS] : "-"}
+                    {equipment.category
+                      ? EQUIPMENT_CATEGORY_LABELS[
+                          equipment.category as keyof typeof EQUIPMENT_CATEGORY_LABELS
+                        ]
+                      : "-"}
                   </dd>
                 </div>
                 <div>
@@ -176,7 +183,9 @@ export default function EquipmentDetailPage() {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">상태</dt>
                   <dd className="mt-1">
-                    <span className={`rounded-full px-2 py-1 text-xs font-medium ${statusInfo.class}`}>
+                    <span
+                      className={`rounded-full px-2 py-1 text-xs font-medium ${statusInfo.class}`}
+                    >
                       {statusInfo.label}
                     </span>
                   </dd>
@@ -244,13 +253,17 @@ export default function EquipmentDetailPage() {
                 {equipment.description && (
                   <div className="md:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">설명</dt>
-                    <dd className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{equipment.description}</dd>
+                    <dd className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">
+                      {equipment.description}
+                    </dd>
                   </div>
                 )}
                 {equipment.notes && (
                   <div className="md:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">메모</dt>
-                    <dd className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{equipment.notes}</dd>
+                    <dd className="mt-1 text-sm text-gray-900 whitespace-pre-wrap">
+                      {equipment.notes}
+                    </dd>
                   </div>
                 )}
               </dl>
@@ -268,4 +281,3 @@ export default function EquipmentDetailPage() {
     </>
   );
 }
-

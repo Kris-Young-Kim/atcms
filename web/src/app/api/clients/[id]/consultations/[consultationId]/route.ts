@@ -22,7 +22,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("service_records")
       .select("*")
@@ -57,7 +57,7 @@ export async function GET(
  * PUT /api/clients/[id]/consultations/[consultationId]
  * 상담 기록 수정
  * Sprint 1: CMS-US-04
- * 
+ *
  * 권한: 작성자 본인 또는 admin/leader만 수정 가능
  */
 export async function PUT(
@@ -73,7 +73,7 @@ export async function PUT(
     }
 
     // 기존 기록 조회 (작성자 확인용)
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingRecord, error: fetchError } = await supabase
       .from("service_records")
       .select("created_by_user_id")
@@ -191,7 +191,7 @@ export async function PUT(
  * DELETE /api/clients/[id]/consultations/[consultationId]
  * 상담 기록 삭제
  * Sprint 1: CMS-US-04
- * 
+ *
  * 권한: 작성자 본인 또는 admin/leader만 삭제 가능
  */
 export async function DELETE(
@@ -207,7 +207,7 @@ export async function DELETE(
     }
 
     // 기존 기록 조회 (작성자 확인용)
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: existingRecord, error: fetchError } = await supabase
       .from("service_records")
       .select("created_by_user_id, title")
@@ -277,4 +277,3 @@ export async function DELETE(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

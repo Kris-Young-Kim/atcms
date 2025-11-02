@@ -29,9 +29,7 @@ export default function RentalsPage() {
   const [equipmentIdFilter, setEquipmentIdFilter] = useState<string>(
     searchParams.get("equipment_id") || "",
   );
-  const [clientIdFilter, setClientIdFilter] = useState<string>(
-    searchParams.get("client_id") || "",
-  );
+  const [clientIdFilter, setClientIdFilter] = useState<string>(searchParams.get("client_id") || "");
 
   const canCreate = hasRole(["admin", "leader", "technician"]);
 
@@ -94,9 +92,7 @@ export default function RentalsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">대여 관리</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              기기 대여 및 반납을 관리합니다.
-            </p>
+            <p className="mt-2 text-sm text-gray-600">기기 대여 및 반납을 관리합니다.</p>
           </div>
           {canCreate && (
             <Link
@@ -172,4 +168,3 @@ export default function RentalsPage() {
     </>
   );
 }
-
