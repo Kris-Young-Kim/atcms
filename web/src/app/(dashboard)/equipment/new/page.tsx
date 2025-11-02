@@ -3,6 +3,9 @@
 import { EquipmentForm } from "@/components/equipment/EquipmentForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 새 기기 등록 페이지
  * Sprint 1: ERM-US-01

@@ -3,6 +3,9 @@
 import { ClientForm } from "@/components/clients/ClientForm";
 import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
 
+// 정적 생성을 방지 (Clerk 인증 필요)
+export const dynamic = "force-dynamic";
+
 /**
  * 대상자 등록 페이지
  * Sprint 1: CMS-US-01
