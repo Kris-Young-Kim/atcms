@@ -7,16 +7,40 @@ import { scheduleSchema } from "@/lib/validations/schedule";
 import { z } from "zod";
 
 /**
- * 대여 일정 생성을 위한 확장 스키마
+ * 대여 일정 생성을 위한 스키마
  */
-const rentalScheduleSchema = scheduleSchema.extend({
-  schedule_type: z.literal("rental"),
-  rental_id: z.string().uuid("대여 ID는 필수입니다."),
-  client_id: z.string().uuid("대상자 ID는 필수입니다."),
-  // 기기 준비 일정 자동 생성 옵션
-  auto_create_preparation: z.boolean().default(true), // 기본값: true
-  preparation_days_before: z.number().int().min(0).max(30).default(1), // 대여 일정 전 며칠 전에 준비 일정 생성
-});
+const rentalScheduleSchema = z
+  .object({
+    schedule_type: z.literal("rental"),
+    rental_id: z.string().uuid("대여 ID는 필수입니다."),
+    client_id: z.string().uuid("대상자 ID는 필수입니다."),
+    title: z
+      .string()
+      .min(1, "제목은 필수입니다.")
+      .max(200, "제목은 최대 200자까지 입력 가능합니다."),
+    description: z.string().max(5000).optional(),
+    location: z.string().max(500).optional(),
+    start_time: z.string().datetime({ message: "유효한 시작 시간을 입력하세요 (ISO 8601 형식)." }),
+    end_time: z.string().datetime({ message: "유효한 종료 시간을 입력하세요 (ISO 8601 형식)." }),
+    participant_ids: z.array(z.string()).default([]),
+    reminder_minutes: z.number().int().min(0).max(1440).default(30),
+    status: z.enum(["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
+    notes: z.string().max(5000).optional(),
+    // 기기 준비 일정 자동 생성 옵션
+    auto_create_preparation: z.boolean().default(true), // 기본값: true
+    preparation_days_before: z.number().int().min(0).max(30).default(1), // 대여 일정 전 며칠 전에 준비 일정 생성
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.start_time);
+      const end = new Date(data.end_time);
+      return end > start;
+    },
+    {
+      message: "종료 시간은 시작 시간 이후여야 합니다.",
+      path: ["end_time"],
+    },
+  );
 
 /**
  * POST /api/schedules/rental
@@ -121,7 +145,10 @@ export async function POST(request: Request) {
 
     // client_id 일치 확인
     if (rental.client_id !== validated.client_id) {
-      return NextResponse.json({ error: "Client ID does not match rental record" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Client ID does not match rental record" },
+        { status: 400 },
+      );
     }
 
     // 5. 대여 일정 저장
@@ -255,4 +282,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

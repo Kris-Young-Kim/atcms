@@ -36,11 +36,14 @@ interface ActivitySearchResponse {
  * Phase 10: 통합 대상자 관리
  */
 interface IntegratedSearchBarProps {
-  onSearch: (query: string, filters: {
-    activity_type: string;
-    start_date?: string;
-    end_date?: string;
-  }) => void;
+  onSearch: (
+    query: string,
+    filters: {
+      activity_type: string;
+      start_date?: string;
+      end_date?: string;
+    },
+  ) => void;
   initialQuery?: string;
   initialActivityType?: string;
 }
@@ -58,13 +61,19 @@ export function IntegratedSearchBar({
   // 디바운스된 검색 함수
   const debouncedSearch = useMemo(
     () =>
-      debounce((searchQuery: string, filters: {
-        activity_type: string;
-        start_date?: string;
-        end_date?: string;
-      }) => {
-        onSearch(searchQuery, filters);
-      }, 300),
+      debounce(
+        (
+          searchQuery: string,
+          filters: {
+            activity_type: string;
+            start_date?: string;
+            end_date?: string;
+          },
+        ) => {
+          onSearch(searchQuery, filters);
+        },
+        300,
+      ),
     [onSearch],
   );
 
@@ -215,11 +224,15 @@ export default function IntegratedSearchPage() {
   const endDate = searchParams.get("end_date") || undefined;
 
   const performSearch = useCallback(
-    async (searchQuery: string, filters: {
-      activity_type: string;
-      start_date?: string;
-      end_date?: string;
-    }, page: number = 1) => {
+    async (
+      searchQuery: string,
+      filters: {
+        activity_type: string;
+        start_date?: string;
+        end_date?: string;
+      },
+      page: number = 1,
+    ) => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
@@ -248,20 +261,27 @@ export default function IntegratedSearchPage() {
 
   useEffect(() => {
     if (query || activityType !== "all" || startDate || endDate) {
-      performSearch(query, {
-        activity_type: activityType,
-        start_date: startDate,
-        end_date: endDate,
-      }, parseInt(searchParams.get("page") || "1", 10));
+      performSearch(
+        query,
+        {
+          activity_type: activityType,
+          start_date: startDate,
+          end_date: endDate,
+        },
+        parseInt(searchParams.get("page") || "1", 10),
+      );
     }
   }, [query, activityType, startDate, endDate, searchParams, performSearch]);
 
   const handleSearch = useCallback(
-    (searchQuery: string, filters: {
-      activity_type: string;
-      start_date?: string;
-      end_date?: string;
-    }) => {
+    (
+      searchQuery: string,
+      filters: {
+        activity_type: string;
+        start_date?: string;
+        end_date?: string;
+      },
+    ) => {
       const params = new URLSearchParams();
       if (searchQuery) params.set("query", searchQuery);
       if (filters.activity_type !== "all") params.set("activity_type", filters.activity_type);
@@ -356,7 +376,9 @@ export default function IntegratedSearchPage() {
             <div className="flex gap-4">
               {Object.entries(grouped).map(([type, count]) => (
                 <div key={type} className="flex items-center gap-2">
-                  <span className="text-lg">{getActivityIcon(type === "schedule" ? "schedule_" : type)}</span>
+                  <span className="text-lg">
+                    {getActivityIcon(type === "schedule" ? "schedule_" : type)}
+                  </span>
                   <span className="text-sm text-gray-600">
                     {getActivityLabel(type === "schedule" ? "schedule_" : type)}: {count}
                   </span>
@@ -395,26 +417,32 @@ export default function IntegratedSearchPage() {
                 <div className="flex-1">
                   <div className="mb-2 flex items-center gap-3">
                     <h3 className="text-lg font-semibold text-gray-900">{activity.title}</h3>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${getActivityColor(activity.type)}`}>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${getActivityColor(activity.type)}`}
+                    >
                       {getActivityLabel(activity.type)}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <span>
-                      대상자: <Link href={`/clients/${activity.client_id}`} className="font-medium text-blue-600 hover:underline" onClick={(e) => e.stopPropagation()}>
+                      대상자:{" "}
+                      <Link
+                        href={`/clients/${activity.client_id}`}
+                        className="font-medium text-blue-600 hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {activity.client_name}
                       </Link>
                     </span>
                     <span>•</span>
                     <span>{new Date(activity.date).toLocaleDateString("ko-KR")}</span>
                   </div>
-                  {activity.metadata?.description && (
-                    <p className="mt-2 text-sm text-gray-700 line-clamp-2">
-                      {typeof activity.metadata.description === "string"
-                        ? activity.metadata.description
-                        : ""}
-                    </p>
-                  )}
+                  {typeof activity.metadata?.description === "string" &&
+                    activity.metadata.description && (
+                      <p className="mt-2 text-sm text-gray-700 line-clamp-2">
+                        {activity.metadata.description}
+                      </p>
+                    )}
                 </div>
                 <span className="text-gray-400">→</span>
               </div>
@@ -448,4 +476,3 @@ export default function IntegratedSearchPage() {
     </div>
   );
 }
-

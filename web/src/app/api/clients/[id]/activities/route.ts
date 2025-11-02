@@ -64,7 +64,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const supabase = await createSupabaseServerClient();
 
     // 대상자 존재 확인
-    const { data: clientExists } = await supabase.from("clients").select("id, name").eq("id", id).single();
+    const { data: clientExists } = await supabase
+      .from("clients")
+      .select("id, name")
+      .eq("id", id)
+      .single();
 
     if (!clientExists) {
       return NextResponse.json({ error: "Client not found" }, { status: 404 });
@@ -81,7 +85,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }> = [];
 
     // 1. 상담 및 평가 기록 조회
-    if (activityType === "all" || activityType === "consultation" || activityType === "assessment") {
+    if (
+      activityType === "all" ||
+      activityType === "consultation" ||
+      activityType === "assessment"
+    ) {
       let serviceQuery = supabase
         .from("service_records")
         .select("id, record_type, title, record_date, content, created_at")
@@ -100,7 +108,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         serviceQuery = serviceQuery.lte("record_date", endDate);
       }
 
-      const { data: serviceRecords } = await serviceQuery.order("record_date", { ascending: false });
+      const { data: serviceRecords } = await serviceQuery.order("record_date", {
+        ascending: false,
+      });
 
       if (serviceRecords) {
         serviceRecords.forEach((record) => {
@@ -132,7 +142,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         customizationQuery = customizationQuery.lte("requested_date", endDate);
       }
 
-      const { data: customizations } = await customizationQuery.order("requested_date", { ascending: false });
+      const { data: customizations } = await customizationQuery.order("requested_date", {
+        ascending: false,
+      });
 
       if (customizations) {
         customizations.forEach((customization) => {
@@ -169,7 +181,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
       if (rentals) {
         const equipmentIds = rentals.map((r) => r.equipment_id).filter(Boolean);
-        let equipmentMap: Record<string, { name: string }> = {};
+        const equipmentMap: Record<string, { name: string }> = {};
 
         if (equipmentIds.length > 0) {
           const { data: equipmentList } = await supabase
@@ -284,4 +296,3 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

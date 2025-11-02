@@ -88,7 +88,11 @@ export async function POST(request: Request) {
 
     // 4. 대상자 존재 확인
     const supabase = await createSupabaseServerClient();
-    const { data: clientExists } = await supabase.from("clients").select("id").eq("id", validated.client_id).single();
+    const { data: clientExists } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("id", validated.client_id)
+      .single();
 
     if (!clientExists) {
       auditLogger.error("customization_request_create_client_not_found", {
@@ -246,18 +250,16 @@ export async function GET(request: Request) {
     const supabase = await createSupabaseServerClient();
 
     // 쿼리 빌더 초기화: clients 테이블과 JOIN하여 대상자 이름도 함께 조회
-    let query = supabase
-      .from("customization_requests")
-      .select(
-        `
+    let query = supabase.from("customization_requests").select(
+      `
         *,
         clients:client_id (
           id,
           name
         )
       `,
-        { count: "exact" },
-      );
+      { count: "exact" },
+    );
 
     // 검색 조건 추가: 제목에 검색어가 포함된 경우
     if (validatedFilter.search) {
@@ -288,7 +290,10 @@ export async function GET(request: Request) {
         metadata: { supabaseError: error.message },
         error,
       });
-      return NextResponse.json({ error: "Failed to fetch customization requests" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to fetch customization requests" },
+        { status: 500 },
+      );
     }
 
     auditLogger.info("customization_requests_list_viewed", {
@@ -316,4 +321,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

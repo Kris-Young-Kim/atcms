@@ -42,7 +42,11 @@ export function ScheduleForm({
   const [customizations, setCustomizations] = useState<CustomizationRequest[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>(clientId || "");
   const [selectedScheduleType, setSelectedScheduleType] = useState<string>(
-    initialData?.schedule_type || rentalId ? "rental" : customizationRequestId ? "customization" : "consultation",
+    initialData?.schedule_type || rentalId
+      ? "rental"
+      : customizationRequestId
+        ? "customization"
+        : "consultation",
   );
 
   // 대상자 목록 로드 (필요한 경우)
@@ -80,7 +84,9 @@ export function ScheduleForm({
 
   async function fetchRentals() {
     try {
-      const response = await fetch(`/api/rentals?client_id=${selectedClientId}&status=active&limit=100`);
+      const response = await fetch(
+        `/api/rentals?client_id=${selectedClientId}&status=active&limit=100`,
+      );
       if (response.ok) {
         const data = await response.json();
         setRentals(data.data || []);
@@ -92,7 +98,9 @@ export function ScheduleForm({
 
   async function fetchCustomizations() {
     try {
-      const response = await fetch(`/api/customization-requests?client_id=${selectedClientId}&status!=completed&status!=cancelled&limit=100`);
+      const response = await fetch(
+        `/api/customization-requests?client_id=${selectedClientId}&status!=completed&status!=cancelled&limit=100`,
+      );
       if (response.ok) {
         const data = await response.json();
         setCustomizations(data.data || []);
@@ -131,10 +139,13 @@ export function ScheduleForm({
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
       ...initialData,
-      schedule_type: initialData?.schedule_type || (rentalId ? "rental" : customizationRequestId ? "customization" : "consultation"),
+      schedule_type:
+        initialData?.schedule_type ||
+        (rentalId ? "rental" : customizationRequestId ? "customization" : "consultation"),
       client_id: clientId || initialData?.client_id || "",
       rental_id: rentalId || initialData?.rental_id || null,
-      customization_request_id: customizationRequestId || initialData?.customization_request_id || null,
+      customization_request_id:
+        customizationRequestId || initialData?.customization_request_id || null,
       start_time: initialData?.start_time || getDefaultStartTime(),
       end_time: initialData?.end_time || getDefaultEndTime(),
       participant_ids: initialData?.participant_ids || [],
@@ -182,9 +193,7 @@ export function ScheduleForm({
       const result = await response.json();
 
       success(
-        mode === "edit"
-          ? "일정이 성공적으로 수정되었습니다."
-          : "일정이 성공적으로 등록되었습니다.",
+        mode === "edit" ? "일정이 성공적으로 수정되었습니다." : "일정이 성공적으로 등록되었습니다.",
       );
       auditLogger.info(`schedule_form_success_${mode}`, {
         metadata: { scheduleId: result.id },
@@ -229,7 +238,7 @@ export function ScheduleForm({
             value={selectedScheduleType}
             onChange={(e) => {
               setSelectedScheduleType(e.target.value);
-              setValue("schedule_type", e.target.value as any);
+              setValue("schedule_type", e.target.value as ScheduleFormData["schedule_type"]);
               // 유형 변경 시 관련 필드 초기화
               if (e.target.value !== "rental") {
                 setValue("rental_id", null);
@@ -253,7 +262,10 @@ export function ScheduleForm({
         </div>
 
         {/* 대상자 선택 (상담/평가/기타인 경우) */}
-        {(!selectedScheduleType || selectedScheduleType === "consultation" || selectedScheduleType === "assessment" || selectedScheduleType === "other") && (
+        {(!selectedScheduleType ||
+          selectedScheduleType === "consultation" ||
+          selectedScheduleType === "assessment" ||
+          selectedScheduleType === "other") && (
           <div>
             <label htmlFor="client_id" className="block text-sm font-medium text-gray-700">
               대상자
@@ -297,7 +309,11 @@ export function ScheduleForm({
               <option value="">대여 기록을 선택하세요</option>
               {rentals.map((rental) => (
                 <option key={rental.id} value={rental.id}>
-                  대여 #{rental.id.slice(0, 8)}... ({new Date(rental.rental_date).toLocaleDateString("ko-KR")})
+                  대여 #{rental.id.slice(0, 8)}... (
+                  {rental.rental_date
+                    ? new Date(rental.rental_date).toLocaleDateString("ko-KR")
+                    : ""}
+                  )
                 </option>
               ))}
             </select>
@@ -310,7 +326,10 @@ export function ScheduleForm({
         {/* 맞춤제작 요청 선택 (맞춤제작 일정인 경우) */}
         {selectedScheduleType === "customization" && (
           <div>
-            <label htmlFor="customization_request_id" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="customization_request_id"
+              className="block text-sm font-medium text-gray-700"
+            >
               맞춤제작 요청 <span className="text-red-500">*</span>
             </label>
             <select
@@ -322,7 +341,11 @@ export function ScheduleForm({
               <option value="">맞춤제작 요청을 선택하세요</option>
               {customizations.map((customization) => (
                 <option key={customization.id} value={customization.id}>
-                  {customization.title} ({new Date(customization.requested_date).toLocaleDateString("ko-KR")})
+                  {customization.title} (
+                  {customization.requested_date
+                    ? new Date(customization.requested_date).toLocaleDateString("ko-KR")
+                    : ""}
+                  )
                 </option>
               ))}
             </select>
@@ -389,7 +412,9 @@ export function ScheduleForm({
             {...register("location")}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
-          {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>}
+          {errors.location && (
+            <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>
+          )}
         </div>
 
         {/* 설명 */}
@@ -485,4 +510,3 @@ export function ScheduleForm({
     </>
   );
 }
-

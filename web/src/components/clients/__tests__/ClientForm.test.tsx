@@ -7,11 +7,15 @@
 
 import { validClientData } from "@/__tests__/mocks/clients";
 import { auditLogger } from "@/lib/logger/auditLogger";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
-import { act } from "react";
 import { ClientForm } from "../ClientForm";
+
+interface MockFetchOptions {
+  ok?: boolean;
+  status?: number;
+}
 
 // Next.js Router 모킹
 jest.mock("next/navigation", () => ({
@@ -27,12 +31,93 @@ jest.mock("@/lib/logger/auditLogger", () => ({
   },
 }));
 
+const mockToastApi = {
+  toasts: [] as Array<{ id: number; message: string; type: "success" | "error" | "info" }>,
+  removeToast: jest.fn(),
+  showToast: jest.fn(),
+  success: jest.fn(),
+  error: jest.fn(),
+  info: jest.fn(),
+};
+
+const reactActWarning = "The current testing environment is not configured to support act";
+const originalConsoleError = console.error;
+
+beforeAll(() => {
+  jest
+    .spyOn(console, "error")
+    .mockImplementation((message?: unknown, ...optionalParams: unknown[]) => {
+      if (typeof message === "string" && message.includes(reactActWarning)) {
+        return;
+      }
+
+      originalConsoleError(message as string, ...optionalParams);
+    });
+});
+
+afterAll(() => {
+  (console.error as jest.Mock).mockRestore();
+});
+
+// Toast 컴포넌트/훅 모킹 (테스트 시 act 경고 제거용)
+jest.mock("@/components/ui/Toast", () => ({
+  ToastContainer: () => null,
+  useToast: () => mockToastApi,
+}));
+
 // fetch 모킹
 global.fetch = jest.fn();
 
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockPush = jest.fn();
 const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+
+const createFetchResponse = <TData,>(
+  data: TData,
+  { ok = true, status = ok ? 200 : 400 }: MockFetchOptions = {},
+) =>
+  ({
+    ok,
+    status,
+    json: async () => data,
+  }) as Response;
+
+async function clickWithAct(user: ReturnType<typeof userEvent.setup>, element: HTMLElement) {
+  await act(async () => {
+    await user.click(element);
+  });
+}
+
+async function fillClientForm(
+  user: ReturnType<typeof userEvent.setup>,
+  data: Partial<typeof validClientData> = {},
+) {
+  const formData = { ...validClientData, ...data };
+
+  const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
+  await user.clear(nameInput);
+  await user.type(nameInput, formData.name);
+
+  const birthDateInput = screen.getByLabelText(/생년월일/) as HTMLInputElement;
+  await act(async () => {
+    fireEvent.change(birthDateInput, { target: { value: formData.birth_date } });
+  });
+
+  const genderSelect = screen.getByLabelText(/성별/) as HTMLSelectElement;
+  await user.selectOptions(genderSelect, formData.gender ?? "male");
+
+  const phoneInput = screen.getByLabelText(/전화번호/) as HTMLInputElement;
+  await user.clear(phoneInput);
+  await user.type(phoneInput, formData.contact_phone ?? "010-0000-0000");
+
+  const emailInput = screen.getByLabelText(/이메일/) as HTMLInputElement;
+  await user.clear(emailInput);
+  await user.type(emailInput, formData.contact_email ?? "test@example.com");
+
+  const addressInput = screen.getByLabelText(/주소/) as HTMLInputElement;
+  await user.clear(addressInput);
+  await user.type(addressInput, formData.address ?? "서울시 테스트");
+}
 
 describe("ClientForm", () => {
   beforeEach(() => {
@@ -45,6 +130,13 @@ describe("ClientForm", () => {
       forward: jest.fn(),
       refresh: jest.fn(),
     } as any);
+    mockFetch.mockReset();
+    mockToastApi.toasts = [];
+    mockToastApi.removeToast.mockReset();
+    mockToastApi.showToast.mockReset();
+    mockToastApi.success.mockReset();
+    mockToastApi.error.mockReset();
+    mockToastApi.info.mockReset();
   });
 
   describe("렌더링", () => {
@@ -84,106 +176,83 @@ describe("ClientForm", () => {
       render(<ClientForm />);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
-      await user.click(submitButton);
+      await clickWithAct(user, submitButton);
 
       await waitFor(() => {
         expect(screen.getByText(/이름은 최소 2자 이상이어야 합니다/)).toBeInTheDocument();
       });
     });
 
-    it.skip("유효한 데이터로 제출할 수 있어야 함", async () => {
-      // TODO: react-hook-form과 fetch 모킹의 비동기 처리 문제 해결 필요
+    it("유효한 데이터로 제출할 수 있어야 함", async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: "client_001", ...validClientData }),
-      } as Response);
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ id: "client_001", ...validClientData }),
+      );
 
       render(<ClientForm />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
+      await clickWithAct(user, submitButton);
 
-      await act(async () => {
-        await user.click(submitButton);
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith("/api/clients", expect.any(Object));
+        expect(auditLogger.info).toHaveBeenCalledWith(
+          "client_form_submitted_create",
+          expect.any(Object),
+        );
       });
-
-      await waitFor(
-        () => {
-          expect(mockFetch).toHaveBeenCalledWith("/api/clients", expect.any(Object));
-          expect(auditLogger.info).toHaveBeenCalledWith(
-            "client_form_submitted_create",
-            expect.any(Object),
-          );
-        },
-        { timeout: 10000 },
-      );
-    }, 15000);
+    });
   });
 
   describe("API 호출", () => {
-    it.skip("등록 모드일 때 POST 요청을 보내야 함", async () => {
-      // TODO: react-hook-form과 fetch 모킹의 비동기 처리 문제 해결 필요
+    it("등록 모드일 때 POST 요청을 보내야 함", async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: "client_001", ...validClientData }),
-      } as Response);
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ id: "client_001", ...validClientData }),
+      );
 
       render(<ClientForm mode="create" />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
 
-      await act(async () => {
-        await user.click(submitButton);
-      });
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(mockFetch).toHaveBeenCalledWith(
-            "/api/clients",
-            expect.objectContaining({
-              method: "POST",
-              headers: expect.objectContaining({
-                "Content-Type": "application/json",
-              }),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          "/api/clients",
+          expect.objectContaining({
+            method: "POST",
+            headers: expect.objectContaining({
+              "Content-Type": "application/json",
             }),
-          );
-        },
-        { timeout: 10000 },
-      );
-    }, 15000);
+          }),
+        );
+      });
+    });
 
     it("수정 모드일 때 PUT 요청을 보내야 함", async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: "client_001", ...validClientData }),
-      } as Response);
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ id: "client_001", ...validClientData }),
+      );
 
       render(<ClientForm mode="edit" clientId="client_001" initialData={validClientData} />);
 
       const submitButton = screen.getByRole("button", { name: /수정/ });
-      await user.click(submitButton);
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(mockFetch).toHaveBeenCalledWith(
-            "/api/clients/client_001",
-            expect.objectContaining({
-              method: "PUT",
-            }),
-          );
-        },
-        { timeout: 3000 },
-      );
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          "/api/clients/client_001",
+          expect.objectContaining({
+            method: "PUT",
+          }),
+        );
+      });
     });
   });
 
@@ -197,182 +266,132 @@ describe("ClientForm", () => {
       jest.useRealTimers();
     });
 
-    it.skip("등록 성공 시 성공 메시지를 표시하고 리디렉션해야 함", async () => {
-      // TODO: react-hook-form과 fetch 모킹의 비동기 처리 문제 해결 필요
-      const user = userEvent.setup({ delay: null });
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: "client_001", ...validClientData }),
-      } as Response);
+    it("등록 성공 시 성공 메시지를 표시하고 리디렉션해야 함", async () => {
+      const user = userEvent.setup({ delay: null, advanceTimers: jest.advanceTimersByTime });
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ id: "client_001", ...validClientData }),
+      );
 
       render(<ClientForm mode="create" />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
 
-      await act(async () => {
-        await user.click(submitButton);
-      });
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(/성공적으로 등록되었습니다/)).toBeInTheDocument();
-        },
-        { timeout: 10000 },
-      );
+      await waitFor(() => {
+        expect(mockToastApi.success).toHaveBeenCalledWith("대상자가 성공적으로 등록되었습니다.");
+      });
 
       act(() => {
         jest.advanceTimersByTime(2000);
       });
 
-      await waitFor(
-        () => {
-          expect(mockPush).toHaveBeenCalledWith("/clients");
-        },
-        { timeout: 3000 },
-      );
-    }, 15000);
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/clients");
+      });
+    });
 
     it("수정 성공 시 성공 메시지를 표시하고 리디렉션해야 함", async () => {
-      const user = userEvent.setup({ delay: null });
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ id: "client_001", ...validClientData }),
-      } as Response);
+      const user = userEvent.setup({ delay: null, advanceTimers: jest.advanceTimersByTime });
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ id: "client_001", ...validClientData }),
+      );
 
       render(<ClientForm mode="edit" clientId="client_001" initialData={validClientData} />);
 
       const submitButton = screen.getByRole("button", { name: /수정/ });
 
-      await act(async () => {
-        await user.click(submitButton);
-      });
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(/성공적으로 수정되었습니다/)).toBeInTheDocument();
-        },
-        { timeout: 10000 },
-      );
+      await waitFor(() => {
+        expect(mockToastApi.success).toHaveBeenCalledWith(
+          "대상자 정보가 성공적으로 수정되었습니다.",
+        );
+      });
 
       act(() => {
         jest.advanceTimersByTime(2000);
       });
 
-      await waitFor(
-        () => {
-          expect(mockPush).toHaveBeenCalledWith("/clients/client_001");
-        },
-        { timeout: 3000 },
-      );
-    }, 15000);
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/clients/client_001");
+      });
+    });
   });
 
   describe("에러 처리", () => {
     it("API 오류 시 에러 메시지를 표시해야 함", async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        status: 400,
-        json: async () => ({ error: "Validation failed" }),
-      } as Response);
+      mockFetch.mockResolvedValueOnce(
+        createFetchResponse({ error: "Validation failed" }, { ok: false, status: 400 }),
+      );
 
       render(<ClientForm />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
 
-      await act(async () => {
-        await user.click(submitButton);
+      await clickWithAct(user, submitButton);
+
+      await waitFor(() => {
+        expect(mockToastApi.error).toHaveBeenCalledWith("Validation failed");
+        expect(auditLogger.error).toHaveBeenCalledWith(
+          "client_form_failed_create",
+          expect.any(Object),
+        );
       });
+    });
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(/Validation failed/)).toBeInTheDocument();
-          expect(auditLogger.error).toHaveBeenCalledWith(
-            "client_form_failed_create",
-            expect.any(Object),
-          );
-        },
-        { timeout: 10000 },
-      );
-    }, 15000);
-
-    it.skip("네트워크 오류 시 에러 메시지를 표시해야 함", async () => {
-      // TODO: react-hook-form과 fetch 모킹의 비동기 처리 문제 해결 필요
+    it("네트워크 오류 시 에러 메시지를 표시해야 함", async () => {
       const user = userEvent.setup();
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
       render(<ClientForm />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
 
-      await act(async () => {
-        await user.click(submitButton);
-      });
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(screen.getByText(/Network error/)).toBeInTheDocument();
-        },
-        { timeout: 10000 },
-      );
-    }, 15000);
+      await waitFor(() => {
+        expect(mockToastApi.error).toHaveBeenCalledWith("Network error");
+      });
+    });
   });
 
   describe("로딩 상태", () => {
-    it.skip("제출 중일 때 버튼이 비활성화되어야 함", async () => {
-      // TODO: react-hook-form과 fetch 모킹의 비동기 처리 문제 해결 필요
+    it("제출 중일 때 버튼이 비활성화되어야 함", async () => {
       const user = userEvent.setup();
       let resolvePromise: (value: Response) => void;
-      const promise = new Promise<Response>((resolve) => {
+      const pendingResponse = new Promise<Response>((resolve) => {
         resolvePromise = resolve;
       });
 
-      mockFetch.mockReturnValueOnce(promise);
+      mockFetch.mockReturnValueOnce(pendingResponse);
 
       render(<ClientForm />);
 
-      const nameInput = screen.getByLabelText(/^이름\s*\*$/) as HTMLInputElement;
-      await user.clear(nameInput);
-      await user.type(nameInput, validClientData.name);
+      await fillClientForm(user);
 
       const submitButton = screen.getByRole("button", { name: /등록/ });
 
-      await act(async () => {
-        await user.click(submitButton);
-      });
+      await clickWithAct(user, submitButton);
 
-      await waitFor(
-        () => {
-          expect(submitButton).toBeDisabled();
-        },
-        { timeout: 10000 },
-      );
+      await waitFor(() => {
+        expect(submitButton).toBeDisabled();
+      });
 
       act(() => {
-        resolvePromise!({
-          ok: true,
-          json: async () => ({ id: "client_001", ...validClientData }),
-        } as Response);
+        resolvePromise!(createFetchResponse({ id: "client_001", ...validClientData }));
       });
 
-      await waitFor(
-        () => {
-          expect(submitButton).not.toBeDisabled();
-        },
-        { timeout: 10000 },
-      );
-    }, 25000);
+      await waitFor(() => {
+        expect(submitButton).not.toBeDisabled();
+      });
+    });
   });
 });

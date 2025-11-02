@@ -47,7 +47,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const supabase = await createSupabaseServerClient();
 
     // 대상자 존재 확인
-    const { data: clientExists } = await supabase.from("clients").select("id").eq("id", id).single();
+    const { data: clientExists } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("id", id)
+      .single();
 
     if (!clientExists) {
       return NextResponse.json({ error: "Client not found" }, { status: 404 });
@@ -103,4 +107,3 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

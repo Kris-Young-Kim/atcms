@@ -40,12 +40,8 @@ export default function Home() {
               <span className="text-6xl">🏥</span>
             </div>
           </div>
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            AT-CMP
-          </h1>
-          <p className="mt-4 text-xl font-semibold text-gray-700">
-            보조공학 사례관리 플랫폼
-          </p>
+          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">AT-CMP</h1>
+          <p className="mt-4 text-xl font-semibold text-gray-700">보조공학 사례관리 플랫폼</p>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 leading-relaxed">
             대상자 관리, 상담 기록, 기기 대여를 한 곳에서 체계적으로 관리할 수 있는
             <br />
@@ -93,7 +89,9 @@ export default function Home() {
               key={feature.title}
               className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`}
+              />
               <div className="relative">
                 <div className="mb-4 text-4xl">{feature.icon}</div>
                 <h3 className="mb-2 text-xl font-bold text-gray-900">{feature.title}</h3>

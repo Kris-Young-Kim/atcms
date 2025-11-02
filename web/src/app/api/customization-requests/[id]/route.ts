@@ -3,7 +3,10 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { customizationRequestUpdateSchema, customizationStageSchema } from "@/lib/validations/customization";
+import {
+  customizationRequestUpdateSchema,
+  customizationStageSchema,
+} from "@/lib/validations/customization";
 
 /**
  * GET /api/customization-requests/[id]
@@ -135,7 +138,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         metadata: { requestId: id, supabaseError: error?.message },
         error,
       });
-      return NextResponse.json({ error: "Failed to update customization request" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to update customization request" },
+        { status: 500 },
+      );
     }
 
     auditLogger.info("customization_request_updated", {
@@ -205,7 +211,10 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         metadata: { requestId: id, supabaseError: error?.message },
         error,
       });
-      return NextResponse.json({ error: "Failed to delete customization request" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to delete customization request" },
+        { status: 500 },
+      );
     }
 
     // 취소 단계 기록 추가
@@ -238,4 +247,3 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

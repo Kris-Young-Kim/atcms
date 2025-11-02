@@ -13,13 +13,20 @@ import { useState } from "react";
 
 import type { CustomizationRequest } from "@/lib/validations/customization";
 
+interface CustomizationWithClient extends CustomizationRequest {
+  clients?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 /**
  * 맞춤제작 요청 목록 테이블 컴포넌트
  * Phase 10: CDM-US-02
  */
 
 interface CustomizationsTableProps {
-  data: CustomizationRequest[];
+  data: CustomizationWithClient[];
   onSort?: (sortBy: string, sortOrder: "asc" | "desc") => void;
 }
 
@@ -35,7 +42,7 @@ export function CustomizationsTable({ data, onSort }: CustomizationsTableProps) 
     cancelled: { label: "취소됨", class: "bg-red-100 text-red-700" },
   };
 
-  const columns: ColumnDef<CustomizationRequest>[] = [
+  const columns: ColumnDef<CustomizationWithClient>[] = [
     {
       accessorKey: "title",
       header: "제목",
@@ -52,7 +59,7 @@ export function CustomizationsTable({ data, onSort }: CustomizationsTableProps) 
       accessorKey: "client_id",
       header: "대상자",
       cell: ({ row }) => {
-        const client = (row.original as any).clients;
+        const client = row.original.clients;
         return client ? (
           <Link
             href={`/clients/${row.original.client_id}`}
@@ -70,7 +77,10 @@ export function CustomizationsTable({ data, onSort }: CustomizationsTableProps) 
       header: "상태",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const statusInfo = statusMap[status] || { label: status, class: "bg-gray-100 text-gray-700" };
+        const statusInfo = statusMap[status] || {
+          label: status,
+          class: "bg-gray-100 text-gray-700",
+        };
         return (
           <span
             className={`inline-block rounded-full px-3 py-1 text-xs font-semibold shadow-sm ${statusInfo.class}`}
@@ -162,11 +172,8 @@ export function CustomizationsTable({ data, onSort }: CustomizationsTableProps) 
         </tbody>
       </table>
       {data.length === 0 && (
-        <div className="py-12 text-center text-gray-500">
-          맞춤제작 요청이 없습니다.
-        </div>
+        <div className="py-12 text-center text-gray-500">맞춤제작 요청이 없습니다.</div>
       )}
     </div>
   );
 }
-

@@ -193,7 +193,10 @@ export function ClientsTable({ data, onSort }: ClientsTableProps) {
             {table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="transition-colors hover:bg-blue-50/50">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                  <td
+                    key={cell.id}
+                    className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

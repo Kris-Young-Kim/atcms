@@ -57,8 +57,8 @@ export default function EditSchedulePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">일정 수정</h1>
         <p className="mt-2 text-sm text-gray-600">
-          {schedule.title}의 정보를 수정합니다. 필수 항목은 <span className="text-red-500">*</span>로
-          표시됩니다.
+          {schedule.title}의 정보를 수정합니다. 필수 항목은 <span className="text-red-500">*</span>
+          로 표시됩니다.
         </p>
       </div>
 
@@ -73,4 +73,3 @@ export default function EditSchedulePage() {
     </div>
   );
 }
-

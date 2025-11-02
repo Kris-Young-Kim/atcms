@@ -5,6 +5,71 @@ import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
+ * Supabase 쿼리 결과 타입 정의
+ */
+interface ServiceRecordWithClient {
+  id: string;
+  record_type: string;
+  title: string;
+  record_date: string;
+  content?: string;
+  created_at: string;
+  created_by_user_id: string;
+  clients?: {
+    id: string;
+    name: string;
+  };
+}
+
+interface CustomizationWithClient {
+  id: string;
+  title: string;
+  status: string;
+  requested_date: string;
+  description?: string;
+  created_at: string;
+  created_by_user_id: string;
+  clients?: {
+    id: string;
+    name: string;
+  };
+}
+
+interface RentalWithClient {
+  id: string;
+  equipment_id: string;
+  rental_date: string;
+  return_date?: string;
+  status: string;
+  quantity: number;
+  created_at: string;
+  created_by_user_id: string;
+  clients?: {
+    id: string;
+    name: string;
+  };
+  equipment?: {
+    id: string;
+    name: string;
+  };
+}
+
+interface ScheduleWithClient {
+  id: string;
+  schedule_type: string;
+  title: string;
+  start_time: string;
+  status: string;
+  description?: string;
+  created_at: string;
+  created_by_user_id: string;
+  clients?: {
+    id: string;
+    name: string;
+  };
+}
+
+/**
  * GET /api/search/activities
  * 통합 활동 검색 API
  *
@@ -91,11 +156,13 @@ export async function GET(request: Request) {
     }> = [];
 
     // 1. 상담 및 평가 기록 검색
-    if (activityType === "all" || activityType === "consultation" || activityType === "assessment") {
-      let serviceQuery = supabase
-        .from("service_records")
-        .select(
-          `
+    if (
+      activityType === "all" ||
+      activityType === "consultation" ||
+      activityType === "assessment"
+    ) {
+      let serviceQuery = supabase.from("service_records").select(
+        `
           id,
           record_type,
           title,
@@ -108,7 +175,7 @@ export async function GET(request: Request) {
             name
           )
         `,
-        );
+      );
 
       // 활동 유형 필터
       if (activityType === "consultation") {
@@ -142,11 +209,12 @@ export async function GET(request: Request) {
       const { data: serviceRecords } = await serviceQuery;
 
       if (serviceRecords) {
-        // 대상자 이름으로 추가 검색 (필요한 경우)
-        let filteredRecords = serviceRecords;
+        // Supabase 쿼리 결과를 unknown으로 캐스팅 후 타입 단언
+        const typedRecords = serviceRecords as unknown as ServiceRecordWithClient[];
+        let filteredRecords = typedRecords;
         if (query && serviceRecords.length > 0) {
           // 대상자 이름으로 필터링
-          const clientIds = serviceRecords.map((r: any) => r.clients?.id).filter(Boolean);
+          const clientIds = typedRecords.map((r) => r.clients?.id).filter(Boolean) as string[];
           if (clientIds.length > 0) {
             const { data: matchingClients } = await supabase
               .from("clients")
@@ -156,7 +224,7 @@ export async function GET(request: Request) {
 
             if (matchingClients) {
               const matchingClientIds = new Set(matchingClients.map((c) => c.id));
-              filteredRecords = serviceRecords.filter((r: any) => {
+              filteredRecords = typedRecords.filter((r) => {
                 // 제목에 검색어가 포함되거나 대상자 이름에 검색어가 포함된 경우
                 return (
                   r.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -167,7 +235,7 @@ export async function GET(request: Request) {
           }
         }
 
-        filteredRecords.forEach((record: any) => {
+        filteredRecords.forEach((record) => {
           if (record.clients) {
             activities.push({
               id: record.id,
@@ -188,10 +256,8 @@ export async function GET(request: Request) {
 
     // 2. 맞춤제작 요청 검색
     if (activityType === "all" || activityType === "customization") {
-      let customizationQuery = supabase
-        .from("customization_requests")
-        .select(
-          `
+      let customizationQuery = supabase.from("customization_requests").select(
+        `
           id,
           title,
           status,
@@ -204,7 +270,7 @@ export async function GET(request: Request) {
             name
           )
         `,
-        );
+      );
 
       // 검색어 필터 (제목)
       if (query) {
@@ -230,10 +296,13 @@ export async function GET(request: Request) {
       const { data: customizations } = await customizationQuery;
 
       if (customizations) {
-        // 대상자 이름으로 추가 검색 (필요한 경우)
-        let filteredCustomizations = customizations;
+        // Supabase 쿼리 결과를 unknown으로 캐스팅 후 타입 단언
+        const typedCustomizations = customizations as unknown as CustomizationWithClient[];
+        let filteredCustomizations = typedCustomizations;
         if (query && customizations.length > 0) {
-          const clientIds = customizations.map((c: any) => c.clients?.id).filter(Boolean);
+          const clientIds = typedCustomizations
+            .map((c) => c.clients?.id)
+            .filter(Boolean) as string[];
           if (clientIds.length > 0) {
             const { data: matchingClients } = await supabase
               .from("clients")
@@ -243,7 +312,7 @@ export async function GET(request: Request) {
 
             if (matchingClients) {
               const matchingClientIds = new Set(matchingClients.map((c) => c.id));
-              filteredCustomizations = customizations.filter((c: any) => {
+              filteredCustomizations = typedCustomizations.filter((c) => {
                 return (
                   c.title.toLowerCase().includes(query.toLowerCase()) ||
                   (c.clients && matchingClientIds.has(c.clients.id))
@@ -253,7 +322,7 @@ export async function GET(request: Request) {
           }
         }
 
-        filteredCustomizations.forEach((customization: any) => {
+        filteredCustomizations.forEach((customization) => {
           if (customization.clients) {
             activities.push({
               id: customization.id,
@@ -275,10 +344,8 @@ export async function GET(request: Request) {
 
     // 3. 대여 기록 검색
     if (activityType === "all" || activityType === "rental") {
-      let rentalQuery = supabase
-        .from("rentals")
-        .select(
-          `
+      let rentalQuery = supabase.from("rentals").select(
+        `
           id,
           equipment_id,
           rental_date,
@@ -296,7 +363,7 @@ export async function GET(request: Request) {
             name
           )
         `,
-        );
+      );
 
       // 날짜 필터
       if (startDate) {
@@ -317,34 +384,37 @@ export async function GET(request: Request) {
       const { data: rentals } = await rentalQuery;
 
       if (rentals) {
-        // 검색어 필터 적용 (대상자 이름 또는 기기 이름)
-        let filteredRentals = rentals;
+        // Supabase 쿼리 결과를 unknown으로 캐스팅 후 타입 단언
+        const typedRentals = rentals as unknown as RentalWithClient[];
+        let filteredRentals = typedRentals;
         if (query && rentals.length > 0) {
-          const clientIds = rentals.map((r: any) => r.clients?.id).filter(Boolean);
-          const equipmentIds = rentals.map((r: any) => r.equipment_id).filter(Boolean);
+          const clientIds = typedRentals.map((r) => r.clients?.id).filter(Boolean) as string[];
+          const equipmentIds = typedRentals.map((r) => r.equipment_id).filter(Boolean) as string[];
 
           // 대상자 이름 검색
-          const { data: matchingClients } = clientIds.length > 0
-            ? await supabase
-                .from("clients")
-                .select("id, name")
-                .in("id", clientIds)
-                .ilike("name", `%${query}%`)
-            : { data: null };
+          const { data: matchingClients } =
+            clientIds.length > 0
+              ? await supabase
+                  .from("clients")
+                  .select("id, name")
+                  .in("id", clientIds)
+                  .ilike("name", `%${query}%`)
+              : { data: null };
 
           // 기기 이름 검색
-          const { data: matchingEquipment } = equipmentIds.length > 0
-            ? await supabase
-                .from("equipment")
-                .select("id, name")
-                .in("id", equipmentIds)
-                .ilike("name", `%${query}%`)
-            : { data: null };
+          const { data: matchingEquipment } =
+            equipmentIds.length > 0
+              ? await supabase
+                  .from("equipment")
+                  .select("id, name")
+                  .in("id", equipmentIds)
+                  .ilike("name", `%${query}%`)
+              : { data: null };
 
           const matchingClientIds = new Set(matchingClients?.map((c) => c.id) || []);
           const matchingEquipmentIds = new Set(matchingEquipment?.map((e) => e.id) || []);
 
-          filteredRentals = rentals.filter((r: any) => {
+          filteredRentals = typedRentals.filter((r) => {
             return (
               (r.clients && matchingClientIds.has(r.clients.id)) ||
               (r.equipment_id && matchingEquipmentIds.has(r.equipment_id))
@@ -352,7 +422,7 @@ export async function GET(request: Request) {
           });
         }
 
-        filteredRentals.forEach((rental: any) => {
+        filteredRentals.forEach((rental) => {
           if (rental.clients) {
             activities.push({
               id: rental.id,
@@ -419,10 +489,11 @@ export async function GET(request: Request) {
       const { data: schedules } = await scheduleQuery;
 
       if (schedules) {
-        // 대상자 이름으로 추가 검색 (필요한 경우)
-        let filteredSchedules = schedules;
+        // Supabase 쿼리 결과를 unknown으로 캐스팅 후 타입 단언
+        const typedSchedules = schedules as unknown as ScheduleWithClient[];
+        let filteredSchedules = typedSchedules;
         if (query && schedules.length > 0) {
-          const clientIds = schedules.map((s: any) => s.clients?.id).filter(Boolean);
+          const clientIds = typedSchedules.map((s) => s.clients?.id).filter(Boolean) as string[];
           if (clientIds.length > 0) {
             const { data: matchingClients } = await supabase
               .from("clients")
@@ -432,7 +503,7 @@ export async function GET(request: Request) {
 
             if (matchingClients) {
               const matchingClientIds = new Set(matchingClients.map((c) => c.id));
-              filteredSchedules = schedules.filter((s: any) => {
+              filteredSchedules = typedSchedules.filter((s) => {
                 return (
                   s.title.toLowerCase().includes(query.toLowerCase()) ||
                   (s.clients && matchingClientIds.has(s.clients.id))
@@ -442,7 +513,7 @@ export async function GET(request: Request) {
           }
         }
 
-        filteredSchedules.forEach((schedule: any) => {
+        filteredSchedules.forEach((schedule) => {
           if (schedule.clients) {
             const scheduleDate = new Date(schedule.start_time).toISOString().split("T")[0];
             activities.push({
@@ -525,4 +596,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

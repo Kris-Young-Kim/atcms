@@ -113,7 +113,9 @@ export function CustomizationForm({
       };
 
       const url =
-        mode === "edit" ? `/api/customization-requests/${customizationId}` : "/api/customization-requests";
+        mode === "edit"
+          ? `/api/customization-requests/${customizationId}`
+          : "/api/customization-requests";
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -282,7 +284,9 @@ export function CustomizationForm({
               {...register("width_cm", { valueAsNumber: true })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
-            {errors.width_cm && <p className="mt-1 text-sm text-red-600">{errors.width_cm.message}</p>}
+            {errors.width_cm && (
+              <p className="mt-1 text-sm text-red-600">{errors.width_cm.message}</p>
+            )}
           </div>
           <div>
             <label htmlFor="depth_cm" className="block text-sm font-medium text-gray-700">
@@ -295,7 +299,9 @@ export function CustomizationForm({
               {...register("depth_cm", { valueAsNumber: true })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
-            {errors.depth_cm && <p className="mt-1 text-sm text-red-600">{errors.depth_cm.message}</p>}
+            {errors.depth_cm && (
+              <p className="mt-1 text-sm text-red-600">{errors.depth_cm.message}</p>
+            )}
           </div>
           <div>
             <label htmlFor="weight_kg" className="block text-sm font-medium text-gray-700">
@@ -308,7 +314,9 @@ export function CustomizationForm({
               {...register("weight_kg", { valueAsNumber: true })}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             />
-            {errors.weight_kg && <p className="mt-1 text-sm text-red-600">{errors.weight_kg.message}</p>}
+            {errors.weight_kg && (
+              <p className="mt-1 text-sm text-red-600">{errors.weight_kg.message}</p>
+            )}
           </div>
         </div>
 
@@ -384,7 +392,10 @@ export function CustomizationForm({
           {watch("design_files")?.length > 0 && (
             <div className="mt-2 space-y-1">
               {watch("design_files")?.map((url, index) => (
-                <div key={index} className="flex items-center justify-between rounded bg-gray-50 p-2">
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded bg-gray-50 p-2"
+                >
                   <a
                     href={url}
                     target="_blank"
@@ -426,7 +437,10 @@ export function CustomizationForm({
             )}
           </div>
           <div>
-            <label htmlFor="expected_completion_date" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="expected_completion_date"
+              className="block text-sm font-medium text-gray-700"
+            >
               예상 완료일
             </label>
             <input
@@ -476,4 +490,3 @@ export function CustomizationForm({
     </>
   );
 }
-

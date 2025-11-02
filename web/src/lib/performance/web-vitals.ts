@@ -9,17 +9,6 @@ import { onCLS, onFID, onLCP, onTTFB } from "web-vitals";
  */
 
 /**
- * Web Vitals 리포트 함수 타입
- */
-type ReportHandler = (metric: {
-  name: string;
-  value: number;
-  id: string;
-  delta: number;
-  rating: "good" | "needs-improvement" | "poor";
-}) => void;
-
-/**
  * Web Vitals 메트릭을 로깅하는 리포트 핸들러
  *
  * @param metric - Web Vitals 메트릭 데이터

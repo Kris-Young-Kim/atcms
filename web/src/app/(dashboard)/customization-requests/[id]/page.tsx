@@ -7,7 +7,15 @@ import { useEffect, useState } from "react";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { CustomizationForm } from "@/components/customization/CustomizationForm";
-import type { CustomizationRequest } from "@/lib/validations/customization";
+import type { CustomizationRequest, CustomizationStage } from "@/lib/validations/customization";
+
+interface CustomizationDetail extends CustomizationRequest {
+  clients?: {
+    id: string;
+    name: string;
+    contact_phone?: string | null;
+  } | null;
+}
 
 /**
  * 맞춤제작 요청 상세 페이지
@@ -20,11 +28,11 @@ export default function CustomizationDetailPage() {
   const { hasRole } = useUserRole();
   const { toasts, removeToast, success, error: showError } = useToast();
 
-  const [customization, setCustomization] = useState<CustomizationRequest | null>(null);
+  const [customization, setCustomization] = useState<CustomizationDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "stages">("overview");
-  const [stages, setStages] = useState<any[]>([]);
+  const [stages, setStages] = useState<CustomizationStage[]>([]);
 
   const customizationId = params.id as string;
   const canEdit = hasRole(["admin", "leader", "specialist", "technician"]);
@@ -39,7 +47,7 @@ export default function CustomizationDetailPage() {
     try {
       const response = await fetch(`/api/customization-requests/${customizationId}`);
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as CustomizationDetail;
         setCustomization(data);
       } else {
         showError("맞춤제작 요청 정보를 불러올 수 없습니다.");
@@ -55,8 +63,8 @@ export default function CustomizationDetailPage() {
     try {
       const response = await fetch(`/api/customization-requests/${customizationId}/stages`);
       if (response.ok) {
-        const data = await response.json();
-        setStages(data.data || []);
+        const data = (await response.json()) as { data?: CustomizationStage[] };
+        setStages(Array.isArray(data.data) ? data.data : []);
       }
     } catch (err) {
       console.error("단계 히스토리 조회 실패:", err);
@@ -120,7 +128,7 @@ export default function CustomizationDetailPage() {
     class: "bg-gray-100 text-gray-700",
   };
 
-  const client = (customization as any).clients;
+  const client = customization.clients ?? null;
 
   return (
     <>
@@ -167,7 +175,9 @@ export default function CustomizationDetailPage() {
 
         {/* 상태 배지 */}
         <div>
-          <span className={`inline-block rounded-full px-4 py-2 text-sm font-semibold ${statusInfo.class}`}>
+          <span
+            className={`inline-block rounded-full px-4 py-2 text-sm font-semibold ${statusInfo.class}`}
+          >
             {statusInfo.label}
           </span>
         </div>
@@ -357,15 +367,15 @@ export default function CustomizationDetailPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-gray-900">{getStageLabel(stage.stage)}</h3>
+                        <h3 className="font-semibold text-gray-900">
+                          {getStageLabel(stage.stage)}
+                        </h3>
                         <p className="mt-1 text-sm text-gray-600">
                           {new Date(stage.stage_date).toLocaleDateString("ko-KR")}
                         </p>
                       </div>
                     </div>
-                    {stage.notes && (
-                      <p className="mt-2 text-sm text-gray-700">{stage.notes}</p>
-                    )}
+                    {stage.notes && <p className="mt-2 text-sm text-gray-700">{stage.notes}</p>}
                   </div>
                 ))}
               </div>
@@ -400,4 +410,3 @@ function getStageColor(stage: string): string {
   };
   return map[stage] || "#6b7280"; // gray
 }
-

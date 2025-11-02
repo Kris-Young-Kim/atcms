@@ -48,7 +48,12 @@ interface MonthCalendarViewProps {
  * 월별 캘린더 뷰 컴포넌트
  * Phase 10: SCH-US-03
  */
-export function MonthCalendarView({ schedules, onDateClick, onScheduleClick, onMonthChange }: MonthCalendarViewProps) {
+export function MonthCalendarView({
+  schedules,
+  onDateClick,
+  onScheduleClick,
+  onMonthChange,
+}: MonthCalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
 
@@ -166,7 +171,11 @@ export function MonthCalendarView({ schedules, onDateClick, onScheduleClick, onM
     const prevMonthDays = prevMonth.getDate();
 
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, prevMonthDays - i);
+      const date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        prevMonthDays - i,
+      );
       const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
       days.push({
         date,
@@ -298,7 +307,10 @@ export function MonthCalendarView({ schedules, onDateClick, onScheduleClick, onM
                       {date.getDate()}
                     </span>
                     {daySchedules.length > 0 && (
-                      <span className="text-xs text-gray-500" aria-label={`${daySchedules.length}개의 일정`}>
+                      <span
+                        className="text-xs text-gray-500"
+                        aria-label={`${daySchedules.length}개의 일정`}
+                      >
                         {daySchedules.length}
                       </span>
                     )}
@@ -307,7 +319,8 @@ export function MonthCalendarView({ schedules, onDateClick, onScheduleClick, onM
                   {/* 일정 목록 */}
                   <div className="space-y-1">
                     {daySchedules.slice(0, 3).map((schedule) => {
-                      const typeColors = SCHEDULE_TYPE_COLORS[schedule.schedule_type] || SCHEDULE_TYPE_COLORS.other;
+                      const typeColors =
+                        SCHEDULE_TYPE_COLORS[schedule.schedule_type] || SCHEDULE_TYPE_COLORS.other;
                       const startTime = new Date(schedule.start_time);
                       const timeStr = `${String(startTime.getHours()).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`;
 
@@ -319,7 +332,9 @@ export function MonthCalendarView({ schedules, onDateClick, onScheduleClick, onM
                           aria-label={`${SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type} 일정: ${schedule.title}, ${timeStr}`}
                         >
                           <div className="flex items-center gap-1">
-                            <span className={`h-1.5 w-1.5 rounded-full ${STATUS_COLORS[schedule.status] || "bg-gray-500"}`} />
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${STATUS_COLORS[schedule.status] || "bg-gray-500"}`}
+                            />
                             <span className="truncate font-medium">{schedule.title}</span>
                           </div>
                           <div className="text-xs opacity-75">{timeStr}</div>
@@ -389,7 +404,10 @@ function ScheduleDetailModal({ schedule, onClose }: ScheduleDetailModalProps) {
     no_show: { label: "불참", class: "bg-gray-100 text-gray-700" },
   };
 
-  const statusInfo = statusMap[schedule.status] || { label: schedule.status, class: "bg-gray-100 text-gray-700" };
+  const statusInfo = statusMap[schedule.status] || {
+    label: schedule.status,
+    class: "bg-gray-100 text-gray-700",
+  };
 
   // 키보드 네비게이션 (ESC, Tab 트랩)
   useEffect(() => {
@@ -407,13 +425,19 @@ function ScheduleDetailModal({ schedule, onClose }: ScheduleDetailModalProps) {
   const endTime = new Date(schedule.end_time);
 
   // description에서 JSON 파싱 시도 (평가 유형 등)
-  let parsedDescription: any = null;
+  interface ParsedDescription {
+    assessment_type?: "functional" | "environmental" | "needs";
+    original_description?: string;
+    [key: string]: unknown;
+  }
+
+  let parsedDescription: ParsedDescription | null = null;
   try {
     if (schedule.description) {
-      parsedDescription = JSON.parse(schedule.description);
+      parsedDescription = JSON.parse(schedule.description) as ParsedDescription;
     }
   } catch {
-    // JSON이 아니면 그대로 사용
+    parsedDescription = null;
   }
 
   return (
@@ -455,7 +479,9 @@ function ScheduleDetailModal({ schedule, onClose }: ScheduleDetailModalProps) {
                 >
                   {statusInfo.label}
                 </span>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${typeColors.bg} ${typeColors.text}`}>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${typeColors.bg} ${typeColors.text}`}
+                >
                   {SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type}
                 </span>
               </div>
@@ -513,7 +539,12 @@ function ScheduleDetailModal({ schedule, onClose }: ScheduleDetailModalProps) {
               </p>
               {parsedDescription && parsedDescription.assessment_type && (
                 <p className="mt-2 text-sm text-gray-600">
-                  평가 유형: {parsedDescription.assessment_type === "functional" ? "기능 평가" : parsedDescription.assessment_type === "environmental" ? "환경 평가" : "욕구 평가"}
+                  평가 유형:{" "}
+                  {parsedDescription.assessment_type === "functional"
+                    ? "기능 평가"
+                    : parsedDescription.assessment_type === "environmental"
+                      ? "환경 평가"
+                      : "욕구 평가"}
                 </p>
               )}
             </div>
@@ -557,4 +588,3 @@ function ScheduleDetailModal({ schedule, onClose }: ScheduleDetailModalProps) {
     </div>
   );
 }
-

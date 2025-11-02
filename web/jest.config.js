@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({
@@ -16,11 +17,7 @@ const customJestConfig = {
   },
   testMatch: ["**/__tests__/**/*.test.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
   // E2E 테스트 파일 제외 (Playwright로 실행)
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "/e2e/",
-    "/.next/",
-  ],
+  testPathIgnorePatterns: ["/node_modules/", "/e2e/", "/.next/"],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
     "!src/**/*.d.ts",

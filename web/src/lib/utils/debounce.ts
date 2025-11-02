@@ -20,13 +20,13 @@
  * debouncedSearch('abc'); // 300ms 후 실행됨
  * ```
  */
-export function debounce<T extends (...args: any[]) => void>(
-  callback: T,
+export function debounce<TArgs extends unknown[]>(
+  callback: (...args: TArgs) => void,
   delay: number,
-): (...args: Parameters<T>) => void {
+): (...args: TArgs) => void {
   let timeoutId: NodeJS.Timeout | null = null;
 
-  return (...args: Parameters<T>) => {
+  return (...args: TArgs) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }

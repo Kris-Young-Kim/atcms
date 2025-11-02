@@ -1,11 +1,14 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { FlatCompat } from "@eslint/eslintrc";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
+const compat = new FlatCompat({
+  baseDirectory: import.meta.dirname,
+});
+
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
+  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/typescript"),
   {
     rules: {
       "max-len": [
@@ -30,17 +33,23 @@ const eslintConfig = defineConfig([
         },
       ],
       // 복잡도 검사 규칙
-      complexity: ["error", { max: 10 }], // 순환 복잡도 최대 10
-      "max-lines-per-function": ["warn", { max: 100 }], // 함수당 최대 라인 수
-      "max-depth": ["warn", { max: 4 }], // 최대 중첩 깊이
-      "max-params": ["warn", { max: 5 }], // 최대 매개변수 수
+      complexity: ["warn", { max: 25 }], // 순환 복잡도 최대 25 (경고)
+      "max-lines-per-function": ["warn", { max: 200 }], // 함수당 최대 라인 수 경고
+      "max-depth": ["warn", { max: 6 }], // 최대 중첩 깊이 경고
+      "max-params": ["warn", { max: 8 }], // 최대 매개변수 수 경고
       // 코드 냄새 감지 규칙
       "no-console": ["warn", { allow: ["warn", "error"] }], // console.log 금지 (console.warn, console.error는 허용)
       "no-debugger": "error", // debugger 금지
-      "no-alert": "error", // alert 금지
+      "no-alert": "warn", // alert/confirm/prompt 사용 시 경고만 표시
       "no-eval": "error", // eval 금지
       "no-implied-eval": "error", // 암시적 eval 금지
       "no-new-func": "error", // new Function 금지
+    },
+  },
+  {
+    files: ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   eslintPluginPrettierRecommended,

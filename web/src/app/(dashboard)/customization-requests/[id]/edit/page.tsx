@@ -57,8 +57,8 @@ export default function EditCustomizationPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">맞춤제작 요청 수정</h1>
         <p className="mt-2 text-sm text-gray-600">
-          {customization.title}의 정보를 수정합니다. 필수 항목은 <span className="text-red-500">*</span>로
-          표시됩니다.
+          {customization.title}의 정보를 수정합니다. 필수 항목은{" "}
+          <span className="text-red-500">*</span>로 표시됩니다.
         </p>
       </div>
 
@@ -71,4 +71,3 @@ export default function EditCustomizationPage() {
     </div>
   );
 }
-

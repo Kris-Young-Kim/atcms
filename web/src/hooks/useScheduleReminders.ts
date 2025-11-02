@@ -98,4 +98,3 @@ export function useScheduleReminders(schedules: Schedule[]) {
     requestPermission,
   };
 }
-

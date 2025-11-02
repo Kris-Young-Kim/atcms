@@ -73,7 +73,10 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white shadow-sm">
       {/* 로고 영역 */}
       <div className="flex h-16 items-center border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 px-6">
-        <Link href="/dashboard" className="flex items-center gap-2 transition-transform hover:scale-105">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 transition-transform hover:scale-105"
+        >
           <div className="rounded-lg bg-white/20 p-1.5">
             <span className="text-xl">🏥</span>
           </div>
@@ -96,11 +99,13 @@ export function Sidebar() {
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
-              <span className={`text-lg transition-transform group-hover:scale-110 ${isActive ? "drop-shadow-sm" : ""}`}>{item.icon}</span>
+              <span
+                className={`text-lg transition-transform group-hover:scale-110 ${isActive ? "drop-shadow-sm" : ""}`}
+              >
+                {item.icon}
+              </span>
               <span>{item.name}</span>
-              {isActive && (
-                <span className="ml-auto h-2 w-2 rounded-full bg-white"></span>
-              )}
+              {isActive && <span className="ml-auto h-2 w-2 rounded-full bg-white"></span>}
             </Link>
           );
         })}

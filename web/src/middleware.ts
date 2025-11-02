@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 
 // 공개 접근 가능한 경로 정의
 const isPublicRoute = createRouteMatcher([

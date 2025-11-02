@@ -86,7 +86,9 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">상담 횟수</p>
-            <p className="mt-2 text-3xl font-bold text-blue-600">{stats.stats.consultation_count}</p>
+            <p className="mt-2 text-3xl font-bold text-blue-600">
+              {stats.stats.consultation_count}
+            </p>
           </div>
           <div className="rounded-full bg-blue-100 p-3">
             <span className="text-2xl">💬</span>
@@ -105,7 +107,9 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">평가 횟수</p>
-            <p className="mt-2 text-3xl font-bold text-purple-600">{stats.stats.assessment_count}</p>
+            <p className="mt-2 text-3xl font-bold text-purple-600">
+              {stats.stats.assessment_count}
+            </p>
           </div>
           <div className="rounded-full bg-purple-100 p-3">
             <span className="text-2xl">📋</span>
@@ -124,7 +128,9 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">진행 중인 대여</p>
-            <p className="mt-2 text-3xl font-bold text-green-600">{stats.stats.active_rentals_count}</p>
+            <p className="mt-2 text-3xl font-bold text-green-600">
+              {stats.stats.active_rentals_count}
+            </p>
           </div>
           <div className="rounded-full bg-green-100 p-3">
             <span className="text-2xl">📦</span>
@@ -143,7 +149,9 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">진행 중인 맞춤제작</p>
-            <p className="mt-2 text-3xl font-bold text-orange-600">{stats.stats.active_customizations_count}</p>
+            <p className="mt-2 text-3xl font-bold text-orange-600">
+              {stats.stats.active_customizations_count}
+            </p>
           </div>
           <div className="rounded-full bg-orange-100 p-3">
             <span className="text-2xl">🔧</span>
@@ -169,7 +177,13 @@ interface ActiveTasksWidgetProps {
 }
 
 export function ActiveTasksWidget({ clientId, stats }: ActiveTasksWidgetProps) {
-  const activeTasks: Array<{ type: string; label: string; count: number; href: string; color: string }> = [];
+  const activeTasks: Array<{
+    type: string;
+    label: string;
+    count: number;
+    href: string;
+    color: string;
+  }> = [];
 
   if (stats.active_rentals_count > 0) {
     activeTasks.push({
@@ -211,15 +225,17 @@ export function ActiveTasksWidget({ clientId, stats }: ActiveTasksWidgetProps) {
             className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4 transition-colors hover:bg-gray-100"
           >
             <div className="flex items-center gap-3">
-              <span className="text-xl">
-                {task.type === "rental" ? "📦" : "🔧"}
-              </span>
+              <span className="text-xl">{task.type === "rental" ? "📦" : "🔧"}</span>
               <span className="font-medium text-gray-900">{task.label}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                task.color === "green" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"
-              }`}>
+              <span
+                className={`rounded-full px-3 py-1 text-sm font-semibold ${
+                  task.color === "green"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-orange-100 text-orange-700"
+                }`}
+              >
                 {task.count}개
               </span>
               <span className="text-gray-400">→</span>
@@ -240,7 +256,11 @@ interface NextScheduleWidgetProps {
   upcomingSchedules: ClientStats["upcoming_schedules"];
 }
 
-export function NextScheduleWidget({ clientId, nextSchedule, upcomingSchedules }: NextScheduleWidgetProps) {
+export function NextScheduleWidget({
+  clientId,
+  nextSchedule,
+  upcomingSchedules,
+}: NextScheduleWidgetProps) {
   const scheduleTypeMap: Record<string, string> = {
     consultation: "상담",
     assessment: "평가",
@@ -351,12 +371,14 @@ interface RecentActivitiesWidgetProps {
 }
 
 export function RecentActivitiesWidget({ clientId }: RecentActivitiesWidgetProps) {
-  const [activities, setActivities] = useState<Array<{
-    id: string;
-    type: string;
-    title: string;
-    date: string;
-  }>>([]);
+  const [activities, setActivities] = useState<
+    Array<{
+      id: string;
+      type: string;
+      title: string;
+      date: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -519,4 +541,3 @@ export function QuickActionsWidget({ clientId }: QuickActionsWidgetProps) {
     </div>
   );
 }
-

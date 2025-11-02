@@ -8,10 +8,7 @@ import { z } from "zod";
 export const customizationRequestSchema = z.object({
   // 필수 필드
   client_id: z.string().uuid("유효한 대상자 ID를 입력하세요."),
-  title: z
-    .string()
-    .min(1, "제목은 필수입니다.")
-    .max(200, "제목은 최대 200자까지 입력 가능합니다."),
+  title: z.string().min(1, "제목은 필수입니다.").max(200, "제목은 최대 200자까지 입력 가능합니다."),
 
   // 선택 필드들
   description: z.string().max(5000).optional(),
@@ -53,7 +50,9 @@ export const customizationRequestSchema = z.object({
   design_files: z.array(z.string().url("유효한 URL을 입력하세요.")).default([]),
 
   // 상태 (등록 시 기본값)
-  status: z.enum(["requested", "designing", "prototyping", "fitting", "completed", "cancelled"]).default("requested"),
+  status: z
+    .enum(["requested", "designing", "prototyping", "fitting", "completed", "cancelled"])
+    .default("requested"),
 
   // 날짜 정보
   requested_date: z
@@ -105,7 +104,9 @@ export interface CustomizationRequest extends CustomizationRequestFormData {
  */
 export const customizationRequestFilterSchema = z.object({
   search: z.string().optional(),
-  status: z.enum(["requested", "designing", "prototyping", "fitting", "completed", "cancelled", "all"]).default("all"),
+  status: z
+    .enum(["requested", "designing", "prototyping", "fitting", "completed", "cancelled", "all"])
+    .default("all"),
   client_id: z.string().uuid().optional(),
   page: z.number().int().positive().default(1),
   limit: z.number().int().positive().max(100).default(25),
@@ -159,4 +160,3 @@ export interface CustomizationStage {
   created_at: string;
   created_by_user_id?: string | null;
 }
-

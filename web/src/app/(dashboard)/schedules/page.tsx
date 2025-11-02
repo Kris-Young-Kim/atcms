@@ -10,6 +10,16 @@ import { useScheduleReminders } from "@/hooks/useScheduleReminders";
 import type { Schedule } from "@/lib/validations/schedule";
 
 /**
+ * Schedule with client information (extended type for API responses)
+ */
+interface ScheduleWithClient extends Schedule {
+  clients?: {
+    id: string;
+    name: string;
+  };
+}
+
+/**
  * 일정 목록 페이지
  * Phase 10: SCH-US-02
  */
@@ -24,7 +34,7 @@ interface Pagination {
 export default function SchedulesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [schedules, setSchedules] = useState<ScheduleWithClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
@@ -68,8 +78,12 @@ export default function SchedulesPage() {
 
           const response = await fetch(`/api/schedules?${params.toString()}`);
           if (response.ok) {
-            const data = await response.json();
-            setSchedules(data.data || []);
+            const data = (await response.json()) as {
+              data?: ScheduleWithClient[];
+              pagination?: Pagination;
+            };
+
+            setSchedules(Array.isArray(data.data) ? data.data : []);
             setPagination(data.pagination || pagination);
           }
         } catch (error) {
@@ -202,7 +216,7 @@ export default function SchedulesPage() {
               label: schedule.status,
               class: "bg-gray-100 text-gray-700",
             };
-            const client = (schedule as any).clients;
+            const client = schedule.clients;
 
             return (
               <Link
@@ -230,7 +244,9 @@ export default function SchedulesPage() {
                       {new Date(schedule.end_time).toLocaleString("ko-KR")}
                     </p>
                     {schedule.description && (
-                      <p className="mt-2 text-sm text-gray-700 line-clamp-2">{schedule.description}</p>
+                      <p className="mt-2 text-sm text-gray-700 line-clamp-2">
+                        {schedule.description}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -265,4 +281,3 @@ export default function SchedulesPage() {
     </div>
   );
 }
-

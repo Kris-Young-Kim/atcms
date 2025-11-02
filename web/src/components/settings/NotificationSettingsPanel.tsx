@@ -89,7 +89,9 @@ export function NotificationSettingsPanel() {
               <label htmlFor="enabled" className="text-sm font-medium text-gray-900">
                 알림 활성화
               </label>
-              <p className="mt-1 text-sm text-gray-600">일정 리마인더 알림을 받으려면 활성화하세요.</p>
+              <p className="mt-1 text-sm text-gray-600">
+                일정 리마인더 알림을 받으려면 활성화하세요.
+              </p>
             </div>
             <label className="relative inline-flex cursor-pointer items-center">
               <input
@@ -109,7 +111,9 @@ export function NotificationSettingsPanel() {
               <label htmlFor="browserNotifications" className="text-sm font-medium text-gray-900">
                 브라우저 알림
               </label>
-              <p className="mt-1 text-sm text-gray-600">브라우저 알림을 통해 일정 리마인더를 받습니다.</p>
+              <p className="mt-1 text-sm text-gray-600">
+                브라우저 알림을 통해 일정 리마인더를 받습니다.
+              </p>
             </div>
             <label className="relative inline-flex cursor-pointer items-center">
               <input
@@ -171,4 +175,3 @@ export function NotificationSettingsPanel() {
     </div>
   );
 }
-

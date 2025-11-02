@@ -82,7 +82,8 @@ export function ProtectedRoute({
 
       // 역할이 없으면 기본 역할(specialist)로 처리 (개발 환경)
       // 프로덕션에서는 Clerk에서 기본 역할을 할당해야 함
-      const effectiveRole = userRole || (process.env.NODE_ENV === "development" ? "specialist" : "");
+      const effectiveRole =
+        userRole || (process.env.NODE_ENV === "development" ? "specialist" : "");
 
       if (!requiredRole.includes(effectiveRole)) {
         auditLogger.warn("forbidden_access_attempt", {

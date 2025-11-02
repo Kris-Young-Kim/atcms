@@ -7,10 +7,7 @@ import { auditLogger } from "@/lib/logger/auditLogger";
  * PUT /api/admin/users/by-email/[email]/role
  * 이메일로 사용자를 찾아 역할 설정 (관리자만 가능)
  */
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ email: string }> },
-) {
+export async function PUT(request: Request, { params }: { params: Promise<{ email: string }> }) {
   try {
     const { userId: currentUserId } = await auth();
 
@@ -24,7 +21,8 @@ export async function PUT(
 
     if (!isDevelopment) {
       // 프로덕션에서는 실제 관리자 권한 확인 필요
-      const currentUser = await clerkClient.users.getUser(currentUserId);
+      const client = await clerkClient();
+      const currentUser = await client.users.getUser(currentUserId);
       const currentUserRole = (currentUser.publicMetadata?.role as string) || "";
 
       if (currentUserRole !== "admin") {
@@ -40,7 +38,8 @@ export async function PUT(
       }
     }
 
-    const { email: targetEmail } = await params();
+    const paramsResolved = await params;
+    const { email: targetEmail } = paramsResolved;
     const body = await request.json();
     const { role } = body;
 
@@ -54,7 +53,8 @@ export async function PUT(
     }
 
     // 이메일로 사용자 찾기
-    const users = await clerkClient.users.getUserList({
+    const client = await clerkClient();
+    const users = await client.users.getUserList({
       emailAddress: [decodeURIComponent(targetEmail)],
     });
 
@@ -65,7 +65,7 @@ export async function PUT(
     const targetUser = users.data[0];
 
     // Clerk 사용자 역할 업데이트
-    await clerkClient.users.updateUserMetadata(targetUser.id, {
+    await client.users.updateUserMetadata(targetUser.id, {
       publicMetadata: {
         role,
       },
@@ -102,4 +102,3 @@ export async function PUT(
     );
   }
 }
-

@@ -131,7 +131,10 @@ export function calculateReminderDelay(reminder: ScheduleReminder): number {
 /**
  * 일정 리마인더 체크 및 스케줄링
  */
-export function scheduleReminders(reminders: ScheduleReminder[], onNotify: (notification: ReminderNotification) => void): Map<string, NodeJS.Timeout> {
+export function scheduleReminders(
+  reminders: ScheduleReminder[],
+  onNotify: (notification: ReminderNotification) => void,
+): Map<string, NodeJS.Timeout> {
   const timers = new Map<string, NodeJS.Timeout>();
 
   reminders.forEach((reminder) => {
@@ -161,4 +164,3 @@ export function clearReminderTimers(timers: Map<string, NodeJS.Timeout>): void {
   timers.forEach((timer) => clearTimeout(timer));
   timers.clear();
 }
-

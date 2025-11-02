@@ -55,9 +55,9 @@ export default function ClientDetailPage() {
       } | null;
     };
   } | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "consultations" | "assessments" | "activities">(
-    "overview",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "consultations" | "assessments" | "activities"
+  >("overview");
 
   const clientId = params.id as string;
   const canEdit = hasRole(["admin", "leader", "specialist"]);
@@ -252,9 +252,7 @@ export default function ClientDetailPage() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* 진행 중인 작업 및 최근 활동 */}
               <div className="space-y-6">
-                {clientStats && (
-                  <ActiveTasksWidget clientId={clientId} stats={clientStats.stats} />
-                )}
+                {clientStats && <ActiveTasksWidget clientId={clientId} stats={clientStats.stats} />}
                 <RecentActivitiesWidget clientId={clientId} />
               </div>
 

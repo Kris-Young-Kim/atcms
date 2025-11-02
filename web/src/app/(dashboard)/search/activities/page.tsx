@@ -9,4 +9,3 @@ import IntegratedSearchPage from "@/components/search/IntegratedSearch";
 export default function SearchActivitiesPage() {
   return <IntegratedSearchPage />;
 }
-

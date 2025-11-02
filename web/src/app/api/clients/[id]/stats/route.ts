@@ -107,7 +107,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       .limit(5); // 최대 5개까지만
 
     // 다음 일정 (가장 가까운 일정)
-    const nextSchedule = upcomingSchedules && upcomingSchedules.length > 0 ? upcomingSchedules[0] : null;
+    const nextSchedule =
+      upcomingSchedules && upcomingSchedules.length > 0 ? upcomingSchedules[0] : null;
 
     // 통계 데이터 구성
     const stats = {
@@ -156,4 +157,3 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

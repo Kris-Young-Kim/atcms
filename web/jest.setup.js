@@ -9,7 +9,11 @@ if (typeof global.Request === "undefined") {
   try {
     // Node.js 18+ 내장 fetch API 사용 시도
     const nodeVersion = process.version;
-    if (nodeVersion.startsWith("v18") || nodeVersion.startsWith("v20") || nodeVersion.startsWith("v22")) {
+    if (
+      nodeVersion.startsWith("v18") ||
+      nodeVersion.startsWith("v20") ||
+      nodeVersion.startsWith("v22")
+    ) {
       // Node.js 18+에서는 fetch가 내장되어 있음
       // Request, Response는 globalThis에서 사용 가능
       if (typeof globalThis.Request !== "undefined") {

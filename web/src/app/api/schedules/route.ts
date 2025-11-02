@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { scheduleSchema, scheduleFilterSchema, type ScheduleFilter } from "@/lib/validations/schedule";
+import {
+  scheduleSchema,
+  scheduleFilterSchema,
+  type ScheduleFilter,
+} from "@/lib/validations/schedule";
 
 /**
  * POST /api/schedules
@@ -80,14 +84,22 @@ export async function POST(request: Request) {
     const supabase = await createSupabaseServerClient();
 
     if (validated.client_id) {
-      const { data: clientExists } = await supabase.from("clients").select("id").eq("id", validated.client_id).single();
+      const { data: clientExists } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("id", validated.client_id)
+        .single();
       if (!clientExists) {
         return NextResponse.json({ error: "Client not found" }, { status: 404 });
       }
     }
 
     if (validated.rental_id) {
-      const { data: rentalExists } = await supabase.from("rentals").select("id").eq("id", validated.rental_id).single();
+      const { data: rentalExists } = await supabase
+        .from("rentals")
+        .select("id")
+        .eq("id", validated.rental_id)
+        .single();
       if (!rentalExists) {
         return NextResponse.json({ error: "Rental not found" }, { status: 404 });
       }
@@ -188,12 +200,18 @@ export async function GET(request: Request) {
     // 쿼리 파라미터 파싱 및 기본값 설정
     const { searchParams } = new URL(request.url);
     const filter: ScheduleFilter = {
-      schedule_type: (searchParams.get("schedule_type") as ScheduleFilter["schedule_type"]) || "all",
+      schedule_type:
+        (searchParams.get("schedule_type") as ScheduleFilter["schedule_type"]) || "all",
       client_id: searchParams.get("client_id") || undefined,
       status: (searchParams.get("status") as ScheduleFilter["status"]) || "all",
       start_date: searchParams.get("start_date") || undefined,
       end_date: searchParams.get("end_date") || undefined,
-      assessment_type: searchParams.get("assessment_type") || undefined,
+      assessment_type:
+        (searchParams.get("assessment_type") as
+          | "functional"
+          | "environmental"
+          | "needs"
+          | undefined) || undefined,
       page: parseInt(searchParams.get("page") || "1", 10),
       limit: parseInt(searchParams.get("limit") || "25", 10),
     };
@@ -290,4 +308,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

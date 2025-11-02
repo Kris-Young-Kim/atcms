@@ -8,19 +8,42 @@ import { ASSESSMENT_TYPES } from "@/lib/validations/assessment";
 import { z } from "zod";
 
 /**
- * 평가 일정 생성을 위한 확장 스키마
+ * 평가 일정 생성을 위한 스키마
  */
-const assessmentScheduleSchema = scheduleSchema.extend({
-  schedule_type: z.literal("assessment"),
-  client_id: z.string().uuid("대상자 ID는 필수입니다."),
-  assessment_type: z.enum(
-    [ASSESSMENT_TYPES.FUNCTIONAL, ASSESSMENT_TYPES.ENVIRONMENTAL, ASSESSMENT_TYPES.NEEDS],
-    {
-      errorMap: () => ({ message: "유효한 평가 유형을 선택하세요." }),
+const assessmentScheduleSchema = z
+  .object({
+    schedule_type: z.literal("assessment"),
+    client_id: z.string().uuid("대상자 ID는 필수입니다."),
+    title: z
+      .string()
+      .min(1, "제목은 필수입니다.")
+      .max(200, "제목은 최대 200자까지 입력 가능합니다."),
+    assessment_type: z.enum(
+      [ASSESSMENT_TYPES.FUNCTIONAL, ASSESSMENT_TYPES.ENVIRONMENTAL, ASSESSMENT_TYPES.NEEDS],
+      {
+        errorMap: () => ({ message: "유효한 평가 유형을 선택하세요." }),
+      },
+    ),
+    location: z.string().max(500, "장소는 최대 500자까지 입력 가능합니다.").optional(),
+    description: z.string().max(5000).optional(),
+    start_time: z.string().datetime({ message: "유효한 시작 시간을 입력하세요 (ISO 8601 형식)." }),
+    end_time: z.string().datetime({ message: "유효한 종료 시간을 입력하세요 (ISO 8601 형식)." }),
+    participant_ids: z.array(z.string()).default([]),
+    reminder_minutes: z.number().int().min(0).max(1440).default(30),
+    status: z.enum(["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
+    notes: z.string().max(5000).optional(),
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.start_time);
+      const end = new Date(data.end_time);
+      return end > start;
     },
-  ),
-  location: z.string().max(500, "장소는 최대 500자까지 입력 가능합니다.").optional(),
-});
+    {
+      message: "종료 시간은 시작 시간 이후여야 합니다.",
+      path: ["end_time"],
+    },
+  );
 
 /**
  * POST /api/schedules/assessment
@@ -186,4 +209,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

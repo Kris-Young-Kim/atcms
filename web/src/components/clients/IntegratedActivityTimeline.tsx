@@ -210,9 +210,9 @@ export function IntegratedActivityTimeline({ clientId }: IntegratedActivityTimel
                     </div>
                     {activity.metadata && Object.keys(activity.metadata).length > 0 && (
                       <div className="mt-2 text-sm opacity-90">
-                        {activity.metadata.status && (
+                        {typeof activity.metadata.status === "string" && (
                           <span className="inline-block rounded px-2 py-1 text-xs">
-                            상태: {String(activity.metadata.status)}
+                            상태: {activity.metadata.status}
                           </span>
                         )}
                       </div>
@@ -235,4 +235,3 @@ export function IntegratedActivityTimeline({ clientId }: IntegratedActivityTimel
     </div>
   );
 }
-

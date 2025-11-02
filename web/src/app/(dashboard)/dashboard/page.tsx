@@ -110,7 +110,9 @@ export default function DashboardPage() {
                   )}
                 </p>
               </div>
-              <div className={`rounded-xl p-3 text-2xl shadow-sm transition-transform duration-300 group-hover:scale-110 ${card.color}`}>
+              <div
+                className={`rounded-xl p-3 text-2xl shadow-sm transition-transform duration-300 group-hover:scale-110 ${card.color}`}
+              >
                 {card.icon}
               </div>
             </div>

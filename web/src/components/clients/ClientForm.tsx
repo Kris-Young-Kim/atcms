@@ -116,7 +116,9 @@ export function ClientForm({ initialData, clientId, mode = "create" }: ClientFor
                 className="mt-2 block w-full rounded-lg border-2 border-gray-300 px-4 py-2.5 text-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 aria-required="true"
               />
-              {errors.name && <p className="mt-1.5 text-sm font-medium text-red-600">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="mt-1.5 text-sm font-medium text-red-600">{errors.name.message}</p>
+              )}
             </div>
 
             {/* 생년월일 */}

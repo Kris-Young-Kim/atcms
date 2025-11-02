@@ -59,10 +59,13 @@ export function showNotification(notification: ReminderNotification): Notificati
     body: notification.body,
     icon: notification.icon || "/favicon.ico",
     tag: notification.tag,
-    timestamp: notification.timestamp,
     badge: "/favicon.ico",
     requireInteraction: false, // 자동으로 사라지도록
     silent: false,
+    data: {
+      timestamp: notification.timestamp,
+      url: notification.url,
+    },
   };
 
   const browserNotification = new Notification(notification.title, options);
@@ -142,10 +145,11 @@ export function saveNotificationSettings(settings: NotificationSettings): void {
 /**
  * 알림 설정 업데이트
  */
-export function updateNotificationSettings(updates: Partial<NotificationSettings>): NotificationSettings {
+export function updateNotificationSettings(
+  updates: Partial<NotificationSettings>,
+): NotificationSettings {
   const current = loadNotificationSettings();
   const updated = { ...current, ...updates };
   saveNotificationSettings(updated);
   return updated;
 }
-

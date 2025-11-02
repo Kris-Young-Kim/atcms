@@ -7,17 +7,41 @@ import { scheduleSchema } from "@/lib/validations/schedule";
 import { z } from "zod";
 
 /**
- * 맞춤제작 일정 생성을 위한 확장 스키마
+ * 맞춤제작 일정 생성을 위한 스키마
  */
-const customizationScheduleSchema = scheduleSchema.extend({
-  schedule_type: z.literal("customization"),
-  customization_request_id: z.string().uuid("맞춤제작 요청 ID는 필수입니다."),
-  client_id: z.string().uuid("대상자 ID는 필수입니다."),
-  // 맞춤제작 단계와 연동
-  stage: z.enum(["requested", "designing", "prototyping", "fitting", "completed"]).optional(),
-  // 단계별 일정 자동 생성 옵션
-  auto_create_stage_schedules: z.boolean().default(false), // 기본값: false (수동 생성)
-});
+const customizationScheduleSchema = z
+  .object({
+    schedule_type: z.literal("customization"),
+    customization_request_id: z.string().uuid("맞춤제작 요청 ID는 필수입니다."),
+    client_id: z.string().uuid("대상자 ID는 필수입니다."),
+    title: z
+      .string()
+      .min(1, "제목은 필수입니다.")
+      .max(200, "제목은 최대 200자까지 입력 가능합니다."),
+    description: z.string().max(5000).optional(),
+    location: z.string().max(500).optional(),
+    start_time: z.string().datetime({ message: "유효한 시작 시간을 입력하세요 (ISO 8601 형식)." }),
+    end_time: z.string().datetime({ message: "유효한 종료 시간을 입력하세요 (ISO 8601 형식)." }),
+    participant_ids: z.array(z.string()).default([]),
+    reminder_minutes: z.number().int().min(0).max(1440).default(30),
+    status: z.enum(["scheduled", "completed", "cancelled", "no_show"]).default("scheduled"),
+    notes: z.string().max(5000).optional(),
+    // 맞춤제작 단계와 연동
+    stage: z.enum(["requested", "designing", "prototyping", "fitting", "completed"]).optional(),
+    // 단계별 일정 자동 생성 옵션
+    auto_create_stage_schedules: z.boolean().default(false), // 기본값: false (수동 생성)
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.start_time);
+      const end = new Date(data.end_time);
+      return end > start;
+    },
+    {
+      message: "종료 시간은 시작 시간 이후여야 합니다.",
+      path: ["end_time"],
+    },
+  );
 
 /**
  * 맞춤제작 단계별 일정 생성 설정
@@ -27,7 +51,12 @@ const STAGE_SCHEDULE_CONFIG: Record<
   { title: string; durationDays: number; defaultStartHour: number; defaultEndHour: number }
 > = {
   designing: { title: "설계 일정", durationDays: 7, defaultStartHour: 9, defaultEndHour: 18 },
-  prototyping: { title: "시제품 제작 일정", durationDays: 14, defaultStartHour: 9, defaultEndHour: 18 },
+  prototyping: {
+    title: "시제품 제작 일정",
+    durationDays: 14,
+    defaultStartHour: 9,
+    defaultEndHour: 18,
+  },
   fitting: { title: "착용 테스트 일정", durationDays: 3, defaultStartHour: 10, defaultEndHour: 16 },
 };
 
@@ -196,7 +225,9 @@ export async function POST(request: Request) {
         if (!config) continue;
 
         const stageStartTime = new Date(startTime);
-        stageStartTime.setDate(stageStartTime.getDate() + (createdStageScheduleIds.length * config.durationDays));
+        stageStartTime.setDate(
+          stageStartTime.getDate() + createdStageScheduleIds.length * config.durationDays,
+        );
         stageStartTime.setHours(config.defaultStartHour, 0, 0, 0);
 
         const stageEndTime = new Date(stageStartTime);
@@ -287,4 +318,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

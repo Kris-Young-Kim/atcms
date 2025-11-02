@@ -9,6 +9,23 @@ import { useToast, ToastContainer } from "@/components/ui/Toast";
 import { ScheduleForm } from "@/components/schedules/ScheduleForm";
 import type { Schedule } from "@/lib/validations/schedule";
 
+interface ScheduleDetail extends Schedule {
+  clients?: {
+    id: string;
+    name: string;
+    contact_phone?: string | null;
+  } | null;
+  rentals?: {
+    id: string;
+    rental_date: string;
+  } | null;
+  customization_requests?: {
+    id: string;
+    title: string;
+    status: string;
+  } | null;
+}
+
 /**
  * 일정 상세 페이지
  * Phase 10: SCH-US-02
@@ -20,7 +37,7 @@ export default function ScheduleDetailPage() {
   const { hasRole } = useUserRole();
   const { toasts, removeToast, success, error: showError } = useToast();
 
-  const [schedule, setSchedule] = useState<Schedule | null>(null);
+  const [schedule, setSchedule] = useState<ScheduleDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
@@ -36,7 +53,7 @@ export default function ScheduleDetailPage() {
     try {
       const response = await fetch(`/api/schedules/${scheduleId}`);
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as ScheduleDetail;
         setSchedule(data);
       } else {
         showError("일정 정보를 불러올 수 없습니다.");
@@ -111,9 +128,9 @@ export default function ScheduleDetailPage() {
     class: "bg-gray-100 text-gray-700",
   };
 
-  const client = (schedule as any).clients;
-  const rental = (schedule as any).rentals;
-  const customization = (schedule as any).customization_requests;
+  const client = schedule.clients ?? null;
+  const rental = schedule.rentals ?? null;
+  const customization = schedule.customization_requests ?? null;
 
   return (
     <>
@@ -262,4 +279,3 @@ export default function ScheduleDetailPage() {
     </>
   );
 }
-

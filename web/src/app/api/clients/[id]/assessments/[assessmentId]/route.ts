@@ -155,7 +155,12 @@ export async function PUT(
         updatedData.total_score =
           updatedData.total_score ??
           calculateTotalScore(
-            updatedData.items as Array<{ question: string; score: number; notes?: string; id?: string }>,
+            updatedData.items as Array<{
+              question: string;
+              score: number;
+              notes?: string;
+              id?: string;
+            }>,
           );
       }
 
