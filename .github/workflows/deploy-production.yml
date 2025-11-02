@@ -1,0 +1,240 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 수동 실행 가능
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  pre-deployment-checks:
+    name: Pre-deployment Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linter
+        run: pnpm --filter web lint
+
+      - name: Run type check
+        run: pnpm --filter web type-check
+
+      - name: Check for security vulnerabilities
+        run: pnpm --filter web audit --audit-level=moderate
+        continue-on-error: false
+
+      - name: Run tests
+        run: pnpm --filter web test:ci
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: test
+
+      - name: Build application
+        run: pnpm --filter web build
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+
+      - name: Create deployment checklist artifact
+        run: |
+          echo "## 배포 전 체크리스트" > deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "- [x] ESLint 통과" >> deployment-checklist.md
+          echo "- [x] TypeScript 타입 체크 통과" >> deployment-checklist.md
+          echo "- [x] 보안 취약점 검사 통과" >> deployment-checklist.md
+          echo "- [x] 테스트 통과" >> deployment-checklist.md
+          echo "- [x] 빌드 성공" >> deployment-checklist.md
+          echo "" >> deployment-checklist.md
+          echo "**체크리스트 생성 시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> deployment-checklist.md
+
+      - name: Upload deployment checklist
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-checklist
+          path: deployment-checklist.md
+
+  approve-deployment:
+    name: Approve Deployment
+    runs-on: ubuntu-latest
+    needs: pre-deployment-checks
+    environment:
+      name: production
+      url: https://vercel.com/dashboard
+
+    steps:
+      - name: Wait for manual approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ secrets.DEPLOYMENT_APPROVERS }}
+          minimum-approvals: 1
+          issue-title: "🚀 Production 배포 승인 요청"
+          issue-body: |
+            ## Production 배포 승인 요청
+
+            **브랜치**: `${{ github.ref_name }}`
+            **커밋**: `${{ github.sha }}`
+            **커밋 메시지**: `${{ github.event.head_commit.message }}`
+            **작성자**: `${{ github.actor }}`
+
+            ### 배포 전 체크리스트 확인
+            - [x] ESLint 통과
+            - [x] TypeScript 타입 체크 통과
+            - [x] 보안 취약점 검사 통과
+            - [x] 테스트 통과
+            - [x] 빌드 성공
+
+            ### 승인 전 확인사항
+            - [ ] 변경사항 검토 완료
+            - [ ] 핵심 기능 테스트 완료
+            - [ ] 환경 변수 확인 완료
+            - [ ] 롤백 계획 확인 완료
+
+            ### 배포 정보
+            - **예상 배포 환경**: Production
+            - **예상 배포 URL**: 프로덕션 도메인
+
+            승인 후 배포가 진행됩니다.
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [pre-deployment-checks, approve-deployment]
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download deployment checklist
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-checklist
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm --filter web build
+        env:
+          SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web
+
+      - name: Deploy to Vercel Production
+        id: deploy
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --env=production
+        working-directory: ./web
+
+      - name: Get deployment URL
+        id: deployment-url
+        run: |
+          echo "url=${{ steps.deploy.outputs.url }}" >> $GITHUB_OUTPUT
+
+      - name: Create deployment summary
+        run: |
+          echo "## ✅ Production 배포 완료" > deployment-summary.md
+          echo "" >> deployment-summary.md
+          echo "**배포 URL**: ${{ steps.deployment-url.outputs.url }}" >> deployment-summary.md
+          echo "**환경**: Production" >> deployment-summary.md
+          echo "**브랜치**: \`${{ github.ref_name }}\`" >> deployment-summary.md
+          echo "**커밋**: \`${{ github.sha }}\`" >> deployment-summary.md
+          echo "**배포 시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> deployment-summary.md
+          echo "" >> deployment-summary.md
+          echo "### 배포 후 확인사항" >> deployment-summary.md
+          echo "- [ ] 홈페이지 로드 확인" >> deployment-summary.md
+          echo "- [ ] 로그인 페이지 접근 확인" >> deployment-summary.md
+          echo "- [ ] 대시보드 접근 확인" >> deployment-summary.md
+          echo "- [ ] 핵심 기능 동작 확인" >> deployment-summary.md
+          echo "- [ ] Sentry 에러 모니터링 확인" >> deployment-summary.md
+
+      - name: Upload deployment summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-summary
+          path: deployment-summary.md
+
+      - name: Comment deployment summary on commit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('deployment-summary.md', 'utf8');
+            
+            // GitHub API를 사용하여 커밋에 코멘트 추가 (권한 필요)
+            // 또는 PR이 있다면 PR에 코멘트 추가
+            console.log(summary);
+
+      - name: Notify deployment success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `✅ **Production 배포 성공**
+            
+            **배포 URL**: ${{ steps.deployment-url.outputs.url }}
+            **브랜치**: \`${{ github.ref_name }}\`
+            **커밋**: \`${{ github.sha }}\`
+            
+            [워크플로우 실행 보기](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            배포 후 검증을 진행해주세요.`;
+            
+            console.log(body);
+            // Slack 알림 등 추가 가능
+
+      - name: Notify deployment failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `❌ **Production 배포 실패**
+            
+            **브랜치**: \`${{ github.ref_name }}\`
+            **커밋**: \`${{ github.sha }}\`
+            
+            [워크플로우 실행 보기](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            배포 로그를 확인하고 문제를 해결해주세요.`;
+            
+            console.log(body);
+            // Slack 알림 등 추가 가능
+

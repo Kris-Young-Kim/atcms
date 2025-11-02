@@ -48,6 +48,11 @@ pnpm dev
 
 - [프로젝트 관리 시스템](./PROJECT_MANAGEMENT_SYSTEM.md)
 - [기여 가이드](./CONTRIBUTING.md)
+- [시스템 아키텍처](./ARCHITECTURE.md)
+- [API 문서](./API_DOCS.md)
+- [배포 가이드](./DEPLOYMENT.md)
+- [데이터베이스 스키마](./DATABASE_SCHEMA.md)
+- [개발 가이드](./DEVELOPMENT.md)
 - [Git Flow 가이드](./docs/git-flow-guide.md)
 - [커밋 메시지 가이드](./docs/commit-message-guide.md)
 - [이슈 관리 가이드](./docs/issue-management-guide.md)

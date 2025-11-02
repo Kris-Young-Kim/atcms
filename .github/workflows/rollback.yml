@@ -1,0 +1,192 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch: # 수동 실행만 가능
+    inputs:
+      environment:
+        description: '배포 환경 선택'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      deployment_url:
+        description: '롤백할 배포 URL (선택사항)'
+        required: false
+        type: string
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate inputs
+        run: |
+          if [ "${{ github.event.inputs.environment }}" != "staging" ] && [ "${{ github.event.inputs.environment }}" != "production" ]; then
+            echo "❌ 잘못된 환경입니다. staging 또는 production만 선택 가능합니다."
+            exit 1
+          fi
+          echo "✅ 환경 검증 완료: ${{ github.event.inputs.environment }}"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=${{ github.event.inputs.environment == 'production' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web
+
+      - name: List recent deployments
+        id: list-deployments
+        run: |
+          echo "최근 배포 내역을 확인합니다..."
+          vercel list --token=${{ secrets.VERCEL_TOKEN }} --environment=${{ github.event.inputs.environment == 'production' && 'production' || 'preview' }} --limit=10 > deployments.txt || true
+          cat deployments.txt || echo "배포 내역을 가져올 수 없습니다."
+
+      - name: Display deployment list
+        run: |
+          echo "## 최근 배포 내역"
+          cat deployments.txt || echo "배포 내역 없음"
+
+      - name: Rollback to previous deployment
+        id: rollback
+        if: github.event.inputs.deployment_url == ''
+        run: |
+          echo "이전 배포로 롤백합니다..."
+          # Vercel은 최신 배포를 프로덕션으로 프로모트하는 방식으로 롤백
+          # 실제 롤백은 Vercel Dashboard에서 수행하는 것이 더 안전합니다
+          echo "⚠️ Vercel CLI를 통한 직접 롤백은 제한적입니다."
+          echo "💡 Vercel Dashboard에서 이전 배포를 Production으로 프로모트하세요."
+          echo "📝 롤백 절차:"
+          echo "   1. Vercel Dashboard 접속"
+          echo "   2. 프로젝트 선택 → Deployments 탭"
+          echo "   3. 이전 배포 버전 선택"
+          echo "   4. ⋯ 메뉴 클릭 → 'Promote to Production' 선택"
+          exit 1
+
+      - name: Rollback to specific deployment
+        id: rollback-specific
+        if: github.event.inputs.deployment_url != ''
+        run: |
+          echo "특정 배포로 롤백합니다: ${{ github.event.inputs.deployment_url }}"
+          echo "⚠️ Vercel CLI를 통한 직접 롤백은 제한적입니다."
+          echo "💡 Vercel Dashboard에서 지정한 배포를 Production으로 프로모트하세요."
+          exit 1
+
+      - name: Create rollback documentation
+        if: always()
+        run: |
+          echo "# 롤백 절차 문서" > rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "## 롤백 방법" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "### 방법 1: Vercel Dashboard에서 롤백" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "1. **Vercel Dashboard 접속**: https://vercel.com/dashboard" >> rollback-guide.md
+          echo "2. 프로젝트 선택 → **Deployments** 탭" >> rollback-guide.md
+          echo "3. 이전 배포 버전 선택" >> rollback-guide.md
+          echo "4. **⋯** 메뉴 클릭 → **Promote to Production** 선택" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "### 방법 2: Git으로 롤백" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "1. 이전 커밋 확인:" >> rollback-guide.md
+          echo "   \`\`\`bash" >> rollback-guide.md
+          echo "   git log --oneline" >> rollback-guide.md
+          echo "   \`\`\`" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "2. 이전 커밋으로 revert:" >> rollback-guide.md
+          echo "   \`\`\`bash" >> rollback-guide.md
+          echo "   git checkout main" >> rollback-guide.md
+          echo "   git pull origin main" >> rollback-guide.md
+          echo "   git revert <배포_커밋_해시>" >> rollback-guide.md
+          echo "   git push origin main" >> rollback-guide.md
+          echo "   \`\`\`" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "3. Vercel 자동 재배포" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "## 롤백 후 확인사항" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "- [ ] 이전 버전으로 정상 동작 확인" >> rollback-guide.md
+          echo "- [ ] 데이터 정합성 확인" >> rollback-guide.md
+          echo "- [ ] 에러 모니터링 확인" >> rollback-guide.md
+          echo "- [ ] 롤백 사유 문서화" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "## 롤백 정보" >> rollback-guide.md
+          echo "" >> rollback-guide.md
+          echo "- **환경**: ${{ github.event.inputs.environment }}" >> rollback-guide.md
+          echo "- **롤백 시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> rollback-guide.md
+          echo "- **실행자**: ${{ github.actor }}" >> rollback-guide.md
+
+      - name: Upload rollback guide
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollback-guide
+          path: rollback-guide.md
+
+      - name: Create rollback issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const guide = fs.readFileSync('rollback-guide.md', 'utf8');
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔄 롤백 요청: ${{ github.event.inputs.environment }}`,
+              body: `## 롤백 요청
+              
+              **환경**: ${{ github.event.inputs.environment }}
+              **요청자**: @${{ github.actor }}
+              **시간**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+              
+              ${guide}
+              
+              ---
+              
+              **주의**: 롤백은 신중하게 진행해야 합니다. 위 가이드를 참고하여 롤백을 수행하세요.`
+            });
+            
+            console.log(`롤백 이슈 생성됨: ${issue.data.html_url}`);
+
+      - name: Notify rollback status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅ 완료' : '⚠️ 주의 필요';
+            const body = `**롤백 상태**: ${status}
+            
+            **환경**: ${{ github.event.inputs.environment }}
+            **요청자**: @${{ github.actor }}
+            
+            롤백은 Vercel Dashboard에서 수동으로 수행해야 합니다.
+            자세한 절차는 생성된 이슈를 참고하세요.`;
+            
+            console.log(body);
+            // Slack 알림 등 추가 가능
+
