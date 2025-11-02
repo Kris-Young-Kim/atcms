@@ -311,10 +311,9 @@ function CustomizationTabPanel({
   if (activeTab === "edit" && canEdit) {
     return (
       <CustomizationForm
-        requestId={customizationId}
+        customizationId={customizationId}
         initialData={customization}
-        onSuccess={onSaveSuccess}
-        onCancel={onCloseEdit}
+        mode="edit"
       />
     );
   }
