@@ -1,0 +1,21 @@
+# SonarCloud 설정 파일
+# 
+# SonarCloud를 사용하는 경우 이 파일을 프로젝트 루트에 배치하고
+# sonar-project.properties로 이름을 변경하세요.
+#
+# 설정 방법은 docs/static-code-analysis-guide.md를 참고하세요.
+
+sonar.projectKey=Kris-Young-Kim_atcmp
+sonar.organization=kris-young-kim
+
+sonar.sources=web/src
+sonar.exclusions=**/node_modules/**,**/dist/**,**/__tests__/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
+
+sonar.tests=web/src
+sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
+
+sonar.javascript.lcov.reportPaths=web/coverage/lcov.info
+sonar.typescript.lcov.reportPaths=web/coverage/lcov.info
+
+sonar.sourceEncoding=UTF-8
+

@@ -8,3 +8,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Testing
+/test-results/
+/playwright-report/
+/playwright/.cache/

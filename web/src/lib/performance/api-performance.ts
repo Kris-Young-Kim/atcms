@@ -1,0 +1,141 @@
+/**
+ * API 성능 측정 유틸리티
+ * 
+ * API 엔드포인트의 응답 시간을 측정하고 로깅합니다.
+ */
+
+/**
+ * API 성능 측정 결과
+ */
+interface ApiPerformanceMetric {
+  endpoint: string;
+  method: string;
+  duration: number;
+  status: number;
+  timestamp: number;
+}
+
+/**
+ * API 성능 측정 함수
+ * 
+ * API 핸들러의 실행 시간을 측정하고 로깅합니다.
+ * 
+ * @param endpoint - API 엔드포인트 경로
+ * @param method - HTTP 메서드
+ * @param handler - API 핸들러 함수
+ * @returns API 응답
+ * 
+ * @example
+ * ```typescript
+ * export async function GET(request: Request) {
+ *   return measureApiPerformance('/api/clients', 'GET', async () => {
+ *     // API 로직
+ *     return NextResponse.json(data);
+ *   });
+ * }
+ * ```
+ */
+export async function measureApiPerformance<T>(
+  endpoint: string,
+  method: string,
+  handler: () => Promise<T>,
+): Promise<T> {
+  const start = performance.now();
+  let status = 200;
+
+  try {
+    const result = await handler();
+
+    // NextResponse인 경우 status 추출
+    if (result && typeof result === "object" && "status" in result) {
+      status = (result as { status: number }).status;
+    }
+
+    return result;
+  } catch (error) {
+    status = 500;
+    throw error;
+  } finally {
+    const duration = performance.now() - start;
+
+    // 성능 메트릭 기록
+    const metric: ApiPerformanceMetric = {
+      endpoint,
+      method,
+      duration: Math.round(duration),
+      status,
+      timestamp: Date.now(),
+    };
+
+    // 로그 출력
+    logApiPerformance(metric);
+
+    // 느린 요청 경고 (500ms 초과)
+    if (duration > 500) {
+      console.warn(`[Slow API] ${method} ${endpoint}: ${duration.toFixed(2)}ms`);
+    }
+
+    // TODO: 실제 프로덕션에서는 Sentry나 Analytics로 전송
+    // if (process.env.NODE_ENV === 'production') {
+    //   // Sentry에 전송
+    //   // 또는 Analytics API로 전송
+    // }
+  }
+}
+
+/**
+ * API 성능 메트릭 로깅
+ * 
+ * @param metric - 성능 메트릭 데이터
+ */
+function logApiPerformance(metric: ApiPerformanceMetric): void {
+  const { endpoint, method, duration, status } = metric;
+
+  // 성능 로그 포맷
+  const logMessage = `[API Performance] ${method} ${endpoint} - ${duration}ms (${status})`;
+
+  // 상태 코드에 따라 로그 레벨 결정
+  if (status >= 500) {
+    console.error(logMessage);
+  } else if (status >= 400) {
+    console.warn(logMessage);
+  } else {
+    console.log(logMessage);
+  }
+}
+
+/**
+ * 데이터베이스 쿼리 성능 측정
+ * 
+ * @param queryName - 쿼리 이름
+ * @param queryFn - 쿼리 함수
+ * @returns 쿼리 결과
+ * 
+ * @example
+ * ```typescript
+ * const data = await measureQueryPerformance('getClients', async () => {
+ *   return await supabase.from('clients').select('*');
+ * });
+ * ```
+ */
+export async function measureQueryPerformance<T>(
+  queryName: string,
+  queryFn: () => Promise<T>,
+): Promise<T> {
+  const start = performance.now();
+
+  try {
+    const result = await queryFn();
+    return result;
+  } finally {
+    const duration = performance.now() - start;
+
+    // 느린 쿼리 경고 (300ms 초과)
+    if (duration > 300) {
+      console.warn(`[Slow Query] ${queryName}: ${duration.toFixed(2)}ms`);
+    } else {
+      console.log(`[Query Performance] ${queryName}: ${duration.toFixed(2)}ms`);
+    }
+  }
+}
+

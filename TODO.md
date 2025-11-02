@@ -787,25 +787,25 @@
 ### 6.1 테스트 환경 설정
 
 - [x] Jest 테스트 환경 설정 ✅ (jest.config.js, jest.setup.js 존재)
-- [ ] 테스트 유틸리티 함수 작성
-- [ ] Mock 데이터 관리 체계 구축
+- [x] 테스트 유틸리티 함수 작성 ✅ (test-helpers.ts, api-helpers.ts, mock-factory.ts 생성 완료)
+- [x] Mock 데이터 관리 체계 구축 ✅ (mocks/ 디렉토리 생성, users.ts, clients.ts, equipment.ts, rentals.ts, supabase.ts 완료)
 - [x] 테스트 커버리지 리포트 자동 생성 설정 ✅ (jest.config.js에 coverage 설정, test:ci 스크립트 존재)
 
 ### 6.2 테스트 작성
 
 - [x] 핵심 기능 단위 테스트 작성 ✅ (client.test.ts, route.test.ts 존재)
-- [ ] API 통합 테스트 작성
-- [ ] 컴포넌트 테스트 작성
-- [ ] E2E 테스트 시나리오 작성
+- [x] API 통합 테스트 작성 ✅ (clients/[id], equipment, rentals 주요 엔드포인트 테스트 작성 완료)
+- [x] 컴포넌트 테스트 작성 ✅ (ProtectedRoute, Toast, ClientForm 테스트 작성 완료)
+- [x] E2E 테스트 시나리오 작성 ✅ (Playwright 설정 및 P0 시나리오 테스트 작성 완료)
 
 ### 6.3 품질 관리
 
 - [x] 코드 품질 게이트 설정 (최소 70% 커버리지) ✅ (jest.config.js에 70% threshold 설정)
-- [ ] 정적 코드 분석 도구 통합
-- [ ] 성능 벤치마크 기준 설정
-- [ ] 기술 부채 추적 시스템 구축
+- [x] 정적 코드 분석 도구 통합 ✅ (ESLint 규칙 강화 완료, SonarCloud 설정 파일 생성 완료)
+- [x] 성능 벤치마크 기준 설정 ✅ (성능 목표 및 측정 방법 문서화 완료)
+- [x] 기술 부채 추적 시스템 구축 ✅ (기술 부채 관리 문서, 레지스트리, 이슈 템플릿, 스캐너 유틸리티 생성 완료)
 
-**진행률**: 2/10 (20%)
+**진행률**: 10/10 (100%)
 
 ---
 
