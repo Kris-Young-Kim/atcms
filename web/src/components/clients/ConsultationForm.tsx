@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { consultationSchema, type ConsultationFormData } from "@/lib/validations/consultation";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { FileUpload, useFileUpload } from "@/components/ui/FileUpload";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSOAPTemplate, formatSOAPToText, parseTextToSOAP } from "@/lib/utils/soap-template";
 
@@ -32,6 +33,7 @@ export function ConsultationForm({
   const { toasts, removeToast, success, error: showError } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useSOAP, setUseSOAP] = useState(false);
+  const { uploadedUrls, handleUploadComplete, clearUrls } = useFileUpload();
 
   // 초기 데이터에서 SOAP 형식 확인
   const initialSOAP = initialData?.content ? parseTextToSOAP(initialData.content) : createSOAPTemplate();
@@ -82,6 +84,9 @@ export function ConsultationForm({
         finalData.plan = soapData.plan;
       }
 
+      // 업로드된 파일 URL 추가
+      finalData.attachments = [...(finalData.attachments || []), ...uploadedUrls];
+
       // API 호출
       const url = mode === "edit" ? `/api/clients/${clientId}/consultations/${consultationId}` : `/api/clients/${clientId}/consultations`;
       const method = mode === "edit" ? "PUT" : "POST";
@@ -110,6 +115,9 @@ export function ConsultationForm({
       auditLogger.info(`consultation_form_success_${mode}`, {
         metadata: { consultationId: result.id },
       });
+
+      // 업로드된 파일 목록 초기화
+      clearUrls();
 
       // 2초 후 상세 페이지로 이동
       setTimeout(() => {
@@ -277,10 +285,31 @@ export function ConsultationForm({
           </section>
         )}
 
-        {/* 첨부파일 섹션 (향후 구현) */}
+        {/* 첨부파일 섹션 */}
         <section className="rounded-lg border border-gray-200 bg-white p-6">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">첨부파일</h2>
-          <p className="text-sm text-gray-600">파일 첨부 기능은 다음 단계에서 구현 예정입니다.</p>
+          <FileUpload
+            onUploadComplete={handleUploadComplete}
+            accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.xls,.xlsx,.txt"
+            maxSize={10 * 1024 * 1024}
+            multiple={true}
+            label="파일 선택"
+            disabled={isSubmitting}
+          />
+          {uploadedUrls.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm font-medium text-gray-700">업로드된 파일 ({uploadedUrls.length}개):</p>
+              <ul className="mt-2 space-y-1">
+                {uploadedUrls.map((url, index) => (
+                  <li key={index} className="text-sm text-gray-600">
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      파일 {index + 1}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
 
         {/* 제출 버튼 */}

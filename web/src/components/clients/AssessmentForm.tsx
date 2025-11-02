@@ -14,6 +14,7 @@ import {
   calculateTotalScore,
 } from "@/lib/validations/assessment";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { FileUpload, useFileUpload } from "@/components/ui/FileUpload";
 import { auditLogger } from "@/lib/logger/auditLogger";
 
 /**
@@ -37,6 +38,7 @@ export function AssessmentForm({
   const router = useRouter();
   const { toasts, removeToast, success, error: showError } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { uploadedUrls, handleUploadComplete, clearUrls } = useFileUpload();
 
   const {
     register,
@@ -78,6 +80,14 @@ export function AssessmentForm({
         total_score: calculateTotalScore(data.items),
       };
 
+      // 업로드된 파일 URL 추가 (PDF 우선)
+      const pdfUrls = uploadedUrls.filter((url) => url.endsWith(".pdf"));
+      const otherUrls = uploadedUrls.filter((url) => !url.endsWith(".pdf"));
+      if (pdfUrls.length > 0) {
+        finalData.pdf_attachment = pdfUrls[0]; // 첫 번째 PDF
+      }
+      finalData.attachments = [...(finalData.attachments || []), ...otherUrls];
+
       // API 호출
       const url = mode === "edit" ? `/api/clients/${clientId}/assessments/${assessmentId}` : `/api/clients/${clientId}/assessments`;
       const method = mode === "edit" ? "PUT" : "POST";
@@ -106,6 +116,9 @@ export function AssessmentForm({
       auditLogger.info(`assessment_form_success_${mode}`, {
         metadata: { assessmentId: result.id },
       });
+
+      // 업로드된 파일 목록 초기화
+      clearUrls();
 
       // 2초 후 상세 페이지로 이동
       setTimeout(() => {
@@ -327,10 +340,31 @@ export function AssessmentForm({
           </div>
         </section>
 
-        {/* PDF 첨부 섹션 (향후 구현) */}
+        {/* PDF 첨부 섹션 */}
         <section className="rounded-lg border border-gray-200 bg-white p-6">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">PDF 첨부</h2>
-          <p className="text-sm text-gray-600">PDF 첨부 기능은 다음 단계에서 구현 예정입니다.</p>
+          <FileUpload
+            onUploadComplete={handleUploadComplete}
+            accept=".pdf"
+            maxSize={10 * 1024 * 1024}
+            multiple={false}
+            label="PDF 파일 선택"
+            disabled={isSubmitting}
+          />
+          {uploadedUrls.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm font-medium text-gray-700">업로드된 파일:</p>
+              <ul className="mt-2 space-y-1">
+                {uploadedUrls.map((url, index) => (
+                  <li key={index} className="text-sm text-gray-600">
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      PDF 파일 {index + 1}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
 
         {/* 제출 버튼 */}
