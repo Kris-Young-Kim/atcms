@@ -179,7 +179,7 @@ export function ToastContainer({ toasts, onRemove, position = "top-right" }: Toa
       aria-live="polite"
       aria-label="알림"
     >
-      {toasts.map((toast, index) => (
+      {toasts.map((toast) => (
         <Toast
           key={toast.id}
           message={toast.message}
