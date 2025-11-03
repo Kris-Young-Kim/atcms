@@ -1,4 +1,4 @@
-# AT-Care Phase 1 MVP Scope & Backlog
+# AT-CSM Phase 1 MVP Scope & Backlog
 
 ## 1. 범위 개요
 

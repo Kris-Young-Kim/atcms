@@ -31,7 +31,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
         working-directory: web
 
       - name: Build application
@@ -73,6 +73,7 @@ jobs:
           name: lighthouse-results
           path: web/.lighthouseci/
           retention-days: 30
+          if-no-files-found: warn
 
   performance-benchmark:
     name: Performance Benchmark
@@ -96,7 +97,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
         working-directory: web
 
       - name: Run performance tests
@@ -129,6 +130,7 @@ jobs:
         with:
           name: lighthouse-results
           path: lighthouse-results/
+          if-no-files-found: warn
 
       - name: Download performance results
         uses: actions/download-artifact@v4

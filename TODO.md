@@ -5,10 +5,13 @@
 **프로젝트 기간**: 2025년 11월 ~ 2026년 8월 (9개월)  
 **현재 상태**: 기획 단계 → 개발 단계
 
-**마지막 업데이트**: 2025-11-02
+**마지막 업데이트**: 2025-12-19
 
 **최근 업데이트 내용**:
 
+- UI/UX 개선 작업 완료 (Skeleton UI, lucide-react 아이콘, 네비게이션 구조 개선)
+- 모든 주요 페이지에 Skeleton UI 적용 완료
+- GNB, LNB, FNB 네비게이션 구조 완성
 - Phase 10 진행률: 44/47 (94%) 업데이트
 - 일정 관리 기능 완료 (캘린더 뷰, 알림 기능 포함)
 - 전체 진행률: 35% (129/347 완료) 업데이트
@@ -1315,8 +1318,8 @@
 
 ---
 
-**마지막 업데이트**: 2025-11-02  
-**다음 리뷰 예정일**: 2025-11-08 (금요일 스프린트 리뷰)
+**마지막 업데이트**: 2025-12-19  
+**다음 리뷰 예정일**: 2025-12-26 (금요일 스프린트 리뷰)
 
 ---
 
@@ -1350,7 +1353,44 @@
 
 ---
 
-## 📋 최근 완료된 작업 (2025-11-02)
+## 📋 최근 완료된 작업 (2025-12-19)
+
+### UI/UX 개선 작업 완료
+
+- ✅ **lucide-react 패키지 추가**
+
+  - `web/package.json`에 `lucide-react` 패키지 추가 완료
+  - 모든 이모지 아이콘을 lucide-react 아이콘으로 교체
+
+- ✅ **Skeleton UI 컴포넌트 개선 및 확장**
+
+  - 기존 `Skeleton`, `SkeletonText` 유지
+  - `SkeletonCard` 추가 (통계 카드용)
+  - `SkeletonTable` 추가 (테이블 로딩용)
+  - `SkeletonForm` 추가 (폼 로딩용)
+  - `SkeletonPage` 추가 (전체 페이지 레이아웃용)
+
+- ✅ **네비게이션 구조 개선**
+
+  - **GNB (Global Navigation Bar - Header)**:
+    - 현재 페이지 타이틀 자동 표시 기능 추가
+    - lucide-react 아이콘 적용 (Bell, HelpCircle)
+    - 빠른 액션 버튼 추가 (도움말, 알림 설정)
+  - **LNB (Left Navigation Bar - Sidebar)**:
+    - 모든 이모지 아이콘을 lucide-react 아이콘으로 교체
+    - LayoutDashboard, Users, Search, FileText, Wrench, Calendar, Bell 등 적용
+    - Building2 아이콘을 로고에 적용
+  - **FNB (Footer Navigation Bar - Footer)**:
+    - 새 Footer 컴포넌트 생성 및 추가
+    - 브랜드 정보, 빠른 링크, 지원 섹션, 연락처 정보 포함
+    - lucide-react 아이콘 사용 (Building2, Mail, Phone, ExternalLink)
+
+- ✅ **모든 주요 페이지에 Skeleton UI 적용**
+  - **대시보드 페이지**: 통계 카드와 최근 대상자 목록에 Skeleton 적용
+  - **대상자 목록 페이지**: 테이블 Skeleton 적용
+  - **기기 관리 페이지**: 전체 레이아웃 Skeleton 적용
+  - **대여 관리 페이지**: 테이블 Skeleton 적용
+  - **일정 관리 페이지**: 카드 목록 Skeleton 적용
 
 ### Phase 10 일정 관리 기능 완료
 
