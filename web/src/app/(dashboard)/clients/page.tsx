@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ClientsTable } from "@/components/clients/ClientsTable";
 import { ClientsFilter, type ClientListFilters } from "@/components/clients/ClientsFilter";
 import { Button } from "@/components/ui/Button";
-import { LoadingState } from "@/components/ui/LoadingState";
+import { SkeletonTable } from "@/components/ui/LoadingState";
 import type { Client } from "@/lib/validations/client";
 import { useClientsPageController, type Pagination } from "@/hooks/useClientsPageController";
 
@@ -97,8 +97,8 @@ function ClientsPageHeader({ total }: { total: number }) {
 
 function ClientsLoadingState() {
   return (
-    <div className="card mx-6 p-12">
-      <LoadingState message="대상자 목록을 불러오는 중..." />
+    <div className="mx-6">
+      <SkeletonTable rows={8} columns={5} />
     </div>
   );
 }

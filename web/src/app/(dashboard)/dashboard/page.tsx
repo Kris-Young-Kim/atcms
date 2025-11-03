@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/Button";
-import { LoadingState } from "@/components/ui/LoadingState";
+import { SkeletonCard, SkeletonTable } from "@/components/ui/LoadingState";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
 export const dynamic = "force-dynamic";
@@ -86,10 +86,6 @@ export default function DashboardPage() {
     },
   ];
 
-  if (loading) {
-    return <LoadingState message="대시보드 데이터를 불러오는 중..." />;
-  }
-
   return (
     <div className="space-y-8 p-6">
       {/* 환영 메시지 */}
@@ -101,8 +97,15 @@ export default function DashboardPage() {
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((card, index) => (
+      {loading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((card, index) => (
           <div
             key={card.title}
             className="card card-hover group relative overflow-hidden p-6"
@@ -122,7 +125,8 @@ export default function DashboardPage() {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* 빠른 액션 */}
       <div className="card animate-slide-in p-6">
@@ -144,12 +148,16 @@ export default function DashboardPage() {
       <div className="card animate-slide-in p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-neutral-900">최근 등록된 대상자</h2>
-          <Link href="/clients" className="link text-sm font-medium">
-            전체 보기 →
-          </Link>
+          {!loading && (
+            <Link href="/clients" className="link text-sm font-medium">
+              전체 보기 →
+            </Link>
+          )}
         </div>
 
-        {recentClients.length === 0 ? (
+        {loading ? (
+          <SkeletonTable rows={3} columns={2} />
+        ) : recentClients.length === 0 ? (
           <div className="py-8 text-center">
             <p className="text-sm text-neutral-500">등록된 대상자가 없습니다.</p>
             <Link href="/clients/new" className="link mt-4 inline-block text-sm font-medium">

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import { RentalsTable } from "@/components/rentals/RentalsTable";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { SkeletonTable } from "@/components/ui/LoadingState";
 import type { Rental } from "@/lib/validations/rental";
 import { RENTAL_STATUS_LABELS } from "@/lib/validations/rental";
 
@@ -78,19 +79,11 @@ export default function RentalsPage() {
     router.push(`/rentals/${rentalId}/return`);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">로딩 중...</p>
-      </div>
-    );
-  }
-
   return (
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="space-y-6">
+      <div className="space-y-6 p-6">
         {/* 헤더 */}
         <div className="flex items-center justify-between">
           <div>
@@ -166,7 +159,13 @@ export default function RentalsPage() {
         </div>
 
         {/* 대여 목록 테이블 */}
-        <RentalsTable rentals={rentals} onReturn={handleReturn} />
+        {loading ? (
+          <div className="card">
+            <SkeletonTable rows={8} columns={6} />
+          </div>
+        ) : (
+          <RentalsTable rentals={rentals} onReturn={handleReturn} />
+        )}
       </div>
     </>
   );

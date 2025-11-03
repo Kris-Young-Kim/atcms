@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { EquipmentTable } from "@/components/equipment/EquipmentTable";
 import { EquipmentStatusChart } from "@/components/equipment/EquipmentStatusChart";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+import { SkeletonTable, SkeletonCard } from "@/components/ui/LoadingState";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
 export const dynamic = "force-dynamic";
@@ -99,10 +100,21 @@ function EquipmentPageView({
   onStatusChangeRequest,
   onQuantityAdjust,
 }: EquipmentPageViewProps) {
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-gray-600">로딩 중...</p>
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-8 w-48 animate-pulse rounded bg-neutral-200" />
+          <div className="h-4 w-96 animate-pulse rounded bg-neutral-200" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+        <SkeletonCard className="h-64" />
+        <SkeletonTable rows={8} columns={6} />
       </div>
     );
   }
@@ -110,7 +122,7 @@ function EquipmentPageView({
   const statusData = buildStatusData(equipment);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <EquipmentPageHeader canCreate={canCreate} />
       <EquipmentFilters
         statusFilter={statusFilter}

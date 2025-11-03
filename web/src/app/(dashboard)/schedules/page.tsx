@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo, useCallback } from "react";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
+import { SkeletonTable, SkeletonCard } from "@/components/ui/LoadingState";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
 export const dynamic = "force-dynamic";
@@ -205,8 +206,10 @@ export default function SchedulesPage() {
 
       {/* 일정 목록 */}
       {loading ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-          <p className="text-gray-600">로딩 중...</p>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
       ) : schedules.length === 0 ? (
         <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">

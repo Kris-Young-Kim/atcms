@@ -3,15 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
+import {
+  LayoutDashboard,
+  Users,
+  Search,
+  FileText,
+  Wrench,
+  Calendar,
+  Bell,
+  Building2,
+  LucideIcon,
+} from "lucide-react";
 
 /**
- * 좌측 사이드바 네비게이션
+ * 좌측 사이드바 네비게이션 (LNB)
  */
 
 interface NavItem {
   name: string;
   href: string;
-  icon: string;
+  icon: LucideIcon;
   allowedRoles?: string[];
 }
 
@@ -19,43 +30,43 @@ const navItems: NavItem[] = [
   {
     name: "대시보드",
     href: "/dashboard",
-    icon: "📊",
+    icon: LayoutDashboard,
     allowedRoles: ["admin", "leader", "specialist", "socialWorker"],
   },
   {
     name: "대상자 관리",
     href: "/clients",
-    icon: "👥",
+    icon: Users,
     allowedRoles: ["admin", "leader", "specialist", "socialWorker"],
   },
   {
     name: "통합 검색",
     href: "/search/activities",
-    icon: "🔍",
+    icon: Search,
     allowedRoles: ["admin", "leader", "specialist", "technician", "socialWorker"],
   },
   {
     name: "상담 기록",
     href: "/consultations",
-    icon: "📝",
+    icon: FileText,
     allowedRoles: ["admin", "leader", "specialist", "socialWorker"],
   },
   {
     name: "기기 관리",
     href: "/equipment",
-    icon: "🔧",
+    icon: Wrench,
     allowedRoles: ["admin", "leader", "technician"],
   },
   {
     name: "일정 관리",
     href: "/schedules",
-    icon: "📅",
+    icon: Calendar,
     allowedRoles: ["admin", "leader", "specialist", "technician", "socialWorker"],
   },
   {
     name: "알림 설정",
     href: "/settings/notifications",
-    icon: "🔔",
+    icon: Bell,
     allowedRoles: ["admin", "leader", "specialist", "technician", "socialWorker"],
   },
 ];
@@ -78,7 +89,7 @@ export function Sidebar() {
           className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
         >
           <div className="rounded-lg bg-white/20 p-1.5 backdrop-blur-sm">
-            <span className="text-xl">🏥</span>
+            <Building2 className="h-5 w-5 text-white" />
           </div>
           <span className="text-xl font-bold text-white">AT-CMP</span>
         </Link>
@@ -88,6 +99,7 @@ export function Sidebar() {
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {filteredNavItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          const IconComponent = item.icon;
 
           return (
             <Link
@@ -99,11 +111,11 @@ export function Sidebar() {
                   : "text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 hover:shadow-sm active:bg-neutral-100"
               }`}
             >
-              <span
-                className={`text-lg transition-transform group-hover:scale-110 ${isActive ? "drop-shadow-sm" : ""}`}
-              >
-                {item.icon}
-              </span>
+              <IconComponent
+                className={`h-5 w-5 transition-transform group-hover:scale-110 ${
+                  isActive ? "drop-shadow-sm" : ""
+                }`}
+              />
               <span>{item.name}</span>
               {isActive && (
                 <span className="ml-auto h-2 w-2 rounded-full bg-white shadow-sm"></span>
