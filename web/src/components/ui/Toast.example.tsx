@@ -1,6 +1,6 @@
 /**
  * Toast 컴포넌트 사용 예시
- * 
+ *
  * 이 파일은 참고용 예시입니다.
  */
 
@@ -82,8 +82,8 @@ function Example3() {
         <button onClick={showTopLeft}>왼쪽 상단</button>
         <button onClick={showBottomCenter}>하단 중앙</button>
       </div>
-      <ToastContainer 
-        toasts={toasts} 
+      <ToastContainer
+        toasts={toasts}
         onRemove={removeToast}
         position="top-left" // 또는 "top-right", "bottom-left", "bottom-right", "top-center", "bottom-center"
       />

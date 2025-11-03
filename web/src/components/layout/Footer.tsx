@@ -20,12 +20,8 @@ export function Footer() {
               </div>
               <span className="text-lg font-bold text-neutral-900">AT-CMP</span>
             </div>
-            <p className="text-sm text-neutral-600">
-              보조공학 사례관리 플랫폼
-            </p>
-            <p className="text-xs text-neutral-500">
-              © 2024 AT-CMP. All rights reserved.
-            </p>
+            <p className="text-sm text-neutral-600">보조공학 사례관리 플랫폼</p>
+            <p className="text-xs text-neutral-500">© 2024 AT-CMP. All rights reserved.</p>
           </div>
 
           {/* 빠른 링크 */}

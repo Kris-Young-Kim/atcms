@@ -75,11 +75,7 @@ export function Toast({ message, type = "info", duration = 3000, onClose }: Toas
     <div
       className={`pointer-events-auto flex min-w-80 max-w-md items-start gap-3 rounded-lg border bg-white px-4 py-3 shadow-lg transition-all duration-300 ${
         style.bg
-      } ${
-        isExiting
-          ? "translate-x-full opacity-0"
-          : "translate-x-0 opacity-100"
-      }`}
+      } ${isExiting ? "translate-x-full opacity-0" : "translate-x-0 opacity-100"}`}
       role="alert"
       aria-live={type === "error" ? "assertive" : "polite"}
     >
@@ -154,13 +150,19 @@ export function useToast() {
 interface ToastContainerProps {
   toasts: ToastState[];
   onRemove: (id: number) => void;
-  position?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
+  position?:
+    | "top-right"
+    | "top-left"
+    | "bottom-right"
+    | "bottom-left"
+    | "top-center"
+    | "bottom-center";
 }
 
 export function ToastContainer({
   toasts,
   onRemove,
-  position = "top-right",
+  position = "top-right"
 }: ToastContainerProps) {
   if (toasts.length === 0) {
     return null;

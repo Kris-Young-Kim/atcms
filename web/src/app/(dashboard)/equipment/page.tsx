@@ -100,7 +100,6 @@ function EquipmentPageView({
   onStatusChangeRequest,
   onQuantityAdjust,
 }: EquipmentPageViewProps) {
-
   if (loading) {
     return (
       <div className="space-y-6 p-6">
