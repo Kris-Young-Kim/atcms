@@ -159,11 +159,7 @@ interface ToastContainerProps {
     | "bottom-center";
 }
 
-export function ToastContainer({
-  toasts,
-  onRemove,
-  position = "top-right"
-}: ToastContainerProps) {
+export function ToastContainer({ toasts, onRemove, position = "top-right" }: ToastContainerProps) {
   if (toasts.length === 0) {
     return null;
   }
