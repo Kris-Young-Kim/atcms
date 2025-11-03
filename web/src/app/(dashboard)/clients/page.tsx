@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { ClientsTable } from "@/components/clients/ClientsTable";

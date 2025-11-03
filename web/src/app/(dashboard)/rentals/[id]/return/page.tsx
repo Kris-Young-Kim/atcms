@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { rentalReturnSchema, type RentalReturnData } from "@/lib/validations/rental";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
-import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import type { Rental } from "@/lib/validations/rental";
 
@@ -39,11 +39,7 @@ function ReturnRentalPageContent({ rentalId }: { rentalId: string }) {
     },
   });
 
-  useEffect(() => {
-    fetchRental();
-  }, [rentalId]);
-
-  async function fetchRental() {
+  const fetchRental = useCallback(async () => {
     try {
       const response = await fetch(`/api/rentals/${rentalId}`);
       if (response.ok) {
@@ -57,7 +53,11 @@ function ReturnRentalPageContent({ rentalId }: { rentalId: string }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [rentalId, showError]);
+
+  useEffect(() => {
+    fetchRental();
+  }, [fetchRental]);
 
   const onSubmit = async (data: RentalReturnData) => {
     setIsSubmitting(true);

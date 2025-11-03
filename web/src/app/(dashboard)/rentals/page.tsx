@@ -8,7 +8,7 @@ import { RentalsTable } from "@/components/rentals/RentalsTable";
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 import type { Rental } from "@/lib/validations/rental";
-import { RENTAL_STATUS, RENTAL_STATUS_LABELS, type RentalStatus } from "@/lib/validations/rental";
+import { RENTAL_STATUS_LABELS } from "@/lib/validations/rental";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
 export const dynamic = "force-dynamic";
@@ -36,23 +36,7 @@ export default function RentalsPage() {
 
   const canCreate = hasRole(["admin", "leader", "technician"]);
 
-  useEffect(() => {
-    fetchRentals();
-  }, [statusFilter, equipmentIdFilter, clientIdFilter]);
-
-  useEffect(() => {
-    // URL 쿼리 파라미터 동기화
-    const params = new URLSearchParams();
-    if (statusFilter !== "all") params.set("status", statusFilter);
-    if (equipmentIdFilter) params.set("equipment_id", equipmentIdFilter);
-    if (clientIdFilter) params.set("client_id", clientIdFilter);
-
-    const queryString = params.toString();
-    const newUrl = queryString ? `/rentals?${queryString}` : "/rentals";
-    router.replace(newUrl, { scroll: false });
-  }, [statusFilter, equipmentIdFilter, clientIdFilter, router]);
-
-  const fetchRentals = async () => {
+  const fetchRentals = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -72,7 +56,23 @@ export default function RentalsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, equipmentIdFilter, clientIdFilter, showError]);
+
+  useEffect(() => {
+    fetchRentals();
+  }, [fetchRentals]);
+
+  useEffect(() => {
+    // URL 쿼리 파라미터 동기화
+    const params = new URLSearchParams();
+    if (statusFilter !== "all") params.set("status", statusFilter);
+    if (equipmentIdFilter) params.set("equipment_id", equipmentIdFilter);
+    if (clientIdFilter) params.set("client_id", clientIdFilter);
+
+    const queryString = params.toString();
+    const newUrl = queryString ? `/rentals?${queryString}` : "/rentals";
+    router.replace(newUrl, { scroll: false });
+  }, [statusFilter, equipmentIdFilter, clientIdFilter, router]);
 
   const handleReturn = async (rentalId: string) => {
     router.push(`/rentals/${rentalId}/return`);

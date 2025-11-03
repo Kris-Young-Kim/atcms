@@ -10,7 +10,7 @@ import {
   type EquipmentQuantityUpdateData,
 } from "@/lib/validations/equipment";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
-import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { auditLogger } from "@/lib/logger/auditLogger";
 import type { Equipment } from "@/lib/validations/equipment";
 
@@ -46,13 +46,8 @@ function QuantityAdjustPageContent({ equipmentId }: { equipmentId: string }) {
   });
 
   const totalQuantity = watch("total_quantity") || 0;
-  const availableQuantity = watch("available_quantity") || 0;
 
-  useEffect(() => {
-    fetchEquipment();
-  }, [equipmentId]);
-
-  async function fetchEquipment() {
+  const fetchEquipment = useCallback(async () => {
     try {
       const response = await fetch(`/api/equipment/${equipmentId}`);
       if (response.ok) {
@@ -66,7 +61,11 @@ function QuantityAdjustPageContent({ equipmentId }: { equipmentId: string }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [equipmentId, setValue, showError]);
+
+  useEffect(() => {
+    fetchEquipment();
+  }, [fetchEquipment]);
 
   const onSubmit = async (data: EquipmentQuantityUpdateData) => {
     setIsSubmitting(true);

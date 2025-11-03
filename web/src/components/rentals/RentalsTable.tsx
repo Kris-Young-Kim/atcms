@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   useReactTable,
@@ -27,7 +26,6 @@ interface RentalsTableProps {
 }
 
 export function RentalsTable({ rentals, onReturn }: RentalsTableProps) {
-  const router = useRouter();
   const { hasRole } = useUserRole();
   const [sorting, setSorting] = useState<SortingState>([]);
   const canReturn = hasRole(["admin", "leader", "technician"]);

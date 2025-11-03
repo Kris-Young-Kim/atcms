@@ -56,8 +56,6 @@ export function ConsultationForm({
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
-    watch,
   } = useForm<ConsultationFormData>({
     resolver: zodResolver(consultationSchema),
     defaultValues: {

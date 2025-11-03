@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -10,7 +8,6 @@ import { useRouter } from "next/navigation";
 import {
   maintenanceNoteSchema,
   type MaintenanceNoteFormData,
-  MAINTENANCE_TYPES,
   MAINTENANCE_TYPE_LABELS,
 } from "@/lib/validations/maintenance-note";
 import { useToast, ToastContainer } from "@/components/ui/Toast";

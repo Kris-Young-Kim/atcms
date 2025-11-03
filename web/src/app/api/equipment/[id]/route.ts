@@ -3,11 +3,7 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {
-  equipmentUpdateSchema,
-  equipmentStatusUpdateSchema,
-  equipmentQuantityUpdateSchema,
-} from "@/lib/validations/equipment";
+import { equipmentUpdateSchema } from "@/lib/validations/equipment";
 
 /**
  * GET /api/equipment/[id]

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { EquipmentForm } from "@/components/equipment/EquipmentForm";
-import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import type { Equipment } from "@/lib/validations/equipment";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
@@ -17,16 +17,10 @@ export const dynamic = "force-dynamic";
  */
 
 function EditEquipmentPageContent({ equipmentId }: { equipmentId: string }) {
-  const router = useRouter();
-  const { hasRole } = useUserRole();
   const [equipment, setEquipment] = useState<Partial<Equipment> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchEquipment();
-  }, [equipmentId]);
-
-  async function fetchEquipment() {
+  const fetchEquipment = useCallback(async () => {
     try {
       const response = await fetch(`/api/equipment/${equipmentId}`);
       if (response.ok) {
@@ -38,7 +32,11 @@ function EditEquipmentPageContent({ equipmentId }: { equipmentId: string }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [equipmentId]);
+
+  useEffect(() => {
+    fetchEquipment();
+  }, [fetchEquipment]);
 
   if (loading) {
     return (

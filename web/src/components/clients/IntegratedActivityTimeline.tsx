@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 /**
@@ -30,9 +30,29 @@ export function IntegratedActivityTimeline({
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>("all");
 
+  const fetchActivities = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (filterType !== "all") {
+        params.set("activity_type", filterType);
+      }
+
+      const response = await fetch(`/api/clients/${clientId}/activities?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setActivities(data.data || []);
+      }
+    } catch (error) {
+      console.error("활동 조회 실패:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [clientId, filterType]);
+
   useEffect(() => {
     fetchActivities();
-  }, [clientId, filterType]);
+  }, [fetchActivities]);
 
   useEffect(() => {
     if (!initialFilterType) {
@@ -52,26 +72,6 @@ export function IntegratedActivityTimeline({
       setFilterType(initialFilterType);
     }
   }, [filterType, initialFilterType]);
-
-  async function fetchActivities() {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (filterType !== "all") {
-        params.set("activity_type", filterType);
-      }
-
-      const response = await fetch(`/api/clients/${clientId}/activities?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
-        setActivities(data.data || []);
-      }
-    } catch (error) {
-      console.error("활동 조회 실패:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const getActivityIcon = (type: string) => {
     const iconMap: Record<string, string> = {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { consultationSchema, consultationUpdateSchema } from "@/lib/validations/consultation";
+import { consultationSchema } from "@/lib/validations/consultation";
 
 /**
  * GET /api/clients/[id]/consultations

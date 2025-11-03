@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 /**
  * 대상자 통합 통계 데이터 타입
@@ -45,11 +45,7 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
   const [stats, setStats] = useState<ClientStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStats();
-  }, [clientId]);
-
-  async function fetchStats() {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}/stats`);
       if (response.ok) {
@@ -61,7 +57,11 @@ export function ClientStatsWidget({ clientId }: ClientStatsWidgetProps) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [clientId]);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   if (loading) {
     return (
@@ -381,11 +381,7 @@ export function RecentActivitiesWidget({ clientId }: RecentActivitiesWidgetProps
   >([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchRecentActivities();
-  }, [clientId]);
-
-  async function fetchRecentActivities() {
+  const fetchRecentActivities = useCallback(async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}/activities?limit=5`);
       if (response.ok) {
@@ -397,7 +393,11 @@ export function RecentActivitiesWidget({ clientId }: RecentActivitiesWidgetProps
     } finally {
       setLoading(false);
     }
-  }
+  }, [clientId]);
+
+  useEffect(() => {
+    fetchRecentActivities();
+  }, [fetchRecentActivities]);
 
   const getActivityIcon = (type: string) => {
     if (type === "consultation") return "💬";

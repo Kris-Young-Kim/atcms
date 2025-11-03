@@ -3,11 +3,7 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {
-  assessmentSchema,
-  assessmentUpdateSchema,
-  calculateTotalScore,
-} from "@/lib/validations/assessment";
+import { assessmentSchema, calculateTotalScore } from "@/lib/validations/assessment";
 
 /**
  * GET /api/clients/[id]/assessments

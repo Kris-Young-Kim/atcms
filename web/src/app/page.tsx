@@ -90,7 +90,7 @@ export default function Home() {
               description: "보조기기 재고와 대여 현황을 실시간으로 관리합니다.",
               gradient: "from-indigo-500 to-blue-500",
             },
-          ].map((feature, index) => (
+          ].map((feature) => (
             <div
               key={feature.title}
               className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"

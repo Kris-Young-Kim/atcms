@@ -95,7 +95,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     // Supabase Storage에 업로드
-    const { data, error } = await supabase.storage.from("attachments").upload(filePath, buffer, {
+    const { error } = await supabase.storage.from("attachments").upload(filePath, buffer, {
       contentType: file.type,
       upsert: false, // 기존 파일 덮어쓰기 방지
     });

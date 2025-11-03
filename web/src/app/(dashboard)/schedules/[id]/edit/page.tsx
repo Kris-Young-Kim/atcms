@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { ScheduleForm } from "@/components/schedules/ScheduleForm";
 import type { Schedule } from "@/lib/validations/schedule";
@@ -21,11 +21,7 @@ export default function EditSchedulePage() {
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchSchedule();
-  }, [scheduleId]);
-
-  async function fetchSchedule() {
+  const fetchSchedule = useCallback(async () => {
     try {
       const response = await fetch(`/api/schedules/${scheduleId}`);
       if (response.ok) {
@@ -37,7 +33,11 @@ export default function EditSchedulePage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [scheduleId]);
+
+  useEffect(() => {
+    fetchSchedule();
+  }, [fetchSchedule]);
 
   if (loading) {
     return (

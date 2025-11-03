@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import type { Schedule } from "@/lib/validations/schedule";
-import { auditLogger } from "@/lib/logger/auditLogger";
 
 /**
  * 일정 유형별 색상 정의

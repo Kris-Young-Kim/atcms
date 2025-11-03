@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { scheduleSchema } from "@/lib/validations/schedule";
 import { ASSESSMENT_TYPES } from "@/lib/validations/assessment";
 import { z } from "zod";
 

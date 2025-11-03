@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { ConsultationForm } from "@/components/clients/ConsultationForm";
-import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import type { Consultation } from "@/lib/validations/consultation";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
@@ -23,16 +23,10 @@ function EditConsultationPageContent({
   clientId: string;
   consultationId: string;
 }) {
-  const router = useRouter();
-  const { hasRole } = useUserRole();
   const [consultation, setConsultation] = useState<Consultation | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchConsultation();
-  }, [clientId, consultationId]);
-
-  async function fetchConsultation() {
+  const fetchConsultation = useCallback(async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}/consultations/${consultationId}`);
       if (response.ok) {
@@ -44,7 +38,11 @@ function EditConsultationPageContent({
     } finally {
       setLoading(false);
     }
-  }
+  }, [clientId, consultationId]);
+
+  useEffect(() => {
+    fetchConsultation();
+  }, [fetchConsultation]);
 
   if (loading) {
     return (

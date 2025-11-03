@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -45,7 +45,6 @@ export function RentalForm({
     handleSubmit,
     formState: { errors },
     watch,
-    setValue,
   } = useForm<RentalFormData>({
     resolver: zodResolver(rentalSchema),
     defaultValues: {
@@ -58,29 +57,8 @@ export function RentalForm({
   });
 
   const selectedEquipmentId = watch("equipment_id");
-  const quantity = watch("quantity") || 1;
 
-  // 기기 목록 로드
-  useEffect(() => {
-    fetchEquipmentList();
-  }, []);
-
-  // 대상자 목록 로드
-  useEffect(() => {
-    fetchClientList();
-  }, []);
-
-  // 선택된 기기 정보 로드
-  useEffect(() => {
-    if (selectedEquipmentId) {
-      const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
-      setSelectedEquipment(equipment || null);
-    } else {
-      setSelectedEquipment(null);
-    }
-  }, [selectedEquipmentId, equipmentList]);
-
-  async function fetchEquipmentList() {
+  const fetchEquipmentList = useCallback(async () => {
     try {
       setLoadingEquipment(true);
       const response = await fetch("/api/equipment?status=normal");
@@ -93,9 +71,9 @@ export function RentalForm({
     } finally {
       setLoadingEquipment(false);
     }
-  }
+  }, [showError]);
 
-  async function fetchClientList() {
+  const fetchClientList = useCallback(async () => {
     try {
       setLoadingClients(true);
       const response = await fetch("/api/clients?status=active");
@@ -108,7 +86,27 @@ export function RentalForm({
     } finally {
       setLoadingClients(false);
     }
-  }
+  }, [showError]);
+
+  // 기기 목록 로드
+  useEffect(() => {
+    fetchEquipmentList();
+  }, [fetchEquipmentList]);
+
+  // 대상자 목록 로드
+  useEffect(() => {
+    fetchClientList();
+  }, [fetchClientList]);
+
+  // 선택된 기기 정보 로드
+  useEffect(() => {
+    if (selectedEquipmentId) {
+      const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
+      setSelectedEquipment(equipment || null);
+    } else {
+      setSelectedEquipment(null);
+    }
+  }, [selectedEquipmentId, equipmentList]);
 
   const onSubmit = async (data: RentalFormData) => {
     setIsSubmitting(true);

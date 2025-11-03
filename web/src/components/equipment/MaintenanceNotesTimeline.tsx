@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 
 import { useUserRole } from "@/components/auth/ProtectedRoute";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
@@ -23,7 +21,6 @@ export function MaintenanceNotesTimeline({
   equipmentId,
   onCreateNew,
 }: MaintenanceNotesTimelineProps) {
-  const router = useRouter();
   const { hasRole } = useUserRole();
   const { toasts, removeToast, success, error: showError } = useToast();
   const [notes, setNotes] = useState<MaintenanceNote[]>([]);
@@ -31,11 +28,7 @@ export function MaintenanceNotesTimeline({
 
   const canCreate = hasRole(["admin", "leader", "technician"]);
 
-  useEffect(() => {
-    fetchNotes();
-  }, [equipmentId]);
-
-  async function fetchNotes() {
+  const fetchNotes = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/equipment/${equipmentId}/maintenance-notes`);
@@ -50,7 +43,11 @@ export function MaintenanceNotesTimeline({
     } finally {
       setLoading(false);
     }
-  }
+  }, [equipmentId, showError]);
+
+  useEffect(() => {
+    fetchNotes();
+  }, [fetchNotes]);
 
   if (loading) {
     return <div className="text-center text-gray-500">유지보수 노트를 불러오는 중...</div>;

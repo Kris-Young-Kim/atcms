@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 
 /**
  * 맞춤제작 요청 필터 컴포넌트

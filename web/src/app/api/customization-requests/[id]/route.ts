@@ -3,10 +3,7 @@ import { NextResponse } from "next/server";
 
 import { auditLogger } from "@/lib/logger/auditLogger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import {
-  customizationRequestUpdateSchema,
-  customizationStageSchema,
-} from "@/lib/validations/customization";
+import { customizationRequestUpdateSchema } from "@/lib/validations/customization";
 
 /**
  * GET /api/customization-requests/[id]

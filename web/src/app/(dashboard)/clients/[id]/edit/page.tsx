@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { ClientForm } from "@/components/clients/ClientForm";
 import type { Client } from "@/lib/validations/client";
@@ -21,11 +21,7 @@ export default function EditClientPage() {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchClient();
-  }, [clientId]);
-
-  async function fetchClient() {
+  const fetchClient = useCallback(async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}`);
       if (response.ok) {
@@ -37,7 +33,11 @@ export default function EditClientPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [clientId]);
+
+  useEffect(() => {
+    fetchClient();
+  }, [fetchClient]);
 
   if (loading) {
     return (

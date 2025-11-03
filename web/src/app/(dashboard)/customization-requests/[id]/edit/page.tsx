@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { CustomizationForm } from "@/components/customization/CustomizationForm";
 import type { CustomizationRequest } from "@/lib/validations/customization";
@@ -21,11 +21,7 @@ export default function EditCustomizationPage() {
   const [customization, setCustomization] = useState<CustomizationRequest | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchCustomization();
-  }, [customizationId]);
-
-  async function fetchCustomization() {
+  const fetchCustomization = useCallback(async () => {
     try {
       const response = await fetch(`/api/customization-requests/${customizationId}`);
       if (response.ok) {
@@ -37,7 +33,11 @@ export default function EditCustomizationPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [customizationId]);
+
+  useEffect(() => {
+    fetchCustomization();
+  }, [fetchCustomization]);
 
   if (loading) {
     return (

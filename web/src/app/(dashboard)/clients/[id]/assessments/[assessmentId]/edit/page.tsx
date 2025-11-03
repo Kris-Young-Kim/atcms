@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { AssessmentForm } from "@/components/clients/AssessmentForm";
-import { ProtectedRoute, useUserRole } from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import type { Assessment } from "@/lib/validations/assessment";
 
 // 정적 생성을 방지 (Clerk 인증 필요)
@@ -23,16 +23,10 @@ function EditAssessmentPageContent({
   clientId: string;
   assessmentId: string;
 }) {
-  const router = useRouter();
-  const { hasRole } = useUserRole();
   const [assessment, setAssessment] = useState<Partial<Assessment> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAssessment();
-  }, [clientId, assessmentId]);
-
-  async function fetchAssessment() {
+  const fetchAssessment = useCallback(async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}/assessments/${assessmentId}`);
       if (response.ok) {
@@ -60,7 +54,11 @@ function EditAssessmentPageContent({
     } finally {
       setLoading(false);
     }
-  }
+  }, [clientId, assessmentId]);
+
+  useEffect(() => {
+    fetchAssessment();
+  }, [fetchAssessment]);
 
   if (loading) {
     return (
