@@ -5,3 +5,9 @@ dist
 build
 coverage
 
+# 예시 파일은 Prettier 검사에서 제외
+*.example.tsx
+*.example.ts
+*.example.js
+*.example.jsx
+

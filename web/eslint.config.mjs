@@ -54,7 +54,16 @@ const eslintConfig = defineConfig([
   },
   eslintPluginPrettierRecommended,
   // Override default ignores of eslint-config-next.
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "**/*.example.tsx",
+    "**/*.example.ts",
+    "**/*.example.js",
+    "**/*.example.jsx",
+  ]),
 ]);
 
 export default eslintConfig;
