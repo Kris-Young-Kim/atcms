@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { ToastContainer, useToast } from "@/components/ui/Toast";
 
 // 예시 1: 기본 사용법
 function Example1() {
