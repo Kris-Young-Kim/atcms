@@ -1,0 +1,26 @@
+# 빌드 디렉토리
+.next
+out
+build
+dist
+coverage
+
+# 의존성
+node_modules
+
+# 설정 파일
+*.config.js
+*.config.ts
+*.config.mjs
+
+# 예시 파일은 ESLint 검사에서 제외
+*.example.tsx
+*.example.ts
+*.example.js
+*.example.jsx
+
+# 테스트 파일 (필요시)
+# **/__tests__/**
+# **/*.test.ts
+# **/*.test.tsx
+
